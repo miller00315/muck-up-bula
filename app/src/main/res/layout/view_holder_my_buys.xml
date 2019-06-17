@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_my_buys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:padding="5dp"
+            android:id="@+id/layout_my_buys"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/solicitation_id"
+                android:layout_marginBottom="10dp"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:text="não definido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/buy_date"
+                    android:text="não definido"
+                    android:gravity="center"
+                    android:drawableStart="@drawable/ic_date_range_black_24dp"
+                    android:drawablePadding="5dp"
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/buy_send"
+                    android:layout_marginStart="5dp"
+                    android:text="não definido"
+                    android:gravity="center"
+                    android:drawableStart="@drawable/ic_assignment_black_24dp"
+                    android:drawablePadding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/buy_receive"
+                    android:layout_marginStart="5dp"
+                    android:text="não definido"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ic_check_black_24dp"
+                    android:drawablePadding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "763576346821",
+    "firebase_url": "https://bula-b2e76.firebaseio.com",
+    "project_id": "bula-b2e76",
+    "storage_bucket": "bula-b2e76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763576346821:android:1ab3b13a23ef0dd2",
+        "android_client_info": {
+          "package_name": "br.com.miller.muckup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763576346821-2hbk276f7pkqamut4orjngi1jka574ls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.miller.muckup",
+            "certificate_hash": "4382509ded21d66bbdc1928b57c0c9b2b2780f0f"
+          }
+        },
+        {
+          "client_id": "763576346821-2vhr1numi5lca84m9dco9b9horchre31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWYYswkXHhYJtDVQ4ke_J0oTCne9VK2eE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763576346821-2vhr1numi5lca84m9dco9b9horchre31.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

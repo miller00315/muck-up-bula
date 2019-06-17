@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Muck up</string>
+    <string name="title_activity_menu_principal">MenuPrincipal</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="image_store">Image store</string>
+    <string name="title_activity_store">Store</string>
+    <string name="title_activity_buy">Buy</string>
+    <string name="insira_a_quantidade">Insira a quantidade</string>
+    <string name="sua_compra">Sua compra</string>
+    <string name="quantidade">Quantidade</string>
+    <string name="qunatidade">Qunatidade</string>
+    <string name="telefone">Telefone</string>
+    <string name="entre_com_a_senha">Entre com a senha</string>
+    <string name="repita_a_senha">Repita a senha</string>
+    <string name="cadastre_se">Cadastre-se</string>
+    <string name="email">Email</string>
+    <string name="sobrenome">Sobrenome</string>
+    <string name="nome">Nome</string>
+    <string name="senha">Senha</string>
+    <string name="usu_rio_ou_email">Usuário ou Email</string>
+    <string name="clique_aqui_para_alterar">Clique aqui para alterar</string>
+</resources>

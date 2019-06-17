@@ -1,0 +1,126 @@
+package br.com.miller.muckup.api;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
+import br.com.miller.muckup.models.Departament;
+
+public class FirebaseDepartament {
+
+    private Context context;
+
+    private FirebaseDatabase firebaseDatabase;
+
+    private FirebaseDepartamentListener firebaseDepartamentListener;
+
+    public FirebaseDepartament(Context context) {
+        this.context = context;
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        if(context instanceof FirebaseDepartamentListener)
+            firebaseDepartamentListener = (FirebaseDepartamentListener) context;
+    }
+
+    public void getDepartamentsFirebase(String city){
+
+        firebaseDatabase.getReference().child("departaments")
+                .child(city)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()){
+
+                            ArrayList<Departament> departaments = new ArrayList<>();
+
+                            for(DataSnapshot child : dataSnapshot.getChildren()){
+
+                                Departament departament = child.getValue(Departament.class);
+
+                                if(!checkDepartament(departament, departaments))
+                                    departaments.add(departament);
+                            }
+
+                            firebaseDepartamentListener.onDepartamentsReceived(departaments);
+
+                        }else{
+
+                            firebaseDepartamentListener.onDepartamentsReceived(null);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        firebaseDepartamentListener.onDepartamentsReceived(null);
+                    }
+                });
+
+    }
+
+    public void getDepartamentsFirebaseByStore(String city, final String storeId){
+
+        firebaseDatabase.getReference().child("departaments")
+                .child(city)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()){
+
+                            ArrayList<Departament> departaments = new ArrayList<>();
+
+                            for(DataSnapshot child : dataSnapshot.getChildren()){
+
+                                Departament departament = child.getValue(Departament.class);
+
+                                if(departament != null && String.valueOf(departament.getStoreId()).equals(storeId))
+                                    departaments.add(departament);
+
+                            }
+
+                            firebaseDepartamentListener.onDepartamentsReceived(departaments);
+
+                        }else{
+                            firebaseDepartamentListener.onDepartamentsReceived(null);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        firebaseDepartamentListener.onDepartamentsReceived(null);
+                    }
+                });
+    }
+
+    private Boolean checkDepartament(Departament departament, ArrayList<Departament> departaments){
+
+        for(Departament dp : departaments){
+
+            if(dp.getId() == departament.getId())
+                return true;
+        }
+
+        return false;
+    }
+
+    public interface FirebaseDepartamentListener{
+
+        void onDepartamentReceived(Departament departament);
+
+        void onDepartamentsReceived(ArrayList<Departament> departaments);
+    }
+
+}
