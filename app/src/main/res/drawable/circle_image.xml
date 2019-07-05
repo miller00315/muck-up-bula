@@ -4,7 +4,7 @@
     <!--border color and border width-->
     <stroke
         android:width="7dp"
-        android:color="#d92500" />
+        android:color="@color/design_default_color_primary_dark" />
     <!--border radius in dp-->
     <corners android:radius="120dp" />
 </shape>

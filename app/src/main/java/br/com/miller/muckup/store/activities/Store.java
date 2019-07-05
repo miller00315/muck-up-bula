@@ -58,13 +58,6 @@ public class Store extends AppCompatActivity implements
     };
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
@@ -153,7 +146,7 @@ public class Store extends AppCompatActivity implements
         if(store != null){
 
             if(getSupportActionBar() != null)
-                getSupportActionBar().setTitle(store.getTime());
+                getSupportActionBar().setTitle(store.getName());
 
             for(Fragment fragment : getSupportFragmentManager().getFragments())
                 if(fragment instanceof HomeStoreFragment){

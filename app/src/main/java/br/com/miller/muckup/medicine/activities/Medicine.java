@@ -11,12 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,7 +33,7 @@ import br.com.miller.muckup.api.FirebaseOffer;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.models.Offer;
-import br.com.miller.muckup.store.activities.BuyActivity;
+import br.com.miller.muckup.store.buy.view.BuyActivity;
 import br.com.miller.muckup.store.activities.Store;
 
 import static java.lang.Integer.getInteger;
@@ -47,7 +46,7 @@ public class Medicine extends AppCompatActivity implements
 
     private boolean isFabOpen;
     private FirebaseCart firebaseCart;
-    private LinearLayout addToCart, buyNow;
+ //   private LinearLayout addToCart, buyNow;
     private ImageView imageMedicine;
     private Offer offer;
     private Bundle bundle;
@@ -55,6 +54,7 @@ public class Medicine extends AppCompatActivity implements
     private AlertContructor alertContructor;
     private FirebaseImage firebaseImage;
     private SharedPreferences sharedPreferences;
+    private Button buyNow;
     private TextView textCart, textBuy,
             medicineStore, medicineName, medicineIndication,
             medicineNoIndication, medicineActive,
@@ -67,6 +67,13 @@ public class Medicine extends AppCompatActivity implements
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
 
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_pharma_seeklogo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
         alertContructor = new AlertContructor(this);
@@ -75,14 +82,8 @@ public class Medicine extends AppCompatActivity implements
         firebaseOffer = new FirebaseOffer(this);
         firebaseCart = new FirebaseCart(this);
 
-        setSupportActionBar(toolbar);
 
         bundle = getIntent().getBundleExtra("data");
-
-        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_pharma_seeklogo);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         bindViews();
 
@@ -97,23 +98,24 @@ public class Medicine extends AppCompatActivity implements
 
      private void bindViews(){
 
-         FloatingActionButton mainFab = findViewById(R.id.main_float_button);
-         addToCart = findViewById(R.id.add_cart);
+       //  FloatingActionButton mainFab = findViewById(R.id.main_float_button);
+       //  addToCart = findViewById(R.id.add_cart);
+        // buyNow = findViewById(R.id.buy_now);
+        // textCart = findViewById(R.id.text_cart);
+        // textBuy = findViewById(R.id.text_buy);
          buyNow = findViewById(R.id.buy_now);
-         textCart = findViewById(R.id.text_cart);
-         textBuy = findViewById(R.id.text_buy);
          medicineName = findViewById(R.id.medicine_name);
          medicineStore = findViewById(R.id.medicine_store);
          medicineIndication = findViewById(R.id.medicine_utilization);
          medicineNoIndication = findViewById(R.id.medicine_indication);
          medicineActive = findViewById(R.id.medicine_active);
-         valueMedicine = findViewById(R.id.value_medicine);
+      //   valueMedicine = findViewById(R.id.value_medicine);
          valueSendMedicine = findViewById(R.id.value_send_medicine);
          imageMedicine = findViewById(R.id.image_medicine);
 
          firebaseOffer.firebaseGetOffer(bundle.getString("city"), bundle.getString("title"), bundle.getString("id_offer"));
 
-         mainFab.setOnClickListener(new View.OnClickListener() {
+        /* mainFab.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
 
@@ -123,11 +125,11 @@ public class Medicine extends AppCompatActivity implements
                      closeFab();
                  }
              }
-         });
+         });*/
 
      }
 
-     private void openFab(){
+   /*  private void openFab(){
 
         isFabOpen = true;
         textBuy.setVisibility(View.VISIBLE);
@@ -135,23 +137,16 @@ public class Medicine extends AppCompatActivity implements
         addToCart.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
         buyNow.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
 
-     }
+     }*/
 
-     private void closeFab(){
+   /*  private void closeFab(){
 
         isFabOpen = false;
          textBuy.setVisibility(View.INVISIBLE);
          textCart.setVisibility(View.INVISIBLE);
          addToCart.animate().translationY(0);
          buyNow.animate().translationY(0);
-     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+     } */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -299,10 +294,11 @@ public class Medicine extends AppCompatActivity implements
 
             this.offer = offer;
 
-            valueMedicine.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getValue())));
+            buyNow.setText("Compre agora - R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getValue())));
             valueSendMedicine.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getSendValue())));
             firebaseImage.downloadFirebaseImage("offers",offer.getCity(),offer.getImage(), imageMedicine);
-            medicineName.setText(offer.getTitle());
+            medicineName.setText(offer.getDescription());
+            getSupportActionBar().setTitle(offer.getTitle());
             medicineActive.setText(offer.getActive());
             medicineIndication.setText(offer.getIndication());
             medicineNoIndication.setText(offer.getNoIndication());
@@ -344,7 +340,7 @@ public class Medicine extends AppCompatActivity implements
     @Override
     public void onAlertError() {
 
-        Toast.makeText(this, "Erro ao adicionar item ao carrinho, tente novament", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Erro ao adicionar item ao carrinho, tente novamente", Toast.LENGTH_LONG).show();
 
     }
 
@@ -355,11 +351,11 @@ public class Medicine extends AppCompatActivity implements
 
             Toast.makeText(this, " Você adicionou ".concat(offer.getTitle()).concat(" ao seu carrinho"), Toast.LENGTH_LONG).show();
 
-            closeFab();
+           // closeFab();
 
         }else{
 
-            Toast.makeText(this, "Erro ao adicionar produot, tente novamente.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Erro ao adicionar produto, tente novamente.", Toast.LENGTH_LONG).show();
 
         }
     }

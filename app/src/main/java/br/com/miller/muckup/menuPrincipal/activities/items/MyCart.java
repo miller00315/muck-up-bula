@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,7 +27,7 @@ import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.models.Offer;
-import br.com.miller.muckup.store.activities.BuyActivity;
+import br.com.miller.muckup.store.buy.view.BuyActivity;
 
 public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         FirebaseCart.FirebaseCartListener,
@@ -110,13 +109,6 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         buyAll.animate().translationY(0);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -250,8 +242,11 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
     public void cleanCart(View view) {
 
-        alertContructor.simpleAlert("Limpar carrinho", "você tem certeza que deseja excluir todos os itens?",
+        if(offersRecyclerAdapter.getOffers().size() > 0)
+            alertContructor.simpleAlert("Limpar carrinho", "você tem certeza que deseja excluir todos os itens?",
                 offersRecyclerAdapter.getOffers());
+        else
+            Toast.makeText(this, "Seu carrinho já está vazio", Toast.LENGTH_LONG).show();
     }
 
     public void showButtons(View view) {

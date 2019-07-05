@@ -9,9 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +28,7 @@ import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.api.FirebaseSearch;
 import br.com.miller.muckup.api.FirebaseStore;
 import br.com.miller.muckup.api.FirebaseUser;
+import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.activities.items.DepartamentManager;
@@ -45,6 +49,7 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
         OffersFragment.OnFragmentInteractionListener,
         StoresFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener,
+        AlertContructor.OnAlertInteract,
         FirebaseSearch.FirebaseSearchListener,
         FirebaseUser.FirebaseUserListener,
         FirebaseImage.FirebaseImageListener,
@@ -53,6 +58,8 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
         OnAdapterInteract {
 
     private ViewPager menuPrincipal;
+
+    private AlertContructor alertContructor;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -91,6 +98,8 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle("Bula");
 
+        alertContructor = new AlertContructor(this);
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -127,6 +136,13 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
                 finish();
 
                 break;
+            }
+
+            case R.id.sac:{
+
+                ViewGroup viewGroup = findViewById(android.R.id.content);
+
+                alertContructor.personalizedAlert(LayoutInflater.from(this).inflate(R.layout.layout_alert_sac, viewGroup, false));
             }
 
             default:
@@ -248,6 +264,35 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
             }
 
 
+        }else{
+
+            for(Fragment fragment: getSupportFragmentManager().getFragments()){
+
+                if(fragment instanceof HomeFragment){
+
+                    HomeFragment homeFragment = (HomeFragment) fragment;
+                    homeFragment.receiveMsg(null);
+
+                    break;
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public void onSuggetions(String[] suggestions) {
+
+        if(suggestions != null){
+
+            for(Fragment fragment: getSupportFragmentManager().getFragments()){
+
+                if(fragment instanceof  HomeFragment){
+
+                    HomeFragment homeFragment = (HomeFragment) fragment;
+                    homeFragment.setSuggestions(suggestions);
+                }
+            }
         }
     }
 
@@ -332,6 +377,25 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
 
             Toast.makeText(this, "Erro ao carregar os departamentos, tente novamente", Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    @Override
+    public void onAlertPositive(Object object) {
+
+        if(object instanceof String){
+
+            Toast.makeText(this, "Obrigado pela sua mensagem", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onAlertNegative() {
+
+    }
+
+    @Override
+    public void onAlertError() {
 
     }
 }

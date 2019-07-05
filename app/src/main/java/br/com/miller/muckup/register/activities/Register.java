@@ -1,37 +1,31 @@
 package br.com.miller.muckup.register.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.AuthVerification;
-import br.com.miller.muckup.api.RegisterFirebase;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.ImageHelper;
-import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
 import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.register.presenters.RegisterPresenter;
+import br.com.miller.muckup.register.tasks.Task;
 
-public class Register extends AppCompatActivity implements RegisterFirebase.RegisterFirebaseListener,
-        AuthVerification.AuthVerificationListener {
+public class Register extends AppCompatActivity implements Task.Presenter {
 
-    private RegisterFirebase registerFirebase;
-    private AuthVerification authVerification;
-    private User user;
-    private String password;
-    private Bitmap user_image;
+    private RegisterPresenter registerPresenter;
     private ImageView image;
+    private ScrollView mainLayout;
+    private RelativeLayout loadingLayout;
     private EditText name, surname, email, phone, passwordInput, repeatPassword;
 
     @Override
@@ -39,19 +33,9 @@ public class Register extends AppCompatActivity implements RegisterFirebase.Regi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        user = new User();
+        registerPresenter = new RegisterPresenter(this);
 
-        registerFirebase = new RegisterFirebase(this);
-
-        registerFirebase.configureFirstUser();
-
-        name = findViewById(R.id.name_user);
-        surname = findViewById(R.id.surname_user);
-        email = findViewById(R.id.email_user);
-        phone = findViewById(R.id.phone_user);
-        passwordInput = findViewById(R.id.password_user);
-        repeatPassword = findViewById(R.id.repeat_password_user);
-        image = findViewById(R.id.image_user);
+        registerPresenter.configureFirstUser();
 
         bindViews();
 
@@ -76,6 +60,16 @@ public class Register extends AppCompatActivity implements RegisterFirebase.Regi
 
     public void bindViews(){
 
+        name = findViewById(R.id.name_user);
+        surname = findViewById(R.id.surname_user);
+        email = findViewById(R.id.email_user);
+        phone = findViewById(R.id.phone_user);
+        loadingLayout = findViewById(R.id.loading_layout);
+        mainLayout = findViewById(R.id.main_layout);
+        passwordInput = findViewById(R.id.password_user);
+        repeatPassword = findViewById(R.id.repeat_password_user);
+        image = findViewById(R.id.image_user);
+
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,35 +78,37 @@ public class Register extends AppCompatActivity implements RegisterFirebase.Regi
                 startActivityForResult(intent, Constants.INTERNAL_IMAGE);
             }
         });
+
+        loadingLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
     }
 
-    public void registerUser(View view) {
+    public void registerUser(View view){
 
-        user.setName(name.getText().toString());
-        user.setSurname(surname.getText().toString());
-        user.setEmail(email.getText().toString());
-        user.setCity("Lavras");
-        user.setPhone(phone.getText().toString());
-        password = passwordInput.getText().toString();
-        user_image = getImageUser();
-        registerFirebase.registerUser(user, password);
+        loadingLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
 
+        setInputColor();
+
+        registerPresenter.checkRegister(name.getText().toString(),
+                surname.getText().toString(),
+                email.getText().toString(),
+                "Lavras",
+                phone.getText().toString(),
+                passwordInput.getText().toString(),
+                repeatPassword.getText().toString());
     }
 
-    public Bitmap getImageUser(){
+    public void setInputColor(){
 
-        Bitmap bitmap;
+        name.setHintTextColor(getResources().getColor(R.color.gray));
+        surname.setHintTextColor(getResources().getColor(R.color.gray));
+        email.setHintTextColor(getResources().getColor(R.color.gray));
+        email.setTextColor(getResources().getColor(R.color.dark));
+        phone.setHintTextColor(getResources().getColor(R.color.gray));
+        passwordInput.setHintTextColor(getResources().getColor(R.color.gray));
+        repeatPassword.setHintTextColor(getResources().getColor(R.color.gray));
 
-        if (image.getDrawable() instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-        } else {
-            Drawable d = image.getDrawable();
-            bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            d.draw(canvas);
-        }
-
-        return bitmap;
     }
 
 
@@ -127,59 +123,104 @@ public class Register extends AppCompatActivity implements RegisterFirebase.Regi
     protected void onDestroy() {
         super.onDestroy();
 
-        registerFirebase.destroyRegisterFirebase();
+        registerPresenter.onDestroy();
 
     }
 
     @Override
-    public void uploadImageListener(boolean state, FirebaseUser user) {
+    public void successRegister(User user) {
 
-        if(state && user != null) {
+        registerPresenter.uploadImage(user, registerPresenter.getImageUser(image));
 
-            authVerification = new AuthVerification(this);
+    }
+
+    @Override
+    public void failedRegister() {
+
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "Erro ao realizar registro, tente novamente", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void incompleteRegister( int code) {
+
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "As informações em vermelho estão incorretas ou faltando!", Toast.LENGTH_LONG).show();
+
+        switch (code){
+
+            case 0:
+                name.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+            case 1:
+                surname.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+            case 2:
+                email.setHintTextColor(getResources().getColor(R.color.red));
+                email.setTextColor(getResources().getColor(R.color.red));
+                break;
+            case 3:
+                phone.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+            case 4:
+                passwordInput.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+            case 5:
+                repeatPassword.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+            case 6:
+                passwordInput.setHintTextColor(getResources().getColor(R.color.red));
+                repeatPassword.setHintTextColor(getResources().getColor(R.color.red));
+                break;
+
+                default: break;
+        }
+    }
+
+    @Override
+    public void tempraryUserDeleted() {
+        Toast.makeText(this, "Usuário temporário excluído", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void uploadImageListener(boolean state, FirebaseUser firebaseUser) {
+
+        if(state && firebaseUser != null) {
+
+            Toast.makeText(this, "Tudo ok, pronto para começar", Toast.LENGTH_LONG).show();
+            finishActivity(123);
+
         }else {
 
             Toast.makeText(this, "Erro ao enviar a imagem, saia e tente novamente", Toast.LENGTH_LONG).show();
+
         }
-
-    }
-
-    @Override
-    public void onRegisterError() {
-        Toast.makeText(this, "Erro no registro, saia e tente novamente",Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onRegisterUser(User user) {
-
-        registerFirebase.registerCity(user);
-        registerFirebase.uploadImageFirebase(user, user_image);
-
-    }
-
-    @Override
-    public void firstUserConfigured(boolean status) {
-
-
-    }
-
-    @Override
-    public void login(User user) {
-
-        Intent intent = new Intent(this, MenuPrincipal.class);
-
-        startActivityForResult(intent, Constants.START_CODE);
-
-        finish();
 
     }
 
     @Override
     public void errorLogin() {
 
-        Toast.makeText(this, "Erro ao consultar dados, saia e tente novamente",Toast.LENGTH_LONG).show();
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "Erro no login, saia e entre novamente", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void firstUserConfigured() {
+
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
 
     }
 
+    @Override
+    public void uploaImageError() {
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "Erro ao tratar a imagem",Toast.LENGTH_SHORT).show();
+    }
 
 }

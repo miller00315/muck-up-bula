@@ -50,7 +50,7 @@ public class ProductsDetailsRecyclerAdapter extends Item {
             productsViewHolder.setPriceProduct("R$ " .concat(String.format(Locale.getDefault(),"%.2f",products.get(i).getValue())));
 
             if(i % 2 == 0){
-                productsViewHolder.getMainLayout().setBackgroundColor(context.getResources().getColor(R.color.cinza));
+                productsViewHolder.getMainLayout().setBackgroundColor(context.getResources().getColor(R.color.gray));
             }else{
                 productsViewHolder.getMainLayout().setBackgroundColor(context.getResources().getColor(R.color.backgroundColor));
             }

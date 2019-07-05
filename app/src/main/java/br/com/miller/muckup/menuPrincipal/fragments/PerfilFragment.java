@@ -116,7 +116,8 @@ public class PerfilFragment extends Fragment {
 
         if(this.isVisible()) {
 
-            name.setText(user.getName().concat(" ").concat(user.getSurname()));
+            name.setText(user.getName().substring(0,1).toUpperCase().concat(user.getName().substring(1))
+                    .concat(" ").concat(user.getSurname().substring(0,1).toUpperCase().concat(user.getSurname().substring(1))));
             phone.setText(user.getPhone());
             email.setText(user.getEmail());
             address.setText(user.getAddress() != null ? user.getAddress().getAddress() :

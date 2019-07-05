@@ -35,7 +35,6 @@
                     android:layout_alignParentEnd="true"
                     android:id="@+id/value_send_medicine"
                     android:gravity="center"
-                    android:text="nao definido"
                     android:padding="10dp"
                     android:textColor="#ffffff"
                     android:drawableStart="@drawable/ic_capacete"
@@ -47,10 +46,11 @@
                 <TextView
                     android:id="@+id/value_medicine"
                     android:gravity="center"
-                    android:drawableStart="@drawable/ic_monetization_on_black_24dp"
+                    android:drawableStart="@drawable/ic_shopping_cart"
                     android:drawablePadding="5dp"
                     android:layout_marginTop="8dp"
-                    android:text="não definido"
+                    android:text="@string/por_no_carrinho"
+                    android:onClick="addToCart"
                     android:padding="10dp"
                     android:textColor="#ffffff"
                     android:background="@drawable/background_button_green_rounded"
@@ -64,6 +64,7 @@
                 android:layout_below="@id/header_Medicine"
                 android:orientation="vertical"
                 android:padding="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -201,7 +202,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Principio ativo*"
+                            android:text="@string/principio_ativo"
                             android:textColor="#000000"
                             android:textSize="22sp"
                             android:textStyle="bold"
@@ -220,7 +221,20 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <Button
+                android:id="@+id/buy_now"
+                android:layout_below="@id/header_Medicine"
+                android:layout_marginTop="-30dp"
+                android:textColor="#ffffffff"
+                android:background="@drawable/background_button_green_rounded"
+                android:layout_centerHorizontal="true"
+                android:onClick="buyNow"
+                android:textSize="20sp"
+                android:padding="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+       <!--     <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/buy_now"
                 android:layout_below="@id/header_Medicine"
@@ -252,10 +266,10 @@
                     app:background="@color/green"
                     app:srcCompat="@drawable/ic_check_white_24dp"/>
 
-            </LinearLayout>
+            </LinearLayout> -->
 
 
-            <LinearLayout
+        <!--    <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/add_cart"
                 android:onClick="addToCart"
@@ -287,9 +301,9 @@
                     app:background="@color/colorAccent"
                     app:srcCompat="@drawable/ic_shopping_cart"/>
 
-            </LinearLayout>
+            </LinearLayout> -->
 
-            <android.support.design.widget.FloatingActionButton
+  <!--          <android.support.design.widget.FloatingActionButton
                 android:id="@+id/main_float_button"
                 android:layout_below="@id/header_Medicine"
                 android:elevation="2dp"
@@ -298,7 +312,7 @@
                 android:layout_marginEnd="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_add_white_24dp"/>
+                app:srcCompat="@drawable/ic_add_white_24dp"/> -->
 
         </RelativeLayout>
 

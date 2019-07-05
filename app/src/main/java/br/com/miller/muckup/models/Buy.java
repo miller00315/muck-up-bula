@@ -1,6 +1,5 @@
 package br.com.miller.muckup.models;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ public class Buy {
 
     private String id;
     private int storeId;
-    private int payMode;
+    private int payMode = 0;
     private double troco;
     private String storeCity;
     private String userCity;
@@ -18,7 +17,7 @@ public class Buy {
     private Double totalValue;
     private Double sendValue;
     private Date solicitationDate, deliverDate, receiverDate;
-    private ArrayList<Offer> products;
+    private ArrayList<Offer> offers;
     private String address;
 
     public Double getTotalValue() {
@@ -34,10 +33,7 @@ public class Buy {
 
             totalValue += (value * quantity);
 
-          //  Log.w("temp", String.valueOf(totalValue));
         }
-
-
 
     }
 
@@ -137,12 +133,12 @@ public class Buy {
         this.receiverDate = receiverDate;
     }
 
-    public ArrayList<Offer> getProducts() {
-        return products;
+    public ArrayList<Offer> getOffers() {
+        return offers;
     }
 
-    public void setProducts(ArrayList<Offer> products) {
-        this.products = products;
+    public void setOffers(ArrayList<Offer> offers) {
+        this.offers = offers;
     }
 
 

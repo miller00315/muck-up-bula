@@ -54,7 +54,7 @@ public class MyCartRecyclerAdapter extends Item {
             storeViewHolder.setDepartamentRecyclerOffer(offersRecyclerAdapter, context);
 
             if(i % 2 == 0){
-                storeViewHolder.getLayoutOffer().setBackgroundColor(context.getResources().getColor(R.color.cinza));
+                storeViewHolder.getLayoutOffer().setBackgroundColor(context.getResources().getColor(R.color.gray));
             }else{
                 storeViewHolder.getLayoutOffer().setBackgroundColor(context.getResources().getColor(R.color.backgroundColor));
             }

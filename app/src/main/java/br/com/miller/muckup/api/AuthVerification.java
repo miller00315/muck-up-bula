@@ -30,19 +30,19 @@ public class AuthVerification {
     private AuthVerificationListener authVerificationListener;
     private FirebaseDatabase firebaseDatabase;
 
-    public AuthVerification(Context context) {
+    public AuthVerification(Context context, AuthVerificationListener authVerificationListener) {
 
         mAuth = FirebaseAuth.getInstance();
         authStateListener = getAuthStateListener();
         firebaseDatabase = FirebaseDatabase.getInstance();
         sharedPreferences   = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-        if(context instanceof AuthVerificationListener)
-            authVerificationListener = (AuthVerificationListener) context;
 
-        mAuth.addAuthStateListener(authStateListener);
+        this.authVerificationListener = authVerificationListener ;
+
+        addListener();
     }
 
-    public void getDataLogin(final FirebaseUser user){
+    private void getDataLogin(final FirebaseUser user){
 
         if(sharedPreferences.contains("city"))
             login(user.getUid(), sharedPreferences.getString("city", ""));
@@ -93,9 +93,14 @@ public class AuthVerification {
         };
     }
 
+    public void addListener(){
+        if(authStateListener != null)
+            mAuth.addAuthStateListener(authStateListener);
+    }
+
     public void removeListener(){
         if(authStateListener != null)
-        mAuth.removeAuthStateListener(authStateListener);
+            mAuth.removeAuthStateListener(authStateListener);
     }
 
     private void login(final String id_firebase, String city){

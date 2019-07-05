@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import br.com.miller.muckup.R;
@@ -44,16 +46,14 @@ public class MyBuyRecyclerAdapter extends Item {
 
         if(viewHolder instanceof MyBuysViewHolder){
 
-            SimpleDateFormat fmt = new SimpleDateFormat("dd/mm",Locale.getDefault());
-
-            SimpleDateFormat clc = new SimpleDateFormat("HH:mm",Locale.getDefault());
+            SimpleDateFormat all = new SimpleDateFormat("dd/mm HH:mm",Locale.getDefault());
 
             final MyBuysViewHolder buyViewHolder = (MyBuysViewHolder) viewHolder;
 
-            buyViewHolder.setIdbuy(buys.get(i).getId());
-            buyViewHolder.setDateBuy(buys.get(i).getSolicitationDate() != null ? fmt.format(buys.get(i).getSolicitationDate()) : "n/a");
-            buyViewHolder.setReceiveBuy(buys.get(i).getReceiverDate() != null ? clc.format( buys.get(i).getReceiverDate()) : "n/a");
-            buyViewHolder.setSendBuy(buys.get(i).getDeliverDate() != null ?clc.format( buys.get(i).getDeliverDate()) : "n/a");
+            buyViewHolder.setIdbuy(buys.get(i).getId() != null ?  buys.get(i).getId().substring(29) : "n/a");
+            buyViewHolder.setDateBuy(buys.get(i).getSolicitationDate() != null ? all.format(buys.get(i).getSolicitationDate()) : "n/a");
+            buyViewHolder.setReceiveBuy(buys.get(i).getReceiverDate() != null ? all.format( buys.get(i).getReceiverDate()) : "n/a");
+            buyViewHolder.setSendBuy(buys.get(i).getDeliverDate() != null ? all.format( buys.get(i).getDeliverDate()) : "n/a");
 
             buyViewHolder.getCardSolicitation().setOnClickListener(new View.OnClickListener() {
                 @Override

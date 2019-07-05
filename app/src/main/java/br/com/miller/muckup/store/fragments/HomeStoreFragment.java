@@ -34,7 +34,7 @@ public class HomeStoreFragment extends Fragment {
 
     private FirebaseStore firebaseStore;
 
-    private TextView storeCity, storeDescription,storeTime, storeName;
+    private TextView storeCity, storeDescription,storeTime;
     ImageView storeImage;
 
     public HomeStoreFragment() {
@@ -83,10 +83,7 @@ public class HomeStoreFragment extends Fragment {
              storeCity = view.findViewById(R.id.store_address);
              storeDescription = view.findViewById(R.id.store_description);
              storeTime = view.findViewById(R.id.store_time);
-             storeName = view.findViewById(R.id.store_name);
              storeImage = view.findViewById(R.id.image_store);
-
-
 
 
         return view;
@@ -99,7 +96,6 @@ public class HomeStoreFragment extends Fragment {
             storeCity.setText(store.getCity());
             storeDescription.setText(store.getDescription());
             storeTime.setText(store.getTime());
-            storeName.setText(store.getName());
             firebaseImage.downloadFirebaseImage("stores", store.getCity(), store.getImage(), storeImage);
         }
 

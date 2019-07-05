@@ -3,19 +3,15 @@ package br.com.miller.muckup.menuPrincipal.activities.items;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseOffer;
-import br.com.miller.muckup.helpers.HelperStore;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 
@@ -74,13 +70,6 @@ public class DepartamentManager extends AppCompatActivity implements Item.OnAdap
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

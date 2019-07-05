@@ -18,7 +18,6 @@ import br.com.miller.muckup.api.FirebaseDepartament;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.models.Departament;
 import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
-import br.com.miller.muckup.helpers.HelperStore;
 
 /**
  * A simple {@link Fragment} subclass.

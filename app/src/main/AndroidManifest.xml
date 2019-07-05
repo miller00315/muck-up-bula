@@ -20,12 +20,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".passwordRecovery.view.PasswordRecovery"></activity>
         <activity android:name=".store.activities.ManagerBuy" />
         <activity android:name=".menuPrincipal.activities.items.DepartamentManager" />
         <activity android:name=".menuPrincipal.activities.items.MyBuys" />
         <activity android:name=".menuPrincipal.activities.items.MyCart" />
         <activity
-            android:name=".store.activities.BuyActivity"
+            android:name=".store.buy.view.BuyActivity"
             android:label="@string/title_activity_buy"
             android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity
@@ -36,7 +37,7 @@
             android:name=".menuPrincipal.activities.MenuPrincipal"
             android:label="@string/title_activity_menu_principal" />
         <activity android:name=".register.activities.Register" />
-        <activity android:name=".login.activities.Login" />
+        <activity android:name=".login.views.Login" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

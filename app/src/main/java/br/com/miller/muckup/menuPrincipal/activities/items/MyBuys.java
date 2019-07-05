@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import java.util.Objects;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseBuy;
 import br.com.miller.muckup.helpers.AlertContructor;
-import br.com.miller.muckup.helpers.BuyHelper;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.MyBuyRecyclerAdapter;
@@ -40,8 +38,6 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     private SharedPreferences sharedPreferences;
 
     private ProductsDetailsRecyclerAdapter productsDetailsRecyclerAdapter;
-
-    private BuyHelper buyHelper;
 
     private MyBuyRecyclerAdapter buyRecyclerAdapter;
 
@@ -91,14 +87,6 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -113,7 +101,7 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
         ViewGroup viewGroup = findViewById(android.R.id.content);
 
-        productsDetailsRecyclerAdapter.setArray(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getProducts());
+        productsDetailsRecyclerAdapter.setArray(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getOffers());
 
         View view1 = LayoutInflater.from(this).inflate(R.layout.layout_alert_my_buy, viewGroup, false);
 
@@ -127,7 +115,7 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
         TextView stotreName = view1.findViewById(R.id.store_name);
 
         header.setText("Compra: ".concat(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getId()));
-        stotreName.setText(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getProducts().get(0).getStore());
+        stotreName.setText(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getOffers().get(0).getStore());
         totalValue.setText("Total: R$ ".concat(String.format(Locale.getDefault(),"%.2f", buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getTotalValue())));
 
        if(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getAddress() != null){

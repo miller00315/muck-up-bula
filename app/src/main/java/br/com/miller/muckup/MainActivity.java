@@ -12,7 +12,7 @@ import android.widget.Toast;
 import br.com.miller.muckup.api.AuthVerification;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.Permissions;
-import br.com.miller.muckup.login.activities.Login;
+import br.com.miller.muckup.login.views.Login;
 import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
 import br.com.miller.muckup.models.User;
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Permissions.OnPer
 
         if(state){
 
-            authVerification = new AuthVerification(this);
+            authVerification = new AuthVerification(this,this);
 
         }else{
             Toast.makeText(this,"As autorizações não foram liberadas!" ,Toast.LENGTH_SHORT).show();

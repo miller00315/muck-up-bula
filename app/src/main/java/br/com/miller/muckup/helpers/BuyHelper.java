@@ -61,7 +61,7 @@ public class BuyHelper {
 
                     if(buy.getStoreId() == offer.getStoreId()){
 
-                        buy.getProducts().add(offer);
+                        buy.getOffers().add(offer);
                         buy.setTotalValue(offer.getValue(), offer.getQuantity());
 
                         test = true;
@@ -128,14 +128,14 @@ public class BuyHelper {
 
         buy.setId(new Date().toString());
         buy.setStoreId(offer.getStoreId());
-        buy.setProducts(new ArrayList<Offer>());
+        buy.setOffers(new ArrayList<Offer>());
         buy.setStoreCity(offer.getCity());
         buy.setUserCity(userCity);
         buy.setUserId(userId);
         buy.setSendValue(offer.getSendValue());
         buy.setSolicitationDate(new Date());
 
-        buy.getProducts().add(offer);
+        buy.getOffers().add(offer);
         buy.setTotalValue(offer.getValue(), offer.getQuantity());
 
         return buy;

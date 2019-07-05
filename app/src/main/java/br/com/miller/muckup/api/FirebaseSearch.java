@@ -28,6 +28,48 @@ public class FirebaseSearch {
             firebaseSearchListener = (FirebaseSearchListener) context;
     }
 
+    public void getSugestions(String city){
+
+        firebaseDatabase.getReference()
+                .child("offers")
+                .child(city)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()){
+
+                            String[] temp = new String[(int) dataSnapshot.getChildrenCount()];
+
+                            ArrayList<String> suggestions = new ArrayList<>();
+
+                            for(DataSnapshot suggestion : dataSnapshot.getChildren()){
+
+                                suggestions.add(suggestion.getKey());
+                            }
+
+                            if(suggestions.size() > 0){
+
+                                for(int i = 0; i< suggestions.size();i++){
+
+                                    temp[i] = suggestions.get(i);
+                                }
+
+                                firebaseSearchListener.onSuggetions(temp);
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
+
     public void searchFirebase(String search, String city){
 
         firebaseDatabase.getReference()
@@ -66,5 +108,7 @@ public class FirebaseSearch {
     public interface FirebaseSearchListener{
 
         void onFirebaseSearch(Object o);
+
+        void onSuggetions(String[] suggestions);
     }
 }

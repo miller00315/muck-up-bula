@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.activities;
+package br.com.miller.muckup.store.buy.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,7 +40,6 @@ import br.com.miller.muckup.menuPrincipal.activities.items.MyCart;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.models.Buy;
 import br.com.miller.muckup.models.Offer;
-import br.com.miller.muckup.store.adapters.BuyRecyclerAdapter;
 
 public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInteract, AlertContructor.OnAlertInteract,
         FirebaseOffer.FirebaseOfferListener,
@@ -74,7 +72,8 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_pharma_seeklogo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("Compra");
 
         bundle = getIntent().getBundleExtra("data");
 
@@ -181,14 +180,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     private void goToMyBuys(){
         Intent intent = new Intent(this, MyBuys.class);
         startActivity(intent);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_principal, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

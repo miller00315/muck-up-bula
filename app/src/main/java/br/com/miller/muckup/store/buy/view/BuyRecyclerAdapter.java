@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.adapters;
+package br.com.miller.muckup.store.buy.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;

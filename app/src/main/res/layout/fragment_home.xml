@@ -12,7 +12,6 @@
 
         <TextView
             android:id="@+id/header"
-            android:text="Bem-vindo! Busque abaixo o que você precisa."
             android:gravity="center"
             android:padding="10dp"
             android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:background="@drawable/background_input_rounded"
-            android:hint="O que você precisa agora?"
+            android:hint="@string/o_que_voce_precisa_agora"
             android:textColor="#000000"
             android:textColorHint="#000000" />
 
@@ -59,7 +58,15 @@
 
         </ScrollView>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_below="@id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <include layout="@layout/loading_layout"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </FrameLayout>

@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="backgroundColor">#f6fbfc</color>
-    <color name="cinza">#60B0B0B0</color>
+    <color name="gray">#60B0B0B0</color>
     <color name="green">#A6B45E</color>
+    <color name="red">#ffff0000</color>
+    <color name="dark">#ff000000</color>
 </resources>

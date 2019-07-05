@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".store.activities.BuyActivity">
+    tools:context=".store.buy.view.BuyActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Produto"
+                        android:text="@string/produto"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="20sp"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Custo total"
+                        android:text="@string/custo_total"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="20sp"
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Custo envio"
+                        android:text="@string/custo_envio"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="20sp"
@@ -108,7 +108,6 @@
 
             <android.support.v7.widget.CardView
                 android:layout_marginTop="10dp"
-                android:id="@+id/card_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -119,69 +118,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Endereço"
-                        android:textColor="#000000"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:text="@string/clique_aqui_para_alterar"
-                        android:textSize="8sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/address_buy"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:padding="10dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:text="Horário do pedido"
-                        android:textColor="#000000"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/solicitation_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:padding="10dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:text="Modo de pagamento"
+                        android:text="@string/modo_de_pagamento"
                         android:textColor="#000000"
                         android:textStyle="bold"
                         android:textSize="20sp"
@@ -195,13 +132,13 @@
 
                         <RadioButton
                             android:id="@+id/money"
-                            android:text="Dinheiro"
+                            android:text="@string/dinheiro"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
                         <RadioButton
                             android:id="@+id/card"
-                            android:text="Cartão"
+                            android:text="@string/cartao"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </RadioGroup>
@@ -228,7 +165,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Precisa de troco?"
+                            android:text="@string/precisa_de_troco"
                             android:textColor="#000000"
                             android:textStyle="bold"
                             android:textSize="20sp"
@@ -236,7 +173,7 @@
                             android:layout_height="wrap_content" />
 
                         <EditText
-                            android:hint="Para quanto?"
+                            android:hint="@string/para_quanto"
                             android:padding="10dp"
                             android:inputType="number"
                             android:background="@drawable/background_input_rounded"
@@ -275,21 +212,28 @@
 
                             <RadioButton
                                 android:id="@+id/elo"
-                                android:text="Elo"
+                                android:text="@string/elo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
 
                             <RadioButton
                                 android:id="@+id/visa"
-                                android:text="Visa"
+                                android:text="@string/visa"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
 
                             <RadioButton
                                 android:id="@+id/master"
-                                android:text="Master"
+                                android:text="@string/master"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
+
+                            <RadioButton
+                                android:id="@+id/outers"
+                                android:text="@string/outros"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
 
                         </RadioGroup>
 
@@ -299,11 +243,74 @@
 
             </RelativeLayout>
 
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="10dp"
+                android:id="@+id/card_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/endereco_entrega"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="@string/clique_aqui_para_alterar"
+                        android:textSize="12sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/address_buy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/horário_do_pedido"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/solicitation_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
         </LinearLayout>
 
         <Button
             android:id="@+id/end_buy"
-            android:text="Concluir Compra"
+            android:text="@string/concluir_compra"
             android:onClick="endBuy"
             android:textColor="#ffffff"
             android:layout_margin="20dp"
