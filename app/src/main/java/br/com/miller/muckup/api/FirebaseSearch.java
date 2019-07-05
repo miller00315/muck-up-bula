@@ -107,7 +107,7 @@ public class FirebaseSearch {
 
     public interface FirebaseSearchListener{
 
-        void onFirebaseSearch(Object o);
+        void onFirebaseSearch(ArrayList<Offer> offers);
 
         void onSuggetions(String[] suggestions);
     }

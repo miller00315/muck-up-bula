@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment {
         sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
         firebaseAdvs.getAdvsFromCity(sharedPreferences.getString(Constants.USER_CITY, ""), advRecyclerAdapter);
-        firebaseSearch.getSugestions(sharedPreferences.getString(Constants.USER_CITY, ""));
+
 
     }
 
@@ -114,6 +114,14 @@ public class HomeFragment extends Fragment {
         bindViews(view);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(searchView != null)
+            firebaseSearch.getSugestions(sharedPreferences.getString(Constants.USER_CITY, ""));
     }
 
     public void bindViews(View view){
@@ -259,21 +267,17 @@ public class HomeFragment extends Fragment {
         searchView.setSuggestionsAdapter(SearchHelper.setSuggestionCursor(getContext(), suggestions));
 
         searchAutoComplete = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_dropdown_item_1line, suggestions);
-        searchAutoComplete.setAdapter(dataAdapter);
+
+        if(searchAutoComplete.getAdapter().getCount() <= 0) {
+
+            searchAutoComplete = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()), android.R.layout.simple_dropdown_item_1line, suggestions);
+            searchAutoComplete.setAdapter(dataAdapter);
+
+        }
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
 
         void onFragmentInteraction(Bundle bundle);

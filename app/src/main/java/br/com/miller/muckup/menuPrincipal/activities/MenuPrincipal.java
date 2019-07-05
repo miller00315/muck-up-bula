@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -240,13 +239,9 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
 
 
     @Override
-    public void onFirebaseSearch(Object o) {
+    public void onFirebaseSearch(ArrayList<Offer> offers) {
 
-        if(o != null){
-
-            if(o instanceof  ArrayList){
-
-                ArrayList<Offer> offers = (ArrayList<Offer>) o;
+        if(offers != null){
 
                 for(Fragment fragment: getSupportFragmentManager().getFragments()){
 
@@ -260,24 +255,21 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
                 }
 
             }else{
+
                 Toast.makeText(this, "Erro ao receber respostas, tente novamente", Toast.LENGTH_LONG).show();
-            }
 
+                for(Fragment fragment: getSupportFragmentManager().getFragments()){
 
-        }else{
+                    if(fragment instanceof HomeFragment){
 
-            for(Fragment fragment: getSupportFragmentManager().getFragments()){
+                        HomeFragment homeFragment = (HomeFragment) fragment;
+                        homeFragment.receiveMsg(null);
 
-                if(fragment instanceof HomeFragment){
-
-                    HomeFragment homeFragment = (HomeFragment) fragment;
-                    homeFragment.receiveMsg(null);
-
-                    break;
+                        break;
+                    }
                 }
             }
 
-        }
     }
 
     @Override
