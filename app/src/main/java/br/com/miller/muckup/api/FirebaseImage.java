@@ -10,20 +10,58 @@ import android.widget.ImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+
+import br.com.miller.muckup.models.User;
 
 public class FirebaseImage {
 
-    private Context context;
     private FirebaseStorage firebaseStorage;
     private FirebaseImageListener firebaseImageListener;
 
     public FirebaseImage(Context context) {
-        this.context = context;
+
         firebaseStorage = FirebaseStorage.getInstance();
 
         if(context instanceof FirebaseImageListener)
             firebaseImageListener = (FirebaseImageListener) context;
 
+    }
+
+    public void uploadImageFirebase(User user, Bitmap image){
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        StorageReference storageReference = firebaseStorage.getReference();
+
+        StorageReference usuarioRef = storageReference.child("images")
+                .child("users")
+                .child(user.getCity())
+                .child(user.getId_firebase() + ".jpg");
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        if(image != null){
+
+            image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+            byte[] data = byteArrayOutputStream.toByteArray();
+
+            UploadTask uploadTask = usuarioRef.putBytes(data);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+        }
     }
 
     public void downloadFirebaseImage(String type, String city, String image,final ImageView imageView){

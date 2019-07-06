@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
  * Use the {@link DepartamentFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DepartamentFragment extends Fragment {
+public class DepartamentFragment extends Fragment implements FirebaseDepartament.FirebaseDepartamentListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -68,16 +69,16 @@ public class DepartamentFragment extends Fragment {
 
         departamentRecyclerAdapter = new DepartamentRecyclerAdapter(getContext());
 
-        firebaseDepartament = new FirebaseDepartament(getContext());
+        firebaseDepartament = new FirebaseDepartament(this);
 
         sharedPreferences = getContext().getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_departament, container, false);
 
         departamentRecycler = view.findViewById(R.id.departamento);
@@ -90,21 +91,10 @@ public class DepartamentFragment extends Fragment {
 
         departamentRecycler.setAdapter(departamentRecyclerAdapter);
 
-       // Log.w("teste Fragment", getArguments().toString());
-
         assert getArguments() != null;
         firebaseDepartament.getDepartamentsFirebaseByStore(getArguments().getString("city"), getArguments().getString("id_store"));
 
         return view;
-    }
-
-
-    public void departamentReceiver(ArrayList<Departament> departament){
-
-        if(departamentRecyclerAdapter.getItemCount() > 0) departamentRecyclerAdapter.clear();
-
-        if(this.isVisible())
-            departamentRecyclerAdapter.setArray(departament);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -129,6 +119,26 @@ public class DepartamentFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDepartamentReceived(Departament departament) {
+
+    }
+
+    @Override
+    public void onDepartamentsReceived(ArrayList<Departament> departaments) {
+
+        if(departaments != null) {
+
+            if (departamentRecyclerAdapter.getItemCount() > 0) departamentRecyclerAdapter.clear();
+
+            if (this.isVisible())
+                departamentRecyclerAdapter.setArray(departaments);
+
+        }else
+            Toast.makeText(getContext(), "Esta loja não possui departamentos cadastrados", Toast.LENGTH_LONG).show();
+
     }
 
     /**

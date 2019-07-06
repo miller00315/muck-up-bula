@@ -40,6 +40,7 @@ import br.com.miller.muckup.menuPrincipal.activities.items.MyCart;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.models.Buy;
 import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.utils.MonetaryMask;
 
 public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInteract, AlertContructor.OnAlertInteract,
         FirebaseOffer.FirebaseOfferListener,
@@ -56,7 +57,7 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     private TextView valueSend, solicitationTime, totalValue, addressBuy;
     private SharedPreferences sharedPreferences;
     private Bundle bundle;
-    private String address;
+    private EditText editTextTroco;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,9 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         solicitationTime = findViewById(R.id.solicitation_time);
         totalValue = findViewById(R.id.total_value);
         addressBuy = findViewById(R.id.address_buy);
+        editTextTroco = findViewById(R.id.edit_text_troco);
+
+        editTextTroco.addTextChangedListener(new MonetaryMask(editTextTroco));
 
         money.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

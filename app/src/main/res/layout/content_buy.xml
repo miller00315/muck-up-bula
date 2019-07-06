@@ -173,6 +173,7 @@
                             android:layout_height="wrap_content" />
 
                         <EditText
+                            android:id="@+id/edit_text_troco"
                             android:hint="@string/para_quanto"
                             android:padding="10dp"
                             android:inputType="number"
@@ -198,7 +199,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Bandeira"
+                            android:text="@string/bandeira"
                             android:textColor="#000000"
                             android:textStyle="bold"
                             android:textSize="20sp"

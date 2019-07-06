@@ -14,14 +14,12 @@ import br.com.miller.muckup.models.Offer;
 public class FirebaseOffer {
 
     private FirebaseOfferListener firebaseOfferListener;
-    private Context context;
     private FirebaseDatabase firebaseDatabase;
 
-    public FirebaseOffer(Context context) {
-        this.context = context;
+    public FirebaseOffer(FirebaseOfferListener firebaseOfferListener) {
+
         firebaseDatabase = FirebaseDatabase.getInstance();
-        if(context instanceof FirebaseOfferListener)
-            firebaseOfferListener = (FirebaseOfferListener) context;
+            this.firebaseOfferListener = firebaseOfferListener;
     }
 
     public void firebaseGetOffer(String city, String type, String id){
@@ -89,7 +87,7 @@ public class FirebaseOffer {
 
     }
 
-    public void FirebaseGetOffersByDepartamentandStore(String city, final String store_id, final String departament_id,
+    public void firebaseGetOffersByDepartamentandStore(String city, final String store_id, final String departament_id,
                                                        final OffersRecyclerAdapter offersRecyclerAdapter){
 
         firebaseDatabase.getReference()
@@ -136,6 +134,7 @@ public class FirebaseOffer {
     public interface FirebaseOfferListener{
 
         void firebaseOfferReceiver(Offer offer);
+
 
     }
 }

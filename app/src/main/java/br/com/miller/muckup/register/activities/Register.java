@@ -13,12 +13,16 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.ParseException;
+
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.ImageHelper;
 import br.com.miller.muckup.models.User;
 import br.com.miller.muckup.register.presenters.RegisterPresenter;
 import br.com.miller.muckup.register.tasks.Task;
+import br.com.miller.muckup.utils.ImageUtils;
+import br.com.miller.muckup.utils.Mask;
 
 public class Register extends AppCompatActivity implements Task.Presenter {
 
@@ -26,7 +30,7 @@ public class Register extends AppCompatActivity implements Task.Presenter {
     private ImageView image;
     private ScrollView mainLayout;
     private RelativeLayout loadingLayout;
-    private EditText name, surname, email, phone, passwordInput, repeatPassword;
+    private EditText name, surname, email, phone, passwordInput, repeatPassword, birthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,11 @@ public class Register extends AppCompatActivity implements Task.Presenter {
         mainLayout = findViewById(R.id.main_layout);
         passwordInput = findViewById(R.id.password_user);
         repeatPassword = findViewById(R.id.repeat_password_user);
+        birthDate = findViewById(R.id.birth_date_user);
         image = findViewById(R.id.image_user);
+
+        phone.addTextChangedListener(Mask.insert(Mask.CELULAR_MASK, phone));
+        birthDate.addTextChangedListener(Mask.insert(Mask.DATA_MASK, birthDate));
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +104,9 @@ public class Register extends AppCompatActivity implements Task.Presenter {
                 "Lavras",
                 phone.getText().toString(),
                 passwordInput.getText().toString(),
-                repeatPassword.getText().toString());
+                repeatPassword.getText().toString(),
+                birthDate.getText().toString());
+
     }
 
     public void setInputColor(){
@@ -104,10 +114,14 @@ public class Register extends AppCompatActivity implements Task.Presenter {
         name.setHintTextColor(getResources().getColor(R.color.gray));
         surname.setHintTextColor(getResources().getColor(R.color.gray));
         email.setHintTextColor(getResources().getColor(R.color.gray));
-        email.setTextColor(getResources().getColor(R.color.dark));
+        birthDate.setHintTextColor(getResources().getColor(R.color.gray));
         phone.setHintTextColor(getResources().getColor(R.color.gray));
         passwordInput.setHintTextColor(getResources().getColor(R.color.gray));
         repeatPassword.setHintTextColor(getResources().getColor(R.color.gray));
+
+        email.setTextColor(getResources().getColor(R.color.dark));
+        birthDate.setTextColor(getResources().getColor(R.color.dark));
+        phone.setTextColor(getResources().getColor(R.color.dark));
 
     }
 
@@ -123,14 +137,15 @@ public class Register extends AppCompatActivity implements Task.Presenter {
     protected void onDestroy() {
         super.onDestroy();
 
-        registerPresenter.onDestroy();
+        if(registerPresenter != null)
+            registerPresenter.onDestroy();
 
     }
 
     @Override
     public void successRegister(User user) {
-
-        registerPresenter.uploadImage(user, registerPresenter.getImageUser(image));
+        Toast.makeText(this, "Você já está registrado, agora vamos prepara sua foto.", Toast.LENGTH_SHORT).show();
+        registerPresenter.uploadImage(user, ImageUtils.getImageUser(image));
 
     }
 
@@ -163,6 +178,7 @@ public class Register extends AppCompatActivity implements Task.Presenter {
                 break;
             case 3:
                 phone.setHintTextColor(getResources().getColor(R.color.red));
+                phone.setTextColor(getResources().getColor(R.color.red));
                 break;
             case 4:
                 passwordInput.setHintTextColor(getResources().getColor(R.color.red));
@@ -175,14 +191,17 @@ public class Register extends AppCompatActivity implements Task.Presenter {
                 repeatPassword.setHintTextColor(getResources().getColor(R.color.red));
                 break;
 
+            case 7:
+                birthDate.setHintTextColor(getResources().getColor(R.color.red));
+                birthDate.setTextColor(getResources().getColor(R.color.red));
+                break;
+
                 default: break;
         }
     }
 
     @Override
-    public void tempraryUserDeleted() {
-        Toast.makeText(this, "Usuário temporário excluído", Toast.LENGTH_SHORT).show();
-    }
+    public void tempraryUserDeleted() { Toast.makeText(this, "Usuário temporário excluído", Toast.LENGTH_SHORT).show(); }
 
     @Override
     public void uploadImageListener(boolean state, FirebaseUser firebaseUser) {
@@ -218,9 +237,11 @@ public class Register extends AppCompatActivity implements Task.Presenter {
 
     @Override
     public void uploaImageError() {
+
         loadingLayout.setVisibility(View.INVISIBLE);
         mainLayout.setVisibility(View.VISIBLE);
         Toast.makeText(this, "Erro ao tratar a imagem",Toast.LENGTH_SHORT).show();
+
     }
 
 }

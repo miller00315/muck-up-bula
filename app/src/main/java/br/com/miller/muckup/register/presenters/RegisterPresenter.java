@@ -1,24 +1,20 @@
 package br.com.miller.muckup.register.presenters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import br.com.miller.muckup.api.AuthVerification;
 import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
 import br.com.miller.muckup.models.User;
 import br.com.miller.muckup.register.models.RegisterModel;
 import br.com.miller.muckup.register.tasks.Task;
+import br.com.miller.muckup.utils.StringUtils;
 
 public class RegisterPresenter implements Task.Model, Task.View, AuthVerification.AuthVerificationListener {
 
@@ -26,12 +22,6 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
     private User user;
     private RegisterModel model;
     private AuthVerification authVerification;
-
-    private static final String EMAIL_PATTERN =
-            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-    private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
 
     public RegisterPresenter(Task.Presenter presenter) {
         this.presenter = presenter;
@@ -52,7 +42,7 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
             presenter.uploaImageError();
     }
 
-    public void checkRegister(String name, String surname, String email,String city, String phone, String password, String repeatPassword){
+    public void checkRegister(String name, String surname, String email,String city, String phone, String password, String repeatPassword, String birthDate) {
 
         boolean dataOk = true;
 
@@ -67,19 +57,29 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
         }
 
         if(email.isEmpty()){
+
             presenter.incompleteRegister(2);
             dataOk = false;
+
         }else{
 
-            if(!validarEmail(email)){
+            if(!StringUtils.isValidEmail(email)){
                 presenter.incompleteRegister( 2);
                 dataOk = false;
             }
         }
 
         if(phone.isEmpty()){
+
             presenter.incompleteRegister( 3);
             dataOk = false;
+
+        }else{
+
+            if(!StringUtils.isValidPhone(phone)){
+                presenter.incompleteRegister(3);
+                dataOk = false;
+            }
         }
 
         if(password.isEmpty()){
@@ -98,44 +98,37 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
             dataOk = false;
         }
 
-        if(dataOk)
-            setupUser(name, surname, email, city, phone, password);
+        if(birthDate.isEmpty()){
+            presenter.incompleteRegister(7);
+            dataOk = false;
 
-    }
+        }else{
 
-    private boolean validarEmail(String email){
-
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-
-    }
-
-    public Bitmap getImageUser(ImageView image){
-
-        Bitmap bitmap;
-
-        if (image.getDrawable() instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-        } else {
-            Drawable d = image.getDrawable();
-            bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            d.draw(canvas);
+            if(!StringUtils.isValidDate(birthDate)) {
+                presenter.incompleteRegister(7);
+                dataOk = false;
+            }
         }
 
-        return bitmap;
+        if(dataOk)
+            setupUser(name, surname, email, city, phone, password, birthDate);
 
     }
 
-    private void setupUser(String name, String surname, String email, String city, String phone, String password){
+
+
+    @SuppressLint("SimpleDateFormat")
+    public User setupUser(String name, String surname, String email, String city, String phone, String password, String birthDate){
 
         user.setName(name);
         user.setSurname(surname);
         user.setEmail(email);
         user.setCity(city);
         user.setPhone(phone);
-
+        user.setBirth_date(StringUtils.parseDate(birthDate));
         model.registerUser(user, password);
+
+        return user;
 
     }
 
@@ -169,7 +162,10 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
 
     @Override
     public void onDestroy() {
-        model.destroyRegisterFirebase();
+        if(authVerification != null)
+            authVerification.removeListener();
+        if(model != null)
+            model.destroyRegisterFirebase();
     }
 
     @Override

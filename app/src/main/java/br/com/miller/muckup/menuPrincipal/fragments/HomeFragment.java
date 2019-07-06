@@ -37,7 +37,7 @@ import br.com.miller.muckup.models.Offer;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements FirebaseSearch.FirebaseSearchListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment {
 
         advRecyclerAdapter = new AdvRecyclerAdapter(getContext());
 
-        firebaseSearch = new FirebaseSearch(getContext());
+        firebaseSearch = new FirebaseSearch(this);
 
         FirebaseAdvs firebaseAdvs = new FirebaseAdvs(getContext());
 
@@ -233,21 +233,20 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
-    public void receiveMsg(ArrayList<Offer> arrayList) {
+    @Override
+    public void onFirebaseSearch(ArrayList<Offer> offers) {
 
-        if(arrayList != null) {
-
-            Log.w("test", String.valueOf(arrayList.size()));
+        if(offers != null) {
 
             if(searchResultAdapter.getItemCount() > 0) searchResultAdapter.clear();
 
-            if(arrayList.isEmpty()) {
+            if(offers.isEmpty()) {
                 Toast.makeText(getContext(), "Nada encontrado", Toast.LENGTH_LONG).show();
                 recyclerResult.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.INVISIBLE);
                 recyclerAdv.setVisibility(View.VISIBLE);
             }else{
-                searchResultAdapter.setArray(arrayList);
+                searchResultAdapter.setArray(offers);
                 recyclerResult.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
                 recyclerAdv.setVisibility(View.INVISIBLE);
@@ -260,9 +259,12 @@ public class HomeFragment extends Fragment {
             loading.setVisibility(View.INVISIBLE);
             recyclerAdv.setVisibility(View.VISIBLE);
         }
+
+
     }
 
-    public void setSuggestions(final String[] suggestions){
+    @Override
+    public void onSuggetions(String[] suggestions) {
 
         searchView.setSuggestionsAdapter(SearchHelper.setSuggestionCursor(getContext(), suggestions));
 

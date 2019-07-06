@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
@@ -23,7 +26,7 @@ import br.com.miller.muckup.models.Store;
  * Use the {@link HomeStoreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeStoreFragment extends Fragment {
+public class HomeStoreFragment extends Fragment implements FirebaseStore.FirebaseStoreListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -41,14 +44,6 @@ public class HomeStoreFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment HomeStoreFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeStoreFragment newInstance(int param1) {
         HomeStoreFragment fragment = new HomeStoreFragment();
         Bundle args = new Bundle();
@@ -61,7 +56,7 @@ public class HomeStoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firebaseStore = new FirebaseStore(getContext());
+        firebaseStore = new FirebaseStore(this);
 
         firebaseImage = new FirebaseImage(getContext());
 
@@ -77,7 +72,7 @@ public class HomeStoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_home_store, container, false);
 
              storeCity = view.findViewById(R.id.store_address);
@@ -87,26 +82,6 @@ public class HomeStoreFragment extends Fragment {
 
 
         return view;
-    }
-
-    public void storeReceiver(Store store){
-
-        if(this.isVisible()) {
-
-            storeCity.setText(store.getCity());
-            storeDescription.setText(store.getDescription());
-            storeTime.setText(store.getTime());
-            firebaseImage.downloadFirebaseImage("stores", store.getCity(), store.getImage(), storeImage);
-        }
-
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -126,18 +101,32 @@ public class HomeStoreFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onStoresChanged(ArrayList<Store> stores) {
+
+    }
+
+    @Override
+    public void onStoreChanged(Store store) {
+
+        if(store != null)
+        if(this.isVisible()) {
+
+            mListener.onFragmentInteraction(store.getName());
+            storeCity.setText(store.getCity());
+            storeDescription.setText(store.getDescription());
+            storeTime.setText(store.getTime());
+            firebaseImage.downloadFirebaseImage("stores", store.getCity(), store.getImage(), storeImage);
+        }
+
+        else {
+            Toast.makeText(getContext(), "Problemas ao encontrar a loja", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String storeName);
     }
 }

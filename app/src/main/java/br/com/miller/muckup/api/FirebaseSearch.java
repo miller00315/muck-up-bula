@@ -16,16 +16,14 @@ import br.com.miller.muckup.models.Offer;
 
 public class FirebaseSearch {
 
-    private Context context;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseSearchListener firebaseSearchListener;
 
-    public FirebaseSearch(Context context) {
-        this.context = context;
+    public FirebaseSearch(FirebaseSearchListener firebaseSearchListener) {
+
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        if(context instanceof FirebaseSearchListener)
-            firebaseSearchListener = (FirebaseSearchListener) context;
+        this.firebaseSearchListener = firebaseSearchListener;
     }
 
     public void getSugestions(String city){

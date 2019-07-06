@@ -1,16 +1,24 @@
 package br.com.miller.muckup.store.buy.tasks;
 
+import java.util.ArrayList;
+
+import br.com.miller.muckup.models.Buy;
+
 public interface Tasks {
 
-    public interface Model{
+    interface Model{
 
-        void successBuy();
+        void onSuccessBuys(ArrayList<Buy> buys);
+        void onSuccessBuy(Buy buy);
         void failedBuy();
+        void failedBuys();
+        void onBuyCountSuccess(String countBuys);
+        void onBuyCountFailed();
     }
 
-    public interface View{}
+    interface View{}
 
-    public interface Presenter{
+    interface Presenter{
 
         void invalidBuy(String message);
         void validBuy();

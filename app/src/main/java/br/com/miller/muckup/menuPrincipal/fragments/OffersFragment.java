@@ -15,8 +15,10 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseDepartament;
+import br.com.miller.muckup.api.FirebaseOffer;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.models.Offer;
 import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
 
 /**
@@ -27,7 +29,7 @@ import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
  * Use the {@link OffersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OffersFragment extends Fragment {
+public class OffersFragment extends Fragment implements FirebaseDepartament.FirebaseDepartamentListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -66,7 +68,7 @@ public class OffersFragment extends Fragment {
 
         departamentRecyclerAdapter = new DepartamentRecyclerAdapter(getContext());
 
-        firebaseDepartament = new FirebaseDepartament(getContext());
+        firebaseDepartament = new FirebaseDepartament(this);
 
         sharedPreferences = getContext().getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
@@ -101,12 +103,7 @@ public class OffersFragment extends Fragment {
 
     public void departamentsReceiver(ArrayList<Departament> departaments){
 
-        if(this.isVisible()) {
-            if (departamentRecyclerAdapter.getItemCount() > 0)
-                departamentRecyclerAdapter.clear();
 
-            departamentRecyclerAdapter.setArray(departaments);
-        }
     }
 
     @Override
@@ -124,6 +121,26 @@ public class OffersFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+
+
+    @Override
+    public void onDepartamentReceived(Departament departament) {
+
+
+
+    }
+
+    @Override
+    public void onDepartamentsReceived(ArrayList<Departament> departaments) {
+
+        if(this.isVisible()) {
+            if (departamentRecyclerAdapter.getItemCount() > 0)
+                departamentRecyclerAdapter.clear();
+
+            departamentRecyclerAdapter.setArray(departaments);
+        }
     }
 
     public interface OnFragmentInteractionListener {

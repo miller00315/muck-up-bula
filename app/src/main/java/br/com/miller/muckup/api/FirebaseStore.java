@@ -1,8 +1,6 @@
 package br.com.miller.muckup.api;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,17 +13,14 @@ import br.com.miller.muckup.models.Store;
 
 public class FirebaseStore {
 
-    private Context context;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseStoreListener firebaseStoreListener;
 
-    public FirebaseStore(Context context) {
-        this.context = context;
+    public FirebaseStore(FirebaseStoreListener firebaseStoreListener) {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        if(context instanceof FirebaseStoreListener)
-            firebaseStoreListener = (FirebaseStoreListener) context;
+        this.firebaseStoreListener = firebaseStoreListener;
     }
 
     public void firebaseGetStore(String id, String city){

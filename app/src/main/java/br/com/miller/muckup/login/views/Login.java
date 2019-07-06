@@ -33,7 +33,9 @@ public class Login extends AppCompatActivity implements  LoginTasks.Presenter {
         passwordEditText = findViewById(R.id.password);
         mainLayout = findViewById(R.id.main_layout);
         layoutLoading = findViewById(R.id.loading_layout);
-        loginPresenter = new LoginPresenter(this);
+
+        if(loginPresenter == null)
+            loginPresenter = new LoginPresenter(this);
 
     }
 

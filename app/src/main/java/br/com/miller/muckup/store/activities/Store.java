@@ -32,13 +32,10 @@ import br.com.miller.muckup.store.fragments.HomeStoreFragment;
 public class Store extends AppCompatActivity implements
         DepartamentFragment.OnFragmentInteractionListener,
         HomeStoreFragment.OnFragmentInteractionListener,
-        FirebaseDepartament.FirebaseDepartamentListener,
         FirebaseImage.FirebaseImageListener,
-        FirebaseStore.FirebaseStoreListener,
         Item.OnAdapterInteract {
 
     private ViewPager storePager;
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -136,32 +133,6 @@ public class Store extends AppCompatActivity implements
     }
 
     @Override
-    public void onStoresChanged(ArrayList<br.com.miller.muckup.models.Store> stores) {
-
-    }
-
-    @Override
-    public void onStoreChanged(br.com.miller.muckup.models.Store store) {
-
-        if(store != null){
-
-            if(getSupportActionBar() != null)
-                getSupportActionBar().setTitle(store.getName());
-
-            for(Fragment fragment : getSupportFragmentManager().getFragments())
-                if(fragment instanceof HomeStoreFragment){
-
-                    HomeStoreFragment homeStoreFragment = (HomeStoreFragment) fragment;
-                    homeStoreFragment.storeReceiver(store);
-                    break;
-                }
-
-        }else
-            Toast.makeText(this, "Erro ao obter os dados da loja, tente novamente", Toast.LENGTH_LONG).show();
-
-    }
-
-    @Override
     public void onImageDownloadSuccess() {
 
     }
@@ -169,27 +140,12 @@ public class Store extends AppCompatActivity implements
     @Override
     public void onImageDownloadError() {
 
-    }
-
-    @Override
-    public void onDepartamentReceived(Departament departament) {
+        Toast.makeText(this, "Erro ao obter imagem, tente novamente", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
-    public void onDepartamentsReceived(ArrayList<Departament> departaments) {
-
-        if(departaments != null){
-
-                for(Fragment fragment : getSupportFragmentManager().getFragments())
-                    if(fragment instanceof DepartamentFragment) {
-                        DepartamentFragment departamentFragment = (DepartamentFragment) fragment;
-                        departamentFragment.departamentReceiver(departaments);
-                    }
-
-        }else{
-            Toast.makeText(this, "Esta loja não possui departamentos cadastrados", Toast.LENGTH_LONG).show();
-        }
-
+    public void onFragmentInteraction(String storeName) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(storeName);
     }
 }

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,17 +34,13 @@ import br.com.miller.muckup.models.Offer;
 import br.com.miller.muckup.store.buy.view.BuyActivity;
 import br.com.miller.muckup.store.activities.Store;
 
-import static java.lang.Integer.getInteger;
-
 public class Medicine extends AppCompatActivity implements
         AlertContructor.OnAlertInteract,
         FirebaseImage.FirebaseImageListener,
         FirebaseCart.FirebaseCartListener,
         FirebaseOffer.FirebaseOfferListener {
 
-    private boolean isFabOpen;
     private FirebaseCart firebaseCart;
- //   private LinearLayout addToCart, buyNow;
     private ImageView imageMedicine;
     private Offer offer;
     private Bundle bundle;
@@ -55,10 +49,9 @@ public class Medicine extends AppCompatActivity implements
     private FirebaseImage firebaseImage;
     private SharedPreferences sharedPreferences;
     private Button buyNow;
-    private TextView textCart, textBuy,
-            medicineStore, medicineName, medicineIndication,
+    private TextView medicineStore, medicineName, medicineIndication,
             medicineNoIndication, medicineActive,
-            valueSendMedicine, valueMedicine ;
+            valueSendMedicine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,7 +291,7 @@ public class Medicine extends AppCompatActivity implements
             valueSendMedicine.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getSendValue())));
             firebaseImage.downloadFirebaseImage("offers",offer.getCity(),offer.getImage(), imageMedicine);
             medicineName.setText(offer.getDescription());
-            getSupportActionBar().setTitle(offer.getTitle());
+            Objects.requireNonNull(getSupportActionBar()).setTitle(offer.getTitle());
             medicineActive.setText(offer.getActive());
             medicineIndication.setText(offer.getIndication());
             medicineNoIndication.setText(offer.getNoIndication());
@@ -350,8 +343,6 @@ public class Medicine extends AppCompatActivity implements
         if(offer != null){
 
             Toast.makeText(this, " Você adicionou ".concat(offer.getTitle()).concat(" ao seu carrinho"), Toast.LENGTH_LONG).show();
-
-           // closeFab();
 
         }else{
 

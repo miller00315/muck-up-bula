@@ -31,8 +31,10 @@ public class RegisterModel {
 
     public RegisterModel(Task.Model model) {
         this.model = model;
+
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.firebaseDatabase = FirebaseDatabase.getInstance();
+
     }
 
     public void uploadImageFirebase(User user, Bitmap image){
@@ -43,7 +45,7 @@ public class RegisterModel {
 
         StorageReference usuarioRef = storageReference.child("images")
                 .child("users")
-                .child("Lavras")
+                .child(user.getCity())
                 .child(user.getId_firebase() + ".jpg");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

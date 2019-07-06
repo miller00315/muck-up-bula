@@ -4,31 +4,33 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseDepartament;
 import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.api.FirebaseSearch;
-import br.com.miller.muckup.api.FirebaseStore;
-import br.com.miller.muckup.api.FirebaseUser;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
+import br.com.miller.muckup.helpers.ImageHelper;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.activities.items.DepartamentManager;
 import br.com.miller.muckup.menuPrincipal.activities.items.MyBuys;
@@ -39,9 +41,6 @@ import br.com.miller.muckup.menuPrincipal.fragments.OffersFragment;
 import br.com.miller.muckup.menuPrincipal.adapters.TabPagerAdapter;
 import br.com.miller.muckup.menuPrincipal.fragments.PerfilFragment;
 import br.com.miller.muckup.menuPrincipal.fragments.StoresFragment;
-import br.com.miller.muckup.models.Departament;
-import br.com.miller.muckup.models.Offer;
-import br.com.miller.muckup.models.User;
 import br.com.miller.muckup.store.activities.Store;
 
 public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener,
@@ -49,11 +48,7 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
         StoresFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener,
         AlertContructor.OnAlertInteract,
-        FirebaseSearch.FirebaseSearchListener,
-        FirebaseUser.FirebaseUserListener,
         FirebaseImage.FirebaseImageListener,
-        FirebaseStore.FirebaseStoreListener,
-        FirebaseDepartament.FirebaseDepartamentListener,
         OnAdapterInteract {
 
     private ViewPager menuPrincipal;
@@ -188,6 +183,13 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
 
                     break;
 
+                case 5:
+
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, Constants.INTERNAL_IMAGE);
+
+                    break;
 
                     default:
                         break;
@@ -237,139 +239,32 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
         }
     }
 
-
     @Override
-    public void onFirebaseSearch(ArrayList<Offer> offers) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if(offers != null){
+        if (requestCode == Constants.INTERNAL_IMAGE){
 
-                for(Fragment fragment: getSupportFragmentManager().getFragments()){
+            if(resultCode == RESULT_OK){
 
-                    if(fragment instanceof HomeFragment){
+                if(data != null){
 
-                        HomeFragment homeFragment = (HomeFragment) fragment;
-                        homeFragment.receiveMsg(offers);
+                    List<Fragment> fragments = getSupportFragmentManager().getFragments();
 
-                        break;
+                    for (Fragment fragment : fragments){
+
+                        if(fragment instanceof PerfilFragment){
+
+                            PerfilFragment perfilFragment = (PerfilFragment) fragment;
+                            perfilFragment.setImageAlert(data);
+                        }
                     }
-                }
 
-            }else{
-
-                Toast.makeText(this, "Erro ao receber respostas, tente novamente", Toast.LENGTH_LONG).show();
-
-                for(Fragment fragment: getSupportFragmentManager().getFragments()){
-
-                    if(fragment instanceof HomeFragment){
-
-                        HomeFragment homeFragment = (HomeFragment) fragment;
-                        homeFragment.receiveMsg(null);
-
-                        break;
-                    }
-                }
-            }
-
-    }
-
-    @Override
-    public void onSuggetions(String[] suggestions) {
-
-        if(suggestions != null){
-
-            for(Fragment fragment: getSupportFragmentManager().getFragments()){
-
-                if(fragment instanceof  HomeFragment){
-
-                    HomeFragment homeFragment = (HomeFragment) fragment;
-                    homeFragment.setSuggestions(suggestions);
+                   // Log.w("Menu principal", data.get)
+                   // ImageHelper.setImageFromMemory(data, this, image);
                 }
             }
         }
-    }
-
-    @Override
-    public void onStoresChanged(ArrayList<br.com.miller.muckup.models.Store> stores) {
-
-        if(stores != null && stores.size() > 0){
-
-            for(Fragment fragment: getSupportFragmentManager().getFragments()){
-
-                if(fragment instanceof StoresFragment){
-
-                    StoresFragment storesFragment = (StoresFragment) fragment;
-                    storesFragment.onStoreReceiver(stores);
-
-                    break;
-                }
-            }
-
-        }else{
-            Toast.makeText(this, "Erro ao obter os dados das lojas, tente novemente", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onStoreChanged(br.com.miller.muckup.models.Store store) {
-
-    }
-
-    @Override
-    public void onUserDownload(User user) {
-
-        if(user != null) {
-
-            for(Fragment fragment: getSupportFragmentManager().getFragments()){
-
-                if(fragment instanceof PerfilFragment){
-                    PerfilFragment perfilFragment = (PerfilFragment) fragment;
-                    perfilFragment.receiverUser(user);
-                    break;
-                }
-            }
-
-        }else{
-            Toast.makeText(this, "Erro ao obter os dados do usuário, tente novamente", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    @Override
-    public void onImageDownloadSuccess() {
-
-    }
-
-    @Override
-    public void onImageDownloadError() {
-        Toast.makeText(this, "Erro ao manipular imagem, tente novamente", Toast.LENGTH_LONG).show();
-    }
-
-
-    @Override
-    public void onDepartamentReceived(Departament departament) {
-
-    }
-
-    @Override
-    public void onDepartamentsReceived(ArrayList<Departament> departaments) {
-
-        if(departaments != null && departaments.size() > 0){
-
-            for(Fragment fragment : getSupportFragmentManager().getFragments()){
-
-                if(fragment instanceof OffersFragment){
-
-                    OffersFragment departamentFragment = (OffersFragment) fragment;
-                    departamentFragment.departamentsReceiver(departaments);
-                    break;
-                }
-            }
-
-        }else{
-
-            Toast.makeText(this, "Erro ao carregar os departamentos, tente novamente", Toast.LENGTH_LONG).show();
-        }
-
     }
 
     @Override
@@ -390,4 +285,16 @@ public class MenuPrincipal extends AppCompatActivity implements HomeFragment.OnF
     public void onAlertError() {
 
     }
+
+
+    @Override
+    public void onImageDownloadSuccess() {
+
+    }
+
+    @Override
+    public void onImageDownloadError() {
+
+    }
+
 }

@@ -1,9 +1,11 @@
 package br.com.miller.muckup.store.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,11 @@ import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.models.Offer;
 import br.com.miller.muckup.store.activities.Store;
 import br.com.miller.muckup.store.viewHolders.StoreViewHolder;
 
-public class DepartamentRecyclerAdapter extends Item {
+public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.FirebaseOfferListener {
 
     private ArrayList<Departament> departments;
 
@@ -27,11 +30,14 @@ public class DepartamentRecyclerAdapter extends Item {
 
     private FirebaseOffer firebaseOffer;
 
+    private Activity act;
+
     public DepartamentRecyclerAdapter(Context context) {
         if(context instanceof OnAdapterInteract) {
             this.context = context;
-            firebaseOffer = new FirebaseOffer(context);
+            firebaseOffer = new FirebaseOffer(this);
             listener = (OnAdapterInteract) context;
+            act = (Activity) context;
             departments = new ArrayList<>();
         }else{
             throw new RuntimeException(context.toString()
@@ -62,7 +68,7 @@ public class DepartamentRecyclerAdapter extends Item {
                 firebaseOffer.FirebaseGetOffers(departments.get(i).getCity(), String.valueOf(departments.get(i).getId()), offersRecyclerAdapter);
 
             else if(context instanceof Store)
-               firebaseOffer.FirebaseGetOffersByDepartamentandStore(departments.get(i).getCity(),
+               firebaseOffer.firebaseGetOffersByDepartamentandStore(departments.get(i).getCity(),
                        String.valueOf(departments.get(i).getStoreId()),
                         String.valueOf(departments.get(i).getId()), offersRecyclerAdapter);
 
@@ -96,7 +102,10 @@ public class DepartamentRecyclerAdapter extends Item {
         bundle.putString("name_departament", departments.get(i).getName());
         bundle.putString("city", departments.get(i).getCity());
         bundle.putInt("id_departament", departments.get(i).getId());
-        bundle.putInt("id_store", departments.get(i).getStoreId());
+
+        if(act.getLocalClassName().contains(Store.class.getSimpleName())) {
+            bundle.putInt("id_store", departments.get(i).getStoreId());
+        }
 
         listener.onAdapterInteract(bundle);
     }
@@ -120,4 +129,8 @@ public class DepartamentRecyclerAdapter extends Item {
     }
 
 
+    @Override
+    public void firebaseOfferReceiver(Offer offer) {
+
+    }
 }

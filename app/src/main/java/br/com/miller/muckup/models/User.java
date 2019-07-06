@@ -1,5 +1,7 @@
 package br.com.miller.muckup.models;
 
+import java.util.Date;
+
 public class User {
 
     private String id_firebase;
@@ -9,7 +11,7 @@ public class User {
     private String city;
     private String phone;
     private Address address;
-    private String birth_date;
+    private Date birth_date;
 
     public String getPhone() {
         return phone;
@@ -67,11 +69,11 @@ public class User {
         this.address = address;
     }
 
-    public String getBirth_date() {
+    public Date getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(String birth_date) {
+    public void setBirth_date(Date birth_date) {
         this.birth_date = birth_date;
     }
 }

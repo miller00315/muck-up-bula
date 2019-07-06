@@ -26,7 +26,7 @@ import br.com.miller.muckup.models.Store;
  * Use the {@link StoresFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StoresFragment extends Fragment {
+public class StoresFragment extends Fragment implements FirebaseStore.FirebaseStoreListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -66,13 +66,10 @@ public class StoresFragment extends Fragment {
 
         storeRecyclerAdapter = new StoreRecyclerAdapter(getContext());
 
-        firebaseStore = new FirebaseStore(getContext());
+        firebaseStore = new FirebaseStore(this);
 
         sharedPreferences = getContext().getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -120,15 +117,26 @@ public class StoresFragment extends Fragment {
         mListener = null;
     }
 
-    public void onStoreReceiver(ArrayList<Store> stores){
 
-        if(storeRecyclerAdapter.getItemCount() > 0)
-            storeRecyclerAdapter.clear();
+    @Override
+    public void onStoresChanged(ArrayList<Store> stores) {
 
-        if(this.isVisible())
-            storeRecyclerAdapter.setArray(stores);
+        if(stores != null) {
+
+            if (storeRecyclerAdapter.getItemCount() > 0)
+                storeRecyclerAdapter.clear();
+
+            if (this.isVisible())
+                storeRecyclerAdapter.setArray(stores);
+        }
 
     }
+
+    @Override
+    public void onStoreChanged(Store store) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

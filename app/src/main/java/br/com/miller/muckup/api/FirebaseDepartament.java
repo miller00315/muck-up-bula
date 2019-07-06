@@ -1,9 +1,6 @@
 package br.com.miller.muckup.api;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -15,19 +12,15 @@ import br.com.miller.muckup.models.Departament;
 
 public class FirebaseDepartament {
 
-    private Context context;
-
     private FirebaseDatabase firebaseDatabase;
 
     private FirebaseDepartamentListener firebaseDepartamentListener;
 
-    public FirebaseDepartament(Context context) {
-        this.context = context;
+    public FirebaseDepartament(FirebaseDepartamentListener firebaseDepartamentListener) {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        if(context instanceof FirebaseDepartamentListener)
-            firebaseDepartamentListener = (FirebaseDepartamentListener) context;
+        this.firebaseDepartamentListener = firebaseDepartamentListener;
     }
 
     public void getDepartamentsFirebase(String city){

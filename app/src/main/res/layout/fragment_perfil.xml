@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".store.fragments.HomeStoreFragment">
+    tools:context=".menuPrincipal.activities.MenuPrincipal">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,17 +12,29 @@
 
         <RelativeLayout
             android:id="@+id/header_store"
-            android:gravity="center"
-            android:background="@color/green"
-            android:paddingTop="50dp"
-            android:paddingBottom="50dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/green"
+            android:gravity="center"
+            android:paddingTop="50dp"
+            android:paddingBottom="50dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/image_perfil"
                 android:layout_width="150dp"
                 android:layout_height="150dp" />
+
+            <ImageView
+                android:id="@+id/edit_image_perfil"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/image_perfil"
+                android:layout_alignEnd="@id/image_perfil"
+                android:layout_marginTop="-45dp"
+                android:padding="10dp"
+                android:background="@drawable/background_button_rounded"
+                android:contentDescription="@string/bot_o_para_atualizar_a_foto"
+                android:src="@drawable/ic_edit_white_24dp" />
 
         </RelativeLayout>
 
@@ -33,6 +45,7 @@
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/card_view_name"
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -52,8 +65,8 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:id="@+id/name_perfil"
-                        android:text="não definido"
                         android:textStyle="bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -68,6 +81,7 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
+                    android:id="@+id/layout_phone"
                     android:padding="16dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -83,8 +97,8 @@
 
                     <TextView
                         android:id="@+id/phone_perfil"
-                        android:text="não definido"
                         android:textStyle="bold"
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -104,7 +118,8 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Endereço"
+                        android:text="@string/endere_o"
+                        android:id="@+id/layout_address"
                         android:textColor="#000000"
                         android:textSize="22sp"
                         android:textStyle="bold"
@@ -113,8 +128,8 @@
 
                     <TextView
                         android:id="@+id/address_perfil"
-                        android:text="não definido"
                         android:textStyle="bold"
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -134,7 +149,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Email"
+                        android:text="@string/email"
                         android:textColor="#000000"
                         android:textSize="22sp"
                         android:textStyle="bold"
@@ -143,8 +158,8 @@
 
                     <TextView
                         android:id="@+id/email_perfil"
-                        android:text="não definido"
                         android:textStyle="bold"
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -165,7 +180,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Meu Carrinho"
+                        android:text="@string/meu_carrinho"
                         android:textColor="#000000"
                         android:textSize="22sp"
                         android:textStyle="bold"
@@ -195,7 +210,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:text="Minhas compras"
+                        android:text="@string/minhas_compras"
                         android:textColor="#000000"
                         android:textSize="22sp"
                         android:textStyle="bold"
