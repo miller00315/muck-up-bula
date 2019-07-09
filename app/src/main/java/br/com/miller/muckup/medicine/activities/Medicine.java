@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class Medicine extends AppCompatActivity implements
         Toolbar toolbar =  findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_pharma_seeklogo);
+        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,55 +92,18 @@ public class Medicine extends AppCompatActivity implements
 
      private void bindViews(){
 
-       //  FloatingActionButton mainFab = findViewById(R.id.main_float_button);
-       //  addToCart = findViewById(R.id.add_cart);
-        // buyNow = findViewById(R.id.buy_now);
-        // textCart = findViewById(R.id.text_cart);
-        // textBuy = findViewById(R.id.text_buy);
          buyNow = findViewById(R.id.buy_now);
          medicineName = findViewById(R.id.medicine_name);
          medicineStore = findViewById(R.id.medicine_store);
          medicineIndication = findViewById(R.id.medicine_utilization);
          medicineNoIndication = findViewById(R.id.medicine_indication);
          medicineActive = findViewById(R.id.medicine_active);
-      //   valueMedicine = findViewById(R.id.value_medicine);
          valueSendMedicine = findViewById(R.id.value_send_medicine);
          imageMedicine = findViewById(R.id.image_medicine);
 
          firebaseOffer.firebaseGetOffer(bundle.getString("city"), bundle.getString("title"), bundle.getString("id_offer"));
 
-        /* mainFab.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-
-                 if(!isFabOpen){
-                     openFab();
-                 }else{
-                     closeFab();
-                 }
-             }
-         });*/
-
      }
-
-   /*  private void openFab(){
-
-        isFabOpen = true;
-        textBuy.setVisibility(View.VISIBLE);
-        textCart.setVisibility(View.VISIBLE);
-        addToCart.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-        buyNow.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
-
-     }*/
-
-   /*  private void closeFab(){
-
-        isFabOpen = false;
-         textBuy.setVisibility(View.INVISIBLE);
-         textCart.setVisibility(View.INVISIBLE);
-         addToCart.animate().translationY(0);
-         buyNow.animate().translationY(0);
-     } */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -194,9 +158,12 @@ public class Medicine extends AppCompatActivity implements
 
         ViewGroup viewGroup = findViewById(android.R.id.content);
 
-        View view = LayoutInflater.from(this).inflate(R.layout.layout_alert_quantity, viewGroup, false);
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_alert_number_picker, viewGroup, false);
 
-        final EditText quantity = view.findViewById(R.id.edit_text_quantidade);
+        final NumberPicker numberPicker = view.findViewById(R.id.number_picker_dialog);
+        numberPicker.setMinValue(1);// restricted number to minimum value i.e 1
+        numberPicker.setMaxValue(100);// restricked number to maximum value i.e. 31
+        numberPicker.setWrapSelectorWheel(true);
 
         builder.setView(view);
 
@@ -204,16 +171,9 @@ public class Medicine extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String quantidade = quantity.getText().toString().trim();
+                int quantity = numberPicker.getValue();
 
-                if(TextUtils.isEmpty(quantidade)){
-
-                    offer.setQuantity(1);
-
-                }else{
-
-                    offer.setQuantity(Integer.parseInt(quantidade));
-                }
+                offer.setQuantity(quantity);
 
                 if(type == 1){
 

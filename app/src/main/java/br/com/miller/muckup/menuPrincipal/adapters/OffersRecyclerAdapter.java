@@ -15,6 +15,7 @@ import java.util.Locale;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.viewHolders.OffersViewHolder;
+import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
 import br.com.miller.muckup.models.Offer;
 
 public class OffersRecyclerAdapter extends Item {
@@ -51,6 +52,12 @@ public class OffersRecyclerAdapter extends Item {
         if(viewHolder instanceof OffersViewHolder){
 
             final OffersViewHolder offersViewHolder = (OffersViewHolder) viewHolder;
+
+            if(context instanceof MyCart){
+                offersViewHolder.valueSendOffer.setVisibility(View.INVISIBLE);
+                offersViewHolder.valueSendOffer.setHeight(0);
+                offersViewHolder.valueSendOffer.setWidth(0);
+            }
 
             offersViewHolder.valueSendOffer.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offers.get(i).getSendValue())));
             offersViewHolder.descriptionOffer.setText(offers.get(i).getDescription());

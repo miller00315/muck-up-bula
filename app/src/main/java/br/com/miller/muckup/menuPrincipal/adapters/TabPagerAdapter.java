@@ -5,10 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import br.com.miller.muckup.menuPrincipal.fragments.HomeFragment;
-import br.com.miller.muckup.menuPrincipal.fragments.OffersFragment;
-import br.com.miller.muckup.menuPrincipal.fragments.PerfilFragment;
-import br.com.miller.muckup.menuPrincipal.fragments.StoresFragment;
+import br.com.miller.muckup.menuPrincipal.views.fragments.SearchFragment;
+import br.com.miller.muckup.menuPrincipal.views.fragments.OffersFragment;
+import br.com.miller.muckup.menuPrincipal.views.fragments.PerfilFragment;
+import br.com.miller.muckup.menuPrincipal.views.fragments.StoresFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 
@@ -29,7 +29,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
         switch (i){
 
             case 0:
-                return Fragment.instantiate(context, HomeFragment.class.getName());
+                return Fragment.instantiate(context, SearchFragment.class.getName());
 
             case 1:
                 return Fragment.instantiate(context, OffersFragment.class.getName());

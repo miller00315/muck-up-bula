@@ -12,7 +12,6 @@
     <string name="title_activity_buy">Compra</string>
     <string name="insira_a_quantidade">Insira a quantidade</string>
     <string name="sua_compra">Sua compra</string>
-    <string name="quantidade">Quantidade</string>
     <string name="qunatidade">Qunatidade</string>
     <string name="telefone">Telefone</string>
     <string name="entre_com_a_senha">Entre com a senha</string>
@@ -57,4 +56,12 @@
     <string name="bot_o_para_atualizar_a_foto">Botão para atualizar a foto</string>
     <string name="bandeira">Bandeira</string>
     <string name="data_nascimento">Data nascimento 08/02/1990</string>
+    <string name="avalie_abaixo_sua_compra">Avalie abaixo sua compra</string>
+    <string name="loja">Loja</string>
+    <string name="sua_opini_o">Sua opinião</string>
+    <string name="enviar_avalia_o">Enviar avaliação</string>
+    <string name="sua_avalia_o">Sua avaliação</string>
+    <string name="o_que_dizem_sobre_n_s">O que dizem sobre nós:</string>
+    <string name="r_0_00">R$0,00</string>
+    <string name="quantidade">Quantidade</string>
 </resources>

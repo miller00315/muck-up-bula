@@ -22,6 +22,12 @@ public class StringUtils {
                 phoneNumber.matches(".((10)|([1-9][1-9]).)\\s[2-5][0-9]{3}-[0-9]{4}");
     }
 
+    public static String formatDate(Date date){
+
+        return new SimpleDateFormat("dd/MM HH:mm",Locale.getDefault()).format(date);
+
+    }
+
     public static Date parseDate(String date){
 
         try {

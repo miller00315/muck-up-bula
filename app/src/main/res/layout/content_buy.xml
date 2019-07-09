@@ -176,7 +176,9 @@
                             android:id="@+id/edit_text_troco"
                             android:hint="@string/para_quanto"
                             android:padding="10dp"
-                            android:inputType="number"
+                            android:text="@string/r_0_00"
+                            android:digits="1234567890"
+                            android:inputType="numberDecimal"
                             android:background="@drawable/background_input_rounded"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />

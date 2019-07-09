@@ -15,6 +15,11 @@ public class Store {
     private String time;
     private String phone;
     private String city;
+    private int classification = 0;
+
+    public int getClassification() { return classification; }
+
+    public void setClassification(int classification) { this.classification = classification; }
 
     public String getCity() {
         return city;

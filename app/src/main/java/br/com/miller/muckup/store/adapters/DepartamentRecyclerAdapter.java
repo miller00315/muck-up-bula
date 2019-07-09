@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseOffer;
-import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
+import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.models.Departament;

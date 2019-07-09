@@ -1,9 +1,12 @@
 package br.com.miller.muckup.menuPrincipal.presenters;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.util.Log;
 
 import br.com.miller.muckup.R;
+import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.models.PerfilModel;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
 import br.com.miller.muckup.models.Address;
@@ -29,7 +32,22 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     public void onPerfilUpdatedFail() { presenter.onPerfilUpdatedFail(); }
 
     @Override
-    public void onPerfilUpdatedSuccess(User user) { presenter.onPerfilUpdatedSuccess(user); }
+    public void onPerfilUpdatedSuccess(User user) { presenter.onPerfilUpdatedSuccess(user);
+
+
+
+
+    }
+
+    public void editSharedPreferences(User user, SharedPreferences sharedPreferences){
+
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+
+        editor.putString(Constants.USER_ADDRESS, user.getAddress().getAddress());
+
+        editor.apply();
+
+    }
 
     @Override
     public void onImageUpdateSuccess(Bitmap bitmap) {presenter.onImageUpdateSuccess(bitmap); }

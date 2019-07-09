@@ -9,4 +9,10 @@
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="Departamentos" />
+
+    <item
+        android:id="@+id/store_classification_menu"
+        android:icon="@drawable/ic_star_white_24dp"
+        android:title="Opiniões"
+        />
 </menu>

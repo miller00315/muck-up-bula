@@ -50,6 +50,7 @@ public class StoreRecyclerAdapter extends Item {
 
             storeViewHolder.setDescriptionStore(stores.get(i).getDescription());
             storeViewHolder.setNameStore(stores.get(i).getName());
+            storeViewHolder.setClassificatioStore(stores.get(i).getClassification());
 
             firebaseImage
                     .downloadFirebaseImage("stores", stores.get(i).getCity(), stores.get(i).getImage(), storeViewHolder.getImageStore());

@@ -35,12 +35,12 @@ import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.BuyHelper;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
-import br.com.miller.muckup.menuPrincipal.activities.items.MyBuys;
-import br.com.miller.muckup.menuPrincipal.activities.items.MyCart;
+import br.com.miller.muckup.menuPrincipal.views.activities.MyBuys;
+import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.models.Buy;
 import br.com.miller.muckup.models.Offer;
-import br.com.miller.muckup.utils.MonetaryMask;
+import br.com.miller.muckup.utils.MoneyTextWatcher;
 
 public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInteract, AlertContructor.OnAlertInteract,
         FirebaseOffer.FirebaseOfferListener,
@@ -70,7 +70,7 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
         sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
-        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_pharma_seeklogo);
+        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -99,7 +99,7 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         addressBuy = findViewById(R.id.address_buy);
         editTextTroco = findViewById(R.id.edit_text_troco);
 
-        editTextTroco.addTextChangedListener(new MonetaryMask(editTextTroco));
+        editTextTroco.addTextChangedListener(new MoneyTextWatcher(editTextTroco, Locale.getDefault()));
 
         money.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -274,6 +274,11 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
     @Override
     public void onReceiverBuy(ArrayList<Buy> buys) {
+
+    }
+
+    @Override
+    public void evaluateBuy(Buy buy) {
 
     }
 

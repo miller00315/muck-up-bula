@@ -6,7 +6,7 @@
     android:background="@color/backgroundColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".menuPrincipal.activities.MenuPrincipal">
+    tools:context=".menuPrincipal.views.activities.MenuPrincipal">
 
     <include layout="@layout/action_bar_general"/>
 

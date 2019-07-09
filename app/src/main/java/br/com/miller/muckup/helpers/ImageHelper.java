@@ -31,12 +31,12 @@ public class ImageHelper {
 
             if(uri != null){
 
-                Picasso.get().load(uri).error(R.mipmap.ic_launcher).into(imageView);
+                Picasso.get()
+                        .load(uri)
+                        .error(R.drawable.ic_icon_bula)
+                        .into(imageView);
 
             }
         }
-
-
-
     }
 }

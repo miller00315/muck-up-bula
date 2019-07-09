@@ -11,6 +11,7 @@ public class Buy {
     private int storeId;
     private int payMode = 0;
     private double troco;
+    private String storeName;
     private String storeCity;
     private String userCity;
     private String userId;
@@ -19,6 +20,14 @@ public class Buy {
     private Date solicitationDate, deliverDate, receiverDate;
     private ArrayList<Offer> offers;
     private String address;
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
 
     public Double getTotalValue() {
         return totalValue;

@@ -1,7 +1,6 @@
 package br.com.miller.muckup.store.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,13 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseDepartament;
-import br.com.miller.muckup.helpers.Constants;
+import br.com.miller.muckup.menuPrincipal.presenters.DepartamentPresenter;
+import br.com.miller.muckup.menuPrincipal.tasks.DepartamentTask;
 import br.com.miller.muckup.models.Departament;
 import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
 
@@ -26,41 +24,17 @@ import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
  * Activities that contain this fragment must implement the
  * {@link DepartamentFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DepartamentFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class DepartamentFragment extends Fragment implements FirebaseDepartament.FirebaseDepartamentListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_SECTION_NUMBER = "section_number";
+public class DepartamentFragment extends Fragment implements DepartamentTask.Presenter {
 
     private OnFragmentInteractionListener mListener;
 
     private DepartamentRecyclerAdapter departamentRecyclerAdapter;
 
-    private RecyclerView departamentRecycler;
-
-    private FirebaseDepartament firebaseDepartament;
-    private SharedPreferences sharedPreferences;
+    private DepartamentPresenter departamentPresenter;
 
     public DepartamentFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment DepartamentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DepartamentFragment newInstance(int param1) {
-        DepartamentFragment fragment = new DepartamentFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, param1);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -69,10 +43,7 @@ public class DepartamentFragment extends Fragment implements FirebaseDepartament
 
         departamentRecyclerAdapter = new DepartamentRecyclerAdapter(getContext());
 
-        firebaseDepartament = new FirebaseDepartament(this);
-
-        sharedPreferences = getContext().getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
-
+        departamentPresenter = new DepartamentPresenter(this);
     }
 
     @Override
@@ -81,7 +52,7 @@ public class DepartamentFragment extends Fragment implements FirebaseDepartament
 
         View view = inflater.inflate(R.layout.fragment_departament, container, false);
 
-        departamentRecycler = view.findViewById(R.id.departamento);
+        RecyclerView departamentRecycler = view.findViewById(R.id.departamento);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -92,16 +63,10 @@ public class DepartamentFragment extends Fragment implements FirebaseDepartament
         departamentRecycler.setAdapter(departamentRecyclerAdapter);
 
         assert getArguments() != null;
-        firebaseDepartament.getDepartamentsFirebaseByStore(getArguments().getString("city"), getArguments().getString("id_store"));
+
+        departamentPresenter.getDepartamentByStore(getArguments().getString("city"), getArguments().getString("id_store"));
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -122,37 +87,28 @@ public class DepartamentFragment extends Fragment implements FirebaseDepartament
     }
 
     @Override
-    public void onDepartamentReceived(Departament departament) {
+    public void onDepartmentSuccess(Departament departament) { }
+
+    @Override
+    public void onDepartamentsSuccess(ArrayList<Departament> departaments) { }
+
+    @Override
+    public void onDepartamentByStoreSuccess(ArrayList<Departament> departaments) {
+
+        if (departamentRecyclerAdapter.getItemCount() > 0) departamentRecyclerAdapter.clear();
+
+        if (this.isVisible()) departamentRecyclerAdapter.setArray(departaments);
 
     }
 
     @Override
-    public void onDepartamentsReceived(ArrayList<Departament> departaments) {
+    public void onDepartamentByStoreFailed() { }
 
-        if(departaments != null) {
+    @Override
+    public void onDepartmentsFailed() { }
 
-            if (departamentRecyclerAdapter.getItemCount() > 0) departamentRecyclerAdapter.clear();
+    @Override
+    public void onDepartamentFailed() { }
 
-            if (this.isVisible())
-                departamentRecyclerAdapter.setArray(departaments);
-
-        }else
-            Toast.makeText(getContext(), "Esta loja não possui departamentos cadastrados", Toast.LENGTH_LONG).show();
-
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+    public interface OnFragmentInteractionListener { void onFragmentInteraction(Uri uri);}
 }

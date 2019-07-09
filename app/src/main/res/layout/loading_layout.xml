@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/ic_app"
-        android:src="@drawable/ic_pharma_seeklogo"
+        android:src="@drawable/ic_icon_bula"
         android:layout_centerInParent="true"
         android:layout_width="120dp"
         android:layout_height="120dp" />

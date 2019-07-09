@@ -1,6 +1,5 @@
 package br.com.miller.muckup.api;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 

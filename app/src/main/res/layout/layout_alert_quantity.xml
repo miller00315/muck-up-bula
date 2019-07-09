@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:text="@string/qunatidade"
+        android:text="@string/quantidade"
         android:id="@+id/header_buy"
         android:gravity="center"
         android:textColor="#ffffff"

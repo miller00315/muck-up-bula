@@ -125,6 +125,9 @@ public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseIm
         return addAll;
     }
 
+    public void clear(){
+        advs.clear();
+    }
 
     @Override
     public void onImageDownloadSuccess() {

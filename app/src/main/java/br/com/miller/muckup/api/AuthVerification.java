@@ -159,6 +159,7 @@ public class AuthVerification {
                 editor.putString(Constants.USER_SURNAME, user.getSurname());
                 editor.putString(Constants.USER_EMAIL, user.getEmail());
                 editor.putString(Constants.USER_CITY, user.getCity());
+                editor.putString(Constants.USER_ADDRESS, user.getAddress() != null ? user.getAddress().getAddress() : "");
                 editor.putString(Constants.USER_ID_FIREBASE, user.getId_firebase());
 
                 editor.apply();

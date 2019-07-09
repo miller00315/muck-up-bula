@@ -12,7 +12,7 @@ import br.com.miller.muckup.R;
 
 public class StoreViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView descriptionStore, nameStore;
+    private TextView descriptionStore, nameStore, classificatioStore;
     private ImageView imageStore;
     private  RelativeLayout layoutStore;
 
@@ -21,8 +21,17 @@ public class StoreViewHolder extends RecyclerView.ViewHolder {
 
         descriptionStore = itemView.findViewById(R.id.description_store);
         nameStore = itemView.findViewById(R.id.title_store);
-        imageStore = itemView.findViewById(R.id.header_store);
+        imageStore = itemView.findViewById(R.id.image_user);
         layoutStore = itemView.findViewById(R.id.layoutStore);
+        classificatioStore = itemView.findViewById(R.id.classification_store);
+    }
+
+    public TextView getClassificatioStore() {
+        return classificatioStore;
+    }
+
+    public void setClassificatioStore(int classification) {
+        this.classificatioStore.setText(String.valueOf(classification));
     }
 
     public TextView getDescriptionStore() {

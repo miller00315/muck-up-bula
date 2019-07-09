@@ -176,6 +176,8 @@ public class FirebaseBuy {
         void registerBuy(Boolean registered);
 
         void onReceiverBuy(ArrayList<Buy> buys);
+
+        void evaluateBuy(Buy buy);
     }
 
 }

@@ -23,8 +23,7 @@
                 android:id="@+id/solicitation_id"
                 android:layout_marginBottom="10dp"
                 android:textColor="#000000"
-                android:textSize="16sp"
-                android:text="não definido"
+                android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -34,7 +33,6 @@
 
                 <TextView
                     android:id="@+id/buy_date"
-                    android:text="não definido"
                     android:gravity="center"
                     android:drawableStart="@drawable/ic_date_range_black_24dp"
                     android:drawablePadding="5dp"
@@ -45,7 +43,6 @@
                 <TextView
                     android:id="@+id/buy_send"
                     android:layout_marginStart="5dp"
-                    android:text="não definido"
                     android:gravity="center"
                     android:drawableStart="@drawable/ic_assignment_black_24dp"
                     android:drawablePadding="5dp"
@@ -55,9 +52,8 @@
                 <TextView
                     android:id="@+id/buy_receive"
                     android:layout_marginStart="5dp"
-                    android:text="não definido"
                     android:gravity="center"
-                    android:drawableLeft="@drawable/ic_check_black_24dp"
+                    android:drawableStart="@drawable/ic_check_black_24dp"
                     android:drawablePadding="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

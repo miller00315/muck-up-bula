@@ -69,20 +69,14 @@ public class BuyHelper {
 
                 }
 
-                if (!test) {
-                    Log.w("offer", "dados diferentes");
+                if (!test)
                     buies.add(createBuy(offer, userId, userCity));
-                }else
-                    Log.w("offer", "todas as compras foram adicionadas");
 
             } else {
 
                 buies.add(createBuy(offer, userId, userCity));
-                Log.w("offer", "criar nova buy");
             }
         }
-
-        Log.w("offer", String.valueOf(buies.size()));
 
         return buies.size() > 0;
 
@@ -134,7 +128,7 @@ public class BuyHelper {
         buy.setUserId(userId);
         buy.setSendValue(offer.getSendValue());
         buy.setSolicitationDate(new Date());
-
+        buy.setStoreName(offer.getStore());
         buy.getOffers().add(offer);
         buy.setTotalValue(offer.getValue(), offer.getQuantity());
 

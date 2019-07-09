@@ -7,7 +7,7 @@ import android.content.Intent;
 import br.com.miller.muckup.api.AuthVerification;
 import br.com.miller.muckup.login.models.LoginModel;
 import br.com.miller.muckup.login.tasks.LoginTasks;
-import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
+import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
 import br.com.miller.muckup.models.User;
 
 public class LoginPresenter implements LoginTasks.Model, AuthVerification.AuthVerificationListener, LoginTasks.View {

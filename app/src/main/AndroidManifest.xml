@@ -14,17 +14,18 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_icon_bula"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_icon_bula"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".passwordRecovery.view.PasswordRecovery"></activity>
+        <activity android:name=".evaluate.view.EvaluateAct" />
+        <activity android:name=".passwordRecovery.view.PasswordRecovery" />
         <activity android:name=".store.activities.ManagerBuy" />
-        <activity android:name=".menuPrincipal.activities.items.DepartamentManager" />
-        <activity android:name=".menuPrincipal.activities.items.MyBuys" />
-        <activity android:name=".menuPrincipal.activities.items.MyCart" />
+        <activity android:name=".menuPrincipal.views.activities.DepartamentManager" />
+        <activity android:name=".menuPrincipal.views.activities.MyBuys" />
+        <activity android:name=".menuPrincipal.views.activities.MyCart" />
         <activity
             android:name=".store.buy.view.BuyActivity"
             android:label="@string/title_activity_buy"
@@ -34,7 +35,7 @@
             android:label="@string/title_activity_store" />
         <activity android:name=".medicine.activities.Medicine" />
         <activity
-            android:name=".menuPrincipal.activities.MenuPrincipal"
+            android:name=".menuPrincipal.views.activities.MenuPrincipal"
             android:label="@string/title_activity_menu_principal" />
         <activity android:name=".register.activities.Register" />
         <activity android:name=".login.views.Login" />

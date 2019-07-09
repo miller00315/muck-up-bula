@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 import br.com.miller.muckup.api.AuthVerification;
-import br.com.miller.muckup.menuPrincipal.activities.MenuPrincipal;
+import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
 import br.com.miller.muckup.models.User;
 import br.com.miller.muckup.register.models.RegisterModel;
 import br.com.miller.muckup.register.tasks.Task;
