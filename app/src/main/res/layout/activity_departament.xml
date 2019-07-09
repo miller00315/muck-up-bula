@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".menuPrincipal.views.activities.DepartamentManager">
 
@@ -13,7 +14,7 @@
         android:id="@+id/recycler_cart_manager"
         android:layout_gravity="center"
         tools:listitem="@layout/view_holder_offers"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>

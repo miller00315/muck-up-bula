@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.Objects;
@@ -28,7 +27,7 @@ public class DepartamentManager extends AppCompatActivity implements Item.OnAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_cart_manager);
+        setContentView(R.layout.activity_departament);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recycler_cart_manager);
