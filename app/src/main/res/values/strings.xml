@@ -16,7 +16,6 @@
     <string name="telefone">Telefone</string>
     <string name="entre_com_a_senha">Entre com a senha</string>
     <string name="repita_a_senha">Repita a senha</string>
-    <string name="cadastre_se">Cadastre-se</string>
     <string name="email">Email</string>
     <string name="sobrenome">Sobrenome</string>
     <string name="nome">Nome</string>
@@ -35,14 +34,14 @@
     <string name="visa">Visa</string>
     <string name="master">Master</string>
     <string name="concluir_compra">Concluir Compra</string>
-    <string name="precisa_de_troco">Precisa de troco?</string>
+    <string name="precisa_de_troco">Troco para?</string>
     <string name="para_quanto">Para quanto?</string>
     <string name="modo_de_pagamento">Modo de pagamento</string>
     <string name="dinheiro">Dinheiro</string>
     <string name="cartao">Cartão</string>
     <string name="produto">Produto</string>
-    <string name="custo_total">Custo total</string>
-    <string name="custo_envio">Custo envio</string>
+    <string name="custo_total">Custo total produtos</string>
+    <string name="custo_envio">Custo envio </string>
     <string name="por_no_carrinho">Por no carrinho</string>
     <string name="principio_ativo">Principio ativo*</string>
     <string name="esqueceu_a_senha">Esqueceu a senha?</string>
@@ -64,4 +63,7 @@
     <string name="o_que_dizem_sobre_n_s">O que dizem sobre nós:</string>
     <string name="r_0_00">R$0,00</string>
     <string name="quantidade">Quantidade</string>
+    <string name="entrar">Entrar</string>
+    <string name="cadastre_se">Cadastre-se</string>
+    <string name="insira_seu_email">Insira seu email</string>
 </resources>

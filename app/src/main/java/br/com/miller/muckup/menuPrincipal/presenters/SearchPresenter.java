@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.menuPrincipal.models.SearchModel;
 import br.com.miller.muckup.menuPrincipal.tasks.SearchTask;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class SearchPresenter implements SearchTask.Model, SearchTask.View {
 

@@ -1,4 +1,4 @@
-package br.com.miller.muckup.register.activities;
+package br.com.miller.muckup.register.view;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -13,12 +13,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.ParseException;
-
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.ImageHelper;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.register.presenters.RegisterPresenter;
 import br.com.miller.muckup.register.tasks.Task;
 import br.com.miller.muckup.utils.ImageUtils;

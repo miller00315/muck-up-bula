@@ -8,7 +8,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class FirebaseOffer {
 

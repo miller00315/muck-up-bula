@@ -2,7 +2,7 @@ package br.com.miller.muckup.menuPrincipal.tasks;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Adv;
+import br.com.miller.muckup.domain.Adv;
 
 public interface AdvTasks {
 

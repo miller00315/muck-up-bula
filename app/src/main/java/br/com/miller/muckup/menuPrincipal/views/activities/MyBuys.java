@@ -19,23 +19,21 @@ import java.util.Locale;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseBuy;
 import br.com.miller.muckup.evaluate.view.EvaluateAct;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.MyBuyRecyclerAdapter;
-import br.com.miller.muckup.models.Buy;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.menuPrincipal.presenters.MyBuysPresenter;
+import br.com.miller.muckup.menuPrincipal.tasks.MyBuysTasks;
 import br.com.miller.muckup.store.adapters.ProductsDetailsRecyclerAdapter;
 import br.com.miller.muckup.utils.AlertDialogUtils;
 
-public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract, AlertDialogUtils.AltertDialogUtilsTask,
-        FirebaseBuy.FirebaseBuyListener {
+public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract, AlertDialogUtils.AltertDialogUtilsTask, MyBuysTasks.Presenter {
 
-    private RecyclerView recyclerBuys, recyclerMyBuy;
+    private RecyclerView recyclerBuys;
 
     private AlertDialogUtils alertDialogUtils;
-
-    private FirebaseBuy firebaseBuy;
 
     private SharedPreferences sharedPreferences;
 
@@ -43,19 +41,21 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
     private MyBuyRecyclerAdapter buyRecyclerAdapter;
 
+    private MyBuysPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_buys);
         alertDialogUtils = new AlertDialogUtils(this,this);
 
-        firebaseBuy = new FirebaseBuy(this);
-
         productsDetailsRecyclerAdapter = new ProductsDetailsRecyclerAdapter(this);
 
         sharedPreferences = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
 
         buyRecyclerAdapter = new MyBuyRecyclerAdapter(this);
+
+        presenter = new MyBuysPresenter(this);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
 
@@ -81,8 +81,8 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
         recyclerBuys.setAdapter(buyRecyclerAdapter);
 
-        firebaseBuy.getBuys(sharedPreferences.getString(Constants.USER_CITY, ""),
-                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+        presenter.getBuys(sharedPreferences.getString(Constants.USER_CITY, ""),
+                        sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
 
         recyclerBuys.setHasFixedSize(true);
 
@@ -108,18 +108,22 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
         alertDialogUtils.creatAlertNeutralButton(view1,buyRecyclerAdapter.getBuys().get(bundle.getInt("item")) , 0);
 
-        recyclerMyBuy = view1.findViewById(R.id.recycler_my_buy);
+        RecyclerView recyclerMyBuy = view1.findViewById(R.id.recycler_my_buy);
 
         TextView header = view1.findViewById(R.id.header_buy);
         TextView address = view1.findViewById(R.id.address_my_buy);
         TextView totalValue = view1.findViewById(R.id.total_value_my_buy);
         TextView storeName = view1.findViewById(R.id.store_name);
         TextView sendValue = view1.findViewById(R.id.send_value);
+        TextView sumValue = view1.findViewById(R.id.sum_value);
 
         header.setText("Compra: ".concat(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getId()));
         storeName.setText(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getOffers().get(0).getStore());
         sendValue.setText("Taxa envio: R$ ".concat( String.format(Locale.getDefault(),"%.2f",buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getSendValue())));
-        totalValue.setText("Total: R$ ".concat(String.format(Locale.getDefault(),"%.2f", buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getTotalValue())));
+        totalValue.setText("Total produtos: R$ "
+                .concat(String.format(Locale.getDefault(),"%.2f", buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getTotalValue())));
+        sumValue.setText("Envio + produtos: R$ ".concat(String.format(Locale.getDefault(),"%.2f", buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getTotalValue()
+        + buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getSendValue())));
 
        if(buyRecyclerAdapter.getBuys().get(bundle.getInt("item")).getAddress() != null){
 
@@ -152,19 +156,7 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     @Override
     public void onAlertNegative() { if(productsDetailsRecyclerAdapter.getItemCount() > 0) productsDetailsRecyclerAdapter.clear(); }
 
-    @Override
-    public void registerBuy(Boolean registered) { }
 
-    @Override
-    public void onReceiverBuy(ArrayList<Buy> buys) {
-
-        if(buys != null)
-            buyRecyclerAdapter.setArray(buys);
-        else
-            Toast.makeText(this, "Você não possui compras, tente novamente", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void evaluateBuy(Buy buy) {
 
         if(buy != null){
@@ -173,4 +165,13 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onBuyEmpty() { Toast.makeText(this, "Compras vazias", Toast.LENGTH_SHORT).show();}
+
+    @Override
+    public void onBuySuccess(ArrayList<Buy> buys) {  buyRecyclerAdapter.setArray(buys);}
+
+    @Override
+    public void onBuyFailed() { Toast.makeText(this, "Você não possui compras, tente novamente", Toast.LENGTH_LONG).show();}
 }

@@ -26,7 +26,7 @@ import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.buy.view.BuyActivity;
 
 public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,

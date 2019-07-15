@@ -1,8 +1,9 @@
-package br.com.miller.muckup.models;
+package br.com.miller.muckup.domain;
 
 import android.net.Uri;
 
-public class Product {
+public class Result {
+
     private int id;
     private double value;
     private String description;
@@ -17,6 +18,16 @@ public class Product {
     public void setImage(Uri image) {
         this.image = image;
     }
+
+    public int getIdStore() {
+        return idStore;
+    }
+
+    public void setIdStore(int idStore) {
+        this.idStore = idStore;
+    }
+
+    private int idStore;
 
     public int getId() {
         return id;

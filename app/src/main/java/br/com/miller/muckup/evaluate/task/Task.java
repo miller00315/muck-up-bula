@@ -1,7 +1,7 @@
 package br.com.miller.muckup.evaluate.task;
 
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Evaluate;
 
 public interface Task {
 

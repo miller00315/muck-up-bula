@@ -2,7 +2,7 @@ package br.com.miller.muckup.register.tasks;
 
 import com.google.firebase.auth.FirebaseUser;
 
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public interface Task {
 

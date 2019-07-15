@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.viewHolders.OffersViewHolder;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class OffersRecyclerAdapter extends Item {
 

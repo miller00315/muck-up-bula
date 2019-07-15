@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:orientation="vertical"
+    android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -118,6 +119,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/text_pay_mode"
                         android:text="@string/modo_de_pagamento"
                         android:textColor="#000000"
                         android:textStyle="bold"
@@ -126,6 +128,7 @@
                         android:layout_height="wrap_content" />
 
                     <RadioGroup
+                        android:id="@+id/pay_method"
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -174,6 +177,7 @@
 
                         <EditText
                             android:id="@+id/edit_text_troco"
+                            android:layout_marginTop="10dp"
                             android:hint="@string/para_quanto"
                             android:padding="10dp"
                             android:text="@string/r_0_00"
@@ -201,6 +205,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/text_card_flag"
                             android:text="@string/bandeira"
                             android:textColor="#000000"
                             android:textStyle="bold"
@@ -209,6 +214,7 @@
                             android:layout_height="wrap_content" />
 
                         <RadioGroup
+                            android:id="@+id/card_flag_"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -259,6 +265,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/text_delivery_address"
                         android:text="@string/endereco_entrega"
                         android:textColor="#000000"
                         android:textStyle="bold"

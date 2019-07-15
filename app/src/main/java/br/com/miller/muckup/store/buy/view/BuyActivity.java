@@ -1,6 +1,5 @@
 package br.com.miller.muckup.store.buy.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,46 +16,50 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseBuy;
-import br.com.miller.muckup.api.FirebaseCart;
-import br.com.miller.muckup.api.FirebaseOffer;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.helpers.AlertContructor;
-import br.com.miller.muckup.helpers.BuyHelper;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
+import br.com.miller.muckup.menuPrincipal.adapters.Item;
+import br.com.miller.muckup.domain.Buy;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyBuys;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
-import br.com.miller.muckup.menuPrincipal.adapters.Item;
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.store.buy.presenter.BuyPresenter;
+import br.com.miller.muckup.store.buy.tasks.Tasks;
 import br.com.miller.muckup.utils.MoneyTextWatcher;
+import br.com.miller.muckup.utils.StringUtils;
 
 public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInteract, AlertContructor.OnAlertInteract,
-        FirebaseOffer.FirebaseOfferListener,
-        FirebaseCart.FirebaseCartListener,
-        FirebaseBuy.FirebaseBuyListener,
-        BuyHelper.BuyHelperListener {
+        Tasks.Presenter{
 
     private BuyRecyclerAdapter buyRecyclerAdapter;
-    private RecyclerView buyRecycler;
     private RadioButton money;
     private RadioButton card;
-    private CardView cardTroco, cardFlag, cardAddress;
+    private CardView cardTroco;
+    private CardView cardFlag;
     private AlertContructor alertContructor;
-    private TextView valueSend, solicitationTime, totalValue, addressBuy;
+    private TextView valueSend, textDeliverAddress, textPayMode, textCardFlag;
+    private TextView totalValue;
+    private TextView addressBuy;
     private SharedPreferences sharedPreferences;
     private Bundle bundle;
     private EditText editTextTroco;
+    private RadioGroup payMethod, card_flag;
+    private BuyPresenter buyPresenter;
+    private RelativeLayout layoutLoading;
+    private ScrollView main_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +68,11 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        alertContructor = new AlertContructor(this);
+        if(alertContructor == null)
+            alertContructor = new AlertContructor(this);
 
-        sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        if(sharedPreferences == null)
+            sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
         Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,9 +80,14 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle("Compra");
 
-        bundle = getIntent().getBundleExtra("data");
+        if(buyPresenter == null)
+            buyPresenter = new BuyPresenter(this);
 
-        buyRecyclerAdapter = new BuyRecyclerAdapter(this);
+        if(bundle == null)
+            bundle = getIntent().getBundleExtra("data");
+
+        if(buyRecyclerAdapter == null)
+            buyRecyclerAdapter = new BuyRecyclerAdapter(this);
 
         bindView();
 
@@ -86,18 +95,27 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
     private void bindView(){
 
-        buyRecycler = findViewById(R.id.buy_recycler);
-        cardAddress = findViewById(R.id.card_address);
+        RecyclerView buyRecycler = findViewById(R.id.buy_recycler);
+        CardView cardAddress = findViewById(R.id.card_address);
 
         money = findViewById(R.id.money);
         cardFlag = findViewById(R.id.card_flag);
         card = findViewById(R.id.card);
         cardTroco = findViewById(R.id.card_troco);
         valueSend = findViewById(R.id.value_send);
-        solicitationTime = findViewById(R.id.solicitation_time);
+        TextView solicitationTime = findViewById(R.id.solicitation_time);
         totalValue = findViewById(R.id.total_value);
         addressBuy = findViewById(R.id.address_buy);
         editTextTroco = findViewById(R.id.edit_text_troco);
+        card_flag = findViewById(R.id.card_flag_);
+        textCardFlag = findViewById(R.id.text_card_flag);
+        textDeliverAddress = findViewById(R.id.text_delivery_address);
+        textPayMode = findViewById(R.id.text_pay_mode);
+        layoutLoading = findViewById(R.id.loading_layout);
+        main_layout = findViewById(R.id.main_layout);
+
+
+        payMethod = findViewById(R.id.pay_method);
 
         editTextTroco.addTextChangedListener(new MoneyTextWatcher(editTextTroco, Locale.getDefault()));
 
@@ -154,20 +172,29 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
             if(Objects.equals(bundle.getString("actvity"), Medicine.class.getName())){
 
-                FirebaseOffer firebaseOffer = new FirebaseOffer(this);
+                buyPresenter.getOffer(Objects.requireNonNull(bundle.getString("city")),
+                        Objects.requireNonNull(bundle.getString("type")),
+                        String.valueOf(Objects.requireNonNull(bundle.getInt("id"))),
+                                bundle.getInt("quantity", 1));
 
-                firebaseOffer.firebaseGetOffer(Objects.requireNonNull(bundle.getString("city")),
-                            Objects.requireNonNull(bundle.getString("type")),
-                            String.valueOf(Objects.requireNonNull(bundle.getInt("id"))));
+                showLoading();
 
             }else if(Objects.requireNonNull(bundle.getString("actvity")).equals(MyCart.class.getName())){
-                FirebaseCart firebaseCart = new FirebaseCart(this);
 
-                firebaseCart.firebaseCartgetOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
+
+                showLoading();
+
+                buyPresenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
                         sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
 
             }
+
+            addressBuy.setText(sharedPreferences.getString(Constants.USER_ADDRESS, ""));
+
+            solicitationTime.setText(StringUtils.formatDate(new Date()));
+
         }
+
     }
 
     public void showAlertAddress(){
@@ -178,12 +205,9 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
         EditText address = view1.findViewById(R.id.edit_text_address);
 
-        alertContructor.personalizedAlert(view1, address);
-    }
+        address.setText(sharedPreferences.getString(Constants.USER_ADDRESS, ""));
 
-    private void goToMyBuys(){
-        Intent intent = new Intent(this, MyBuys.class);
-        startActivity(intent);
+        alertContructor.personalizedAlert(view1, address);
     }
 
     @Override
@@ -197,34 +221,8 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
-    public void onAdapterInteract(Bundle bundle) {
-
-    }
-
-    @Override
-    public void firebaseOfferReceiver(Offer offer) {
-
-        buyRecyclerAdapter.clear();
-
-        if(offer != null) {
-
-            offer.setQuantity(bundle.getInt("quantity"));
-
-            buyRecyclerAdapter.addProduct(offer);
-
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formataData = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-            solicitationTime.setText(formataData.format(new Date()));
-
-            valueSend.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offer.getSendValue())));
-
-            totalValue.setText("R$ ".concat(String.format(Locale.getDefault(), "%.2f", offer.getValue() * offer.getQuantity())));
-        }
-
-    }
+    public void onAdapterInteract(Bundle bundle) { }
 
     @Override
     public void onAlertPositive(Object object) {
@@ -238,101 +236,116 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
     }
 
-    @Override
-    public void onAlertNegative() {
+    public void showLoading(){
+        layoutLoading.setVisibility(View.VISIBLE);
+        main_layout.setVisibility(View.INVISIBLE);
+    }
 
+    public void hideLoading(){
+        layoutLoading.setVisibility(View.INVISIBLE);
+        main_layout.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onAlertError() {
-
-    }
+    public void onAlertNegative() { }
 
     @Override
-    public void onBuyRegistred() {
-
-    }
-
-    @Override
-    public void registerBuy(Boolean registered) {
-
-
-        if(registered){
-
-            Toast.makeText(this, "Compras registradas com sucesso", Toast.LENGTH_LONG).show();
-            goToMyBuys();
-
-            finish();
-
-        }else{
-
-            Toast.makeText(this, "Algum erro ocorreu ao registrar a compra, tente novamente", Toast.LENGTH_LONG).show();
-
-        }
-
-    }
-
-    @Override
-    public void onReceiverBuy(ArrayList<Buy> buys) {
-
-    }
-
-    @Override
-    public void evaluateBuy(Buy buy) {
-
-    }
-
-    @Override
-    public void firebaseCartListnerReceiver(Offer offer) {
-
-    }
-
-    @Override
-    public void firebaseCartListenerReceiverOffers(ArrayList<Offer> offers) {
-
-        buyRecyclerAdapter.clear();
-
-        if(offers != null) {
-            if(buyRecyclerAdapter.setArray(offers)){
-
-                valueSend.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",buyRecyclerAdapter.getBuyHelper().calculateSendValue())));
-
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat formataData = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-                this.totalValue.setText("R$ ".concat(String.format(Locale.getDefault(), "%.2f", buyRecyclerAdapter.getBuyHelper().calculateTotalValue())));
-
-                solicitationTime.setText(formataData.format(new Date()));
-            }
-        } else
-            Toast.makeText(this, "Erro ao obter produtos do carrinho, tente novamente", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void firebaseCartOnItemDeleted(boolean status) {
-
-    }
+    public void onAlertError() { }
 
     public void endBuy(View view) {
 
-        String address = addressBuy.getText().toString().trim();
+        showLoading();
 
-        if(!TextUtils.isEmpty(address)) {
+        setTextColor();
 
-            buyRecyclerAdapter.getBuyHelper().endBuy(sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""),
-                    sharedPreferences.getString(Constants.USER_CITY, ""), address);
+        buyPresenter.makeBuy(sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""),
+                sharedPreferences.getString(Constants.USER_CITY, ""),
+                addressBuy.getText().toString(),
+                payMethod.getCheckedRadioButtonId(),
+                editTextTroco.getText().toString(),
+                card_flag.getCheckedRadioButtonId(),
+                buyRecyclerAdapter.getOffers());
+    }
 
-            if(sharedPreferences.getString(Constants.USER_ADDRESS, "").isEmpty()){
+    @Override
+    public void onSuccessBuys(ArrayList<Buy> buys) {
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+        Toast.makeText(this, "Compra realizada com sucesso, aguarde o envio pela farmácia.", Toast.LENGTH_SHORT).show();
 
-                editor.putString(Constants.USER_ADDRESS, address);
+        Intent intent = new Intent(this, MyBuys.class);
+        startActivity(intent);
 
-                editor.apply();
+        finish();
+    }
+
+    public void setTextColor(){
+        textPayMode.setTextColor(getResources().getColor(R.color.dark));
+        textDeliverAddress.setTextColor(getResources().getColor(R.color.dark));
+        textCardFlag.setTextColor(getResources().getColor(R.color.dark));
+    }
+
+    @Override
+    public void failedBuy(int type) {
+
+        hideLoading();
+
+        Toast.makeText(this, "Dados incompletos", Toast.LENGTH_SHORT).show();
+
+        switch (type){
+
+            case 0:{
+                textDeliverAddress.setTextColor(getResources().getColor(R.color.red));
+                break;
             }
 
+            case 1 :{
+                textPayMode.setTextColor(getResources().getColor(R.color.red));
+                break;
+            }
 
-        }else
+            case 2:{
+                textCardFlag.setTextColor(getResources().getColor(R.color.red));
+                break;
+            }
 
-            Toast.makeText(this, "Insira um endreço válido para proseguir", Toast.LENGTH_LONG).show();
+            case 3:{
+                Toast.makeText(this, "Erro ao registrar a compra, tente novamente", Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
     }
+
+    @Override
+    public void onOffersSuccess(ArrayList<Offer> offers) {
+        hideLoading();
+        buyRecyclerAdapter.setArray(offers);
+    }
+
+    @Override
+    public void onSendValueCalculated(Double sendValue, ArrayList<Offer> sendValues) {
+
+        String valuesSend = "\nTotal: ".concat(String.format(Locale.getDefault(), "R$ %.2f",sendValue))
+                .concat("\n\nPor entrega: \n\n");
+
+        for(Offer offer : sendValues){
+
+            valuesSend = valuesSend
+                    .concat(offer.getStore())
+                    .concat(": ")
+                    .concat(String.format(Locale.getDefault(), "R$ %.2f", offer.getSendValue()))
+                    .concat("\n");
+        }
+
+        this.valueSend.setText(valuesSend);
+    }
+
+    @Override
+    public void onTotalValueCalculated(Double totalValue) { this.totalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", totalValue ));}
+
+    @Override
+    public void onOffersFail() {
+        Toast.makeText(this, "Erro ao recuperar ofertas, tente novamente", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
 }

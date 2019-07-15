@@ -37,7 +37,7 @@
         <activity
             android:name=".menuPrincipal.views.activities.MenuPrincipal"
             android:label="@string/title_activity_menu_principal" />
-        <activity android:name=".register.activities.Register" />
+        <activity android:name=".register.view.Register" />
         <activity android:name=".login.views.Login" />
         <activity android:name=".MainActivity">
             <intent-filter>

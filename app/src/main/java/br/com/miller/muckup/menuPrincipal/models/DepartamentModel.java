@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.menuPrincipal.tasks.DepartamentTask;
-import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.domain.Departament;
 
 public class DepartamentModel {
 

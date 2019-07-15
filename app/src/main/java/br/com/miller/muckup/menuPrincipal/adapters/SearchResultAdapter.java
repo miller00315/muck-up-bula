@@ -14,7 +14,7 @@ import java.util.Locale;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.viewHolders.SearchViewHolder;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class SearchResultAdapter extends Item{
 

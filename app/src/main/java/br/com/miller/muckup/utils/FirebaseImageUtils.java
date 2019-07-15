@@ -11,7 +11,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public class FirebaseImageUtils {
 

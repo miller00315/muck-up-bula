@@ -2,7 +2,7 @@ package br.com.miller.muckup.menuPrincipal.tasks;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public interface SearchTask {
 

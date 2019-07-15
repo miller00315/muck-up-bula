@@ -1,11 +1,9 @@
 package br.com.miller.muckup.store.buy.model;
 
 import android.support.annotation.NonNull;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -16,7 +14,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.com.miller.muckup.models.Buy;
+import br.com.miller.muckup.R;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.buy.tasks.Tasks;
 
 public class BuyModel {
@@ -30,126 +30,247 @@ public class BuyModel {
 
     }
 
-    public void registerBuy(final Buy buy){
+    public void generateBuys(ArrayList<Offer> offers, String userCity, String userId, String address, int payMode, Double troco, int cardFlag){
 
-        String id = new Date().toString();
+        ArrayList<Buy> buys = new ArrayList<>();
 
-        Map<String, Object> map = new HashMap<>();
+        for(Offer offer : offers){
 
-        map.put(id, buy);
+           if(buys.size() == 0) {
 
-        firebaseDatabase.getReference()
-                .child("buys")
-                .child(buy.getStoreCity())
-                .child("stores")
-                .child(String.valueOf(buy.getStoreId()))
-                .updateChildren(map)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+               buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag));
 
-                        registerStoreBuy(buy);
+           }else{
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+               boolean ok = false;
 
-                model.failedBuy();
+               for(Buy buy: buys){
 
+                   if(buy.getStoreId() == offer.getStoreId()){
+
+                       buy.getOffers().add(offer);
+                       buy.setTotalValue(offer.getValue(), offer.getQuantity());
+
+                       ok = true;
+
+                       break;
+                   }
+               }
+
+               if(!ok)
+               {
+                   buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag));
+               }
+
+           }
+        }
+
+        if(buys.size() > 0)
+            model.onBuysGenerated(buys);
+    }
+
+    private Buy createBuy(Offer offer, String userCity, String userId, String address, int payMode, Double troco, int cardFlag){
+
+        Buy buy = new Buy();
+
+        buy.setId(String.valueOf(new Date().getTime()).concat(String.valueOf(offer.getStoreId())).concat(userId));
+        buy.setStoreId(offer.getStoreId());
+        buy.setOffers(new ArrayList<Offer>());
+        buy.setStoreCity(offer.getCity());
+        buy.setUserCity(userCity);
+        buy.setUserId(userId);
+        buy.setSendValue(offer.getSendValue());
+        buy.setSolicitationDate(new Date());
+        buy.setStoreName(offer.getStore());
+        buy.getOffers().add(offer);
+        buy.setAddress(address);
+
+        switch (payMode){
+
+            case R.id.money: {
+                buy.setPayMode(1);
             }
-        });
+                break;
+            case R.id.card: {
+                buy.setPayMode(2);
+                break;
+            }
+
+            default:
+                buy.setPayMode(0);
+                break;
+        }
+
+        buy.setTroco(troco);
+
+        switch (cardFlag){
+
+            case R.id.master:{
+                buy.setCardFlag(1);
+                break;
+            }
+
+            case R.id.visa:{
+                buy.setCardFlag(2);
+                break;
+            }
+
+            case R.id.elo:{
+                buy.setCardFlag(3);
+                break;
+            }
+
+            case R.id.outers:{
+                buy.setCardFlag(4);
+                break;
+            }
+
+            default:
+                buy.setCardFlag(0);
+                break;
+        }
+
+        buy.setTotalValue(offer.getValue(), offer.getQuantity());
+
+        return buy;
 
     }
 
-    private void registerStoreBuy(final Buy buy){
+    public void registerBuy(final ArrayList<Buy> buys){
 
-        Map<String, Object> map = new HashMap<>();
 
-        map.put(buy.getId(), buy);
+        for(final Buy buy: buys){
 
-        firebaseDatabase.getReference()
-                .child("buys")
-                .child(buy.getStoreCity())
-                .child("stores")
-                .child(String.valueOf(buy.getStoreId()))
-                .updateChildren(map)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+            Map<String, Object> map = new HashMap<>();
 
-                        model.onSuccessBuy(buy);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+            map.put(buy.getId(), buy);
 
-                model.failedBuy();
-            }
-        });
-    }
+            firebaseDatabase.getReference()
+            .child("buys")
+            .child(buy.getUserCity())
+            .child("users")
+            .child(buy.getUserId())
+            .updateChildren(map).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) { model.onFailedBuy(); }
+            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
-    public void getBuys(String userCity, String userId){
+                        if(buys.remove(buy)){
 
-        firebaseDatabase.getReference()
-                .child("buys")
-                .child(userCity)
-                .child("users")
-                .child(userId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            registerBuyStore(buy);
 
-                        if(dataSnapshot.exists()){
-
-                            ArrayList<Buy> buys = new ArrayList<>();
-
-                            for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                                buys.add(child.getValue(Buy.class));
-                            }
-
-                            if(buys.size() > 0){
+                            if(buys.size() == 0)
                                 model.onSuccessBuys(buys);
-                            }else{
-                                model.onSuccessBuys(null);
-                            }
-                        }else{
-                            model.onSuccessBuys(null);
                         }
-                    }
+                }
+            });
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        model.failedBuys();
-                    }
-                });
+        }
+
     }
 
-    public void getBuysCount(String userCity, String userId){
+    private void registerBuyStore(Buy buy) {
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            Map<String, Object> map = new HashMap<>();
+
+            map.put(buy.getId(), buy);
+
+            firebaseDatabase.getReference()
+                    .child("buys")
+                    .child(buy.getStoreCity())
+                    .child("stores")
+                    .child(String.valueOf(buy.getStoreId()))
+                    .updateChildren(map)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+
+                @Override
+                public void onFailure(@NonNull Exception e) { model.onFailedBuy(); }
+            });
+
+
+
+    }
+
+    public void getOffer(String city, String type, String offerId, final int quantity){
 
         firebaseDatabase.getReference()
-                .child("buys")
-                .child(userCity)
-                .child("users")
-                .child(userId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                .child("offers")
+                .child(city)
+                .child(type)
+                .child(offerId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.exists()){
-                           model.onBuyCountSuccess(String.valueOf(dataSnapshot.getChildrenCount()));
-                        }else{
-                            model.onBuyCountSuccess(String.valueOf(0));
-                        }
-                    }
+                if (dataSnapshot.exists()) proccessOffers(dataSnapshot, 1, quantity);
+                else model.onOffersFailed();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        model.failedBuy();
-                    }
-                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                model.onOffersFailed();
+            }
+        });
+
     }
+
+    public void getOffers(String city, String idFirebase){
+
+        firebaseDatabase
+                .getReference()
+                .child("carts")
+                .child(city)
+                .child(idFirebase).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) proccessOffers(dataSnapshot, 0, 0);
+                else model.onOffersFailed();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                model.onOffersFailed();
+            }
+        });
+
+    }
+
+    private void proccessOffers(DataSnapshot dataSnapshot, int type, int quantity){
+
+            ArrayList<Offer> offers = new ArrayList<>();
+
+            if(type == 0)
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                    offers.add(child.getValue(Offer.class));
+                }
+
+
+                else if(type == 1){
+
+                    Offer offer = dataSnapshot.getValue(Offer.class);
+
+                    if(offer != null) {
+
+                        offer.setQuantity(quantity);
+
+                        offers.add(offer);
+
+                    }
+
+                }
+            model.onOffersSuccess(offers);
+
+    }
+
 }

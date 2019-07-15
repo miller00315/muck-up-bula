@@ -9,6 +9,14 @@
 
    <include layout="@layout/action_bar_general"/>
 
-    <include layout="@layout/content_buy"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/content_buy"/>
+        <include layout="@layout/loading_layout"/>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

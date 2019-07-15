@@ -15,7 +15,7 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.login.presenter.LoginPresenter;
 import br.com.miller.muckup.login.tasks.LoginTasks;
 import br.com.miller.muckup.passwordRecovery.view.PasswordRecovery;
-import br.com.miller.muckup.register.activities.Register;
+import br.com.miller.muckup.register.view.Register;
 
 public class Login extends AppCompatActivity implements  LoginTasks.Presenter {
 
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity implements  LoginTasks.Presenter {
     public void passWordEmpty() {
         layoutLoading.setVisibility(View.INVISIBLE);
         mainLayout.setVisibility(View.VISIBLE);
-        Toast.makeText(this, "Insira a senha", Toast.LENGTH_LONG).show(); }
+        Toast.makeText(this, "Insira seu email", Toast.LENGTH_LONG).show(); }
 
     @Override
     public void emailIncorrect() {

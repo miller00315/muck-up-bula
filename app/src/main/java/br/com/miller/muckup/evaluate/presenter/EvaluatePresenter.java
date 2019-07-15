@@ -1,11 +1,9 @@
 package br.com.miller.muckup.evaluate.presenter;
 
-import java.util.Date;
-
 import br.com.miller.muckup.evaluate.model.EvaluateModel;
 import br.com.miller.muckup.evaluate.task.Task;
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Evaluate;
 
 public class EvaluatePresenter implements Task.Model, Task.View {
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.menuPrincipal.models.DepartamentModel;
 import br.com.miller.muckup.menuPrincipal.tasks.DepartamentTask;
-import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.domain.Departament;
 
 public class DepartamentPresenter implements DepartamentTask.View, DepartamentTask.Model {
 

@@ -18,14 +18,12 @@ import android.widget.Toast;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseBuy;
-import br.com.miller.muckup.api.FirebaseCart;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.ImageHelper;
 import br.com.miller.muckup.menuPrincipal.presenters.PerfilPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.utils.AlertDialogUtils;
 
 public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, AlertDialogUtils.AltertDialogUtilsTask {
@@ -78,7 +76,6 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
 
         return view;
     }
-
 
     private void bindViews(){
 
@@ -172,10 +169,8 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
                 phone.setText(user.getPhone());
                 email.setText(user.getEmail());
                 address.setText(user.getAddress() != null ? user.getAddress().getAddress() : sharedPreferences.getString(Constants.USER_ADDRESS, ""));
-
                 firebaseImage.downloadFirebaseImage("users", user.getCity(), user.getId_firebase().concat(".jpg"), imageUser);
-                FirebaseBuy.getBuysCount(user.getCity(), user.getId_firebase(), countBuy);
-                FirebaseCart.getCartCount(user.getCity(), user.getId_firebase(), countCart);
+
             }
         }else
             Toast.makeText(getContext(), "Usuario", Toast.LENGTH_SHORT).show();
@@ -242,6 +237,18 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
 
     @Override
     public void onImageUpdateFailed() { Toast.makeText(getContext(), "Erro ao atualizar a imagem do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
+
+    @Override
+    public void onBuyCountSuccess(int buyCount) { countBuy.setText(String.valueOf(buyCount));}
+
+    @Override
+    public void onBuyCountFailded() { countBuy.setText(String.valueOf(0)); }
+
+    @Override
+    public void onCartCountSuccess(int cartCount) { countCart.setText(String.valueOf(cartCount));}
+
+    @Override
+    public void onCartCountFailed() { countCart.setText("0");}
 
     @Override
     public void onAlertPositive(Object o, int type) {

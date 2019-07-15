@@ -15,7 +15,7 @@ import br.com.miller.muckup.api.FirebaseOffer;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class DepartamentManager extends AppCompatActivity implements Item.OnAdapterInteract, FirebaseOffer.FirebaseOfferListener {
 

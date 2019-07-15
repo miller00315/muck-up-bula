@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.viewHolders.StoreViewHolder;
-import br.com.miller.muckup.models.Store;
+import br.com.miller.muckup.domain.Store;
 
 public class StoreRecyclerAdapter extends Item {
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.menuPrincipal.models.AdvModel;
 import br.com.miller.muckup.menuPrincipal.tasks.AdvTasks;
-import br.com.miller.muckup.models.Adv;
+import br.com.miller.muckup.domain.Adv;
 
 public class AdvPresenter implements AdvTasks.View, AdvTasks.Model{
 

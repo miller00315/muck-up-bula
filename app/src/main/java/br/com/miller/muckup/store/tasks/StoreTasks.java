@@ -2,7 +2,7 @@ package br.com.miller.muckup.store.tasks;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Store;
+import br.com.miller.muckup.domain.Store;
 
 public interface StoreTasks {
 

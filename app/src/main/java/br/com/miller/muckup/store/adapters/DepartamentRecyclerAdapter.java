@@ -16,8 +16,8 @@ import br.com.miller.muckup.api.FirebaseOffer;
 import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
-import br.com.miller.muckup.models.Departament;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Departament;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.activities.Store;
 import br.com.miller.muckup.store.viewHolders.StoreViewHolder;
 

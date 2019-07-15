@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -25,6 +26,14 @@ public class StringUtils {
     public static String formatDate(Date date){
 
         return new SimpleDateFormat("dd/MM HH:mm",Locale.getDefault()).format(date);
+
+    }
+
+    public static String cleanMoneyString(String value, Locale locale){
+
+        String replaceable = String.format("[%s,.\\s]", NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol());
+
+        return value.replaceAll(replaceable, "");
 
     }
 

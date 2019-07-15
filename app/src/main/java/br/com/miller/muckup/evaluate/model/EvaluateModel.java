@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.miller.muckup.evaluate.task.Task;
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Evaluate;
 
 public class EvaluateModel{
 

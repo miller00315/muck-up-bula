@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Evaluate;
 import br.com.miller.muckup.store.adapters.OpinionStoreRecyclerAdapter;
 import br.com.miller.muckup.store.presenters.OpinionPresenter;
 import br.com.miller.muckup.store.tasks.OpinionTasks;

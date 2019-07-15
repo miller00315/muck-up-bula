@@ -1,144 +1,134 @@
 package br.com.miller.muckup.store.buy.presenter;
 
-
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Locale;
 
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.R;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.buy.model.BuyModel;
 import br.com.miller.muckup.store.buy.tasks.Tasks;
+import br.com.miller.muckup.utils.StringUtils;
 
-public class BuyPresenter implements Tasks.Model {
+public class BuyPresenter implements Tasks.Model, Tasks.View {
 
     private Tasks.Presenter presenter;
     private BuyModel buyModel;
-    private ArrayList<Buy> buys;
 
     public BuyPresenter(Tasks.Presenter presenter) {
         this.presenter = presenter;
-
         buyModel = new BuyModel(this);
     }
 
-    public void validBuy(Buy buy){
+    public void getOffer(String city, String type, String offerId, int quantity){ buyModel.getOffer(city, type, offerId, quantity); }
 
-        if(buy.getAddress() == null || buy.getAddress().isEmpty()){
+    public void getOffers(String city, String idFirebase){ buyModel.getOffers(city, idFirebase); }
 
-            presenter.invalidBuy("Insira um enredeço");
+    @Override
+    public void onSuccessBuys(ArrayList<Buy> buys) { presenter.onSuccessBuys(buys);}
 
-            return;
-        }
+    private void generateSendValue(ArrayList<Offer> offers){
 
-        if(buy.getPayMode() == 0){
+        ArrayList<Integer> storesIds = new ArrayList<>();
+        ArrayList<Offer> sendValues = new ArrayList<>();
 
-            presenter.invalidBuy("Defina um método de pagamento");
+        double sendValue = 0.0;
 
-            return;
-        }
+        for(Offer offer : offers){
 
-        if(buy.getOffers().size() > 0){
+            if(storesIds.size() == 0){
 
-            presenter.invalidBuy("Não existem compras a serem registradas");
+                storesIds.add(offer.getIdStore());
 
-            return;
-        }
+                sendValue += offer.getSendValue();
 
-        endBuy(buy);
+                sendValues.add(offer);
 
-    }
+            }else{
 
-    public Boolean defineOfferByStoreId(ArrayList<Offer> offers, String userId, String userCity){
+                boolean exist = false;
 
-        for(Offer offer: offers) {
+                for(int storeId : storesIds){
 
-            if (buys.size() > 0) {
-
-                boolean test = false;
-
-                for(Buy buy : buys){
-
-                    if(buy.getStoreId() == offer.getStoreId()){
-
-                        buy.getOffers().add(offer);
-                        buy.setTotalValue(offer.getValue(), offer.getQuantity());
-
-                        test = true;
+                    if(storeId == offer.getStoreId()) {
+                        exist = true;
+                        break;
                     }
 
                 }
 
-                if (!test) {
-                    buys.add(createBuy(offer, userId, userCity));
+                if(!exist){
+                    storesIds.add(offer.getIdStore());
+                    sendValues.add(offer);
+                    sendValue += offer.getSendValue();
                 }
-
-            } else {
-
-                buys.add(createBuy(offer, userId, userCity));
-                Log.w("offer", "criar nova buy");
             }
         }
 
-        Log.w("offer", String.valueOf(buys.size()));
-
-        return buys.size() > 0;
-
+        presenter.onSendValueCalculated(sendValue, sendValues);
     }
 
-    private void endBuy(Buy buy){
+    private void calculateTotalValue(ArrayList<Offer> offers){
 
-        buyModel.registerBuy(buy);
+        double totalValue = 0.0;
+
+        for(Offer offer : offers){ totalValue += (offer.getValue() * offer.getQuantity()); }
+
+        presenter.onTotalValueCalculated(totalValue);
     }
 
-
-    private Buy createBuy(Offer offer, String userId, String userCity){
-
-        Buy buy = new Buy();
-
-        buy.setId(new Date().toString());
-        buy.setStoreId(offer.getStoreId());
-        buy.setOffers(new ArrayList<Offer>());
-        buy.setStoreCity(offer.getCity());
-        buy.setUserCity(userCity);
-        buy.setUserId(userId);
-        buy.setSendValue(offer.getSendValue());
-        buy.setSolicitationDate(new Date());
-
-        buy.getOffers().add(offer);
-        buy.setTotalValue(offer.getValue(), offer.getQuantity());
-
-        return buy;
-    }
 
     @Override
-    public void onSuccessBuys(ArrayList<Buy> buys) {
+    public void onFailedBuy() { presenter.failedBuy(3); }
+    @Override
+    public void onBuysGenerated(ArrayList<Buy> buys) {
+
+        if(buys.size() > 0) buyModel.registerBuy(buys);
+        else presenter.failedBuy(3);
 
     }
 
     @Override
-    public void onSuccessBuy(Buy buy) {
+    public void onOffersSuccess(ArrayList<Offer> offers) {
+
+        calculateTotalValue(offers);
+        generateSendValue(offers);
+        presenter.onOffersSuccess(offers);
 
     }
 
     @Override
-    public void failedBuy() {
-        presenter.invalidBuy("Erro ao registrar a compra no servidor, tente novamente");
-    }
+    public void onOffersFailed() { presenter.onOffersFail(); }
 
     @Override
-    public void failedBuys() {
-        presenter.invalidBuy("Erro ao registrar a compra no servidro, tente novamente");
-    }
+    public void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardFlag, ArrayList<Offer> offers) {
 
-    @Override
-    public void onBuyCountSuccess(String countBuys) {
+        boolean ok = true;
 
-    }
+        if(address.isEmpty()){
 
-    @Override
-    public void onBuyCountFailed() {
+            presenter.failedBuy(0);
+            ok = false;
 
+        }
+
+        if (payMode == -1) {
+            presenter.failedBuy(1);
+            ok = false;
+
+        }
+
+        if(payMode == R.id.card && cardFlag == -1){
+
+            presenter.failedBuy(2);
+            ok = false;
+
+        }
+
+        if(!ok) return;
+
+        buyModel.generateBuys(offers, city, idFirebase, address, payMode,
+                Double.valueOf(StringUtils.cleanMoneyString(troco, Locale.getDefault())),
+                cardFlag);
     }
 }

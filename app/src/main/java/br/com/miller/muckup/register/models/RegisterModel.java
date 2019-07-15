@@ -20,8 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.register.tasks.Task;
+import br.com.miller.muckup.utils.StringUtils;
 
 public class RegisterModel {
 
@@ -34,6 +35,21 @@ public class RegisterModel {
 
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.firebaseDatabase = FirebaseDatabase.getInstance();
+
+    }
+
+    public User createUser(String name, String surname, String email, String city, String phone, String birthDate){
+
+        User user = new User();
+
+        user.setName(name);
+        user.setSurname(surname);
+        user.setEmail(email);
+        user.setCity(city);
+        user.setPhone(phone);
+        user.setBirth_date(StringUtils.parseDate(birthDate));
+
+        return user;
 
     }
 

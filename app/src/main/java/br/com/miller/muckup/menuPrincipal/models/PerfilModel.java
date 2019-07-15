@@ -1,5 +1,6 @@
 package br.com.miller.muckup.menuPrincipal.models;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.utils.FirebaseImageUtils;
 
 public class PerfilModel implements FirebaseImageUtils.FirebaseImageTask {
@@ -91,6 +92,57 @@ public class PerfilModel implements FirebaseImageUtils.FirebaseImageTask {
                     }
                 });
 
+    }
+
+    public void getCartCount(String city, String idFirebase){
+
+        firebaseDatabase.getReference()
+                .child("carts")
+                .child(city)
+                .child(idFirebase)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        model.onCartCountSuccess((int) dataSnapshot.getChildrenCount());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        model.onCartCountFailed();
+
+                    }
+
+                });
+
+    }
+
+    public void getBuysCount(String userCity, String userId){
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
+        firebaseDatabase.getReference()
+                .child("buys")
+                .child(userCity)
+                .child("users")
+                .child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()){
+                             model.onBuyCountSuccess((int) dataSnapshot.getChildrenCount());
+                        }else{
+                          model.onBuyCountFailded();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                      model.onBuyCountFailded();
+                    }
+                });
     }
 
     @Override

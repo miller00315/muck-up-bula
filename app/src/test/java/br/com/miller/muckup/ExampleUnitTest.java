@@ -4,10 +4,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Test;
 
-import java.text.ParseException;
-import java.util.Date;
-
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.register.presenters.RegisterPresenter;
 import br.com.miller.muckup.register.tasks.Task;
 

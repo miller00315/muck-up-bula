@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.models.Store;
+import br.com.miller.muckup.domain.Store;
 import br.com.miller.muckup.store.presenters.StorePresenter;
 import br.com.miller.muckup.store.tasks.StoreTasks;
 

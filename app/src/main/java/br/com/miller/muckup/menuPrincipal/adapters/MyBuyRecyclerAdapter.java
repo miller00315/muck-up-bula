@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.models.Buy;
+import br.com.miller.muckup.domain.Buy;
 import br.com.miller.muckup.store.viewHolders.MyBuysViewHolder;
 import br.com.miller.muckup.utils.StringUtils;
 
@@ -45,7 +45,7 @@ public class MyBuyRecyclerAdapter extends Item {
 
             final MyBuysViewHolder buyViewHolder = (MyBuysViewHolder) viewHolder;
 
-            buyViewHolder.setIdbuy(buys.get(i).getId() != null ?  buys.get(i).getId().substring(29) : "n/a");
+            buyViewHolder.setIdbuy(buys.get(i).getId() != null ?  buys.get(i).getId().substring(0,16) : "n/a");
             buyViewHolder.setDateBuy(buys.get(i).getSolicitationDate() != null ? StringUtils.formatDate(buys.get(i).getSolicitationDate()) : "n/a");
             buyViewHolder.setReceiveBuy(buys.get(i).getReceiverDate() != null ? StringUtils.formatDate( buys.get(i).getReceiverDate()) : "n/a");
             buyViewHolder.setSendBuy(buys.get(i).getDeliverDate() != null ? StringUtils.formatDate( buys.get(i).getDeliverDate()) : "n/a");

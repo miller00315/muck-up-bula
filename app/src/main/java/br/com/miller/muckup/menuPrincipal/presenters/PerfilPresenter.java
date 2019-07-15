@@ -1,16 +1,14 @@
 package br.com.miller.muckup.menuPrincipal.presenters;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.models.PerfilModel;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
-import br.com.miller.muckup.models.Address;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.Address;
+import br.com.miller.muckup.domain.User;
 public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
 
     private PerfilTasks.Presenter presenter;
@@ -23,7 +21,11 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     }
 
     @Override
-    public void getPerfilSuccess(User user) { presenter.getPerfilSuccess(user); }
+    public void getPerfilSuccess(User user) {
+        presenter.getPerfilSuccess(user);
+        model.getBuysCount(user.getCity(), user.getId_firebase());
+        model.getCartCount(user.getCity(), user.getId_firebase());
+    }
 
     @Override
     public void getPerfilFaield() { presenter.getPerfilFaield(); }
@@ -32,12 +34,7 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     public void onPerfilUpdatedFail() { presenter.onPerfilUpdatedFail(); }
 
     @Override
-    public void onPerfilUpdatedSuccess(User user) { presenter.onPerfilUpdatedSuccess(user);
-
-
-
-
-    }
+    public void onPerfilUpdatedSuccess(User user) { presenter.onPerfilUpdatedSuccess(user); }
 
     public void editSharedPreferences(User user, SharedPreferences sharedPreferences){
 
@@ -56,14 +53,25 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     public void onImageUpdateFailed() { presenter.onImageUpdateFailed(); }
 
     @Override
+    public void onBuyCountSuccess(int buyCount) { presenter.onBuyCountSuccess(buyCount);}
+
+    @Override
+    public void onBuyCountFailded() { presenter.onBuyCountFailded();}
+
+    @Override
+    public void onCartCountSuccess(int cartCount) { presenter.onCartCountSuccess(cartCount);}
+
+    @Override
+    public void onCartCountFailed() { presenter.onCartCountFailed();}
+
+    @Override
     public void getImageFromMemory() { }
 
     @Override
-    public void updateImage(User user, Bitmap image) {
+    public void getCartCount(String userCity, String userId) { model.getCartCount(userCity, userId);}
 
-        model.updateImage(user, image);
-
-    }
+    @Override
+    public void updateImage(User user, Bitmap image) { model.updateImage(user, image);}
 
     @Override
     public void getUserDate(String city, String firebaseId) {

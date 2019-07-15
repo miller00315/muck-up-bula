@@ -1,6 +1,4 @@
-package br.com.miller.muckup.models;
-
-import android.net.Uri;
+package br.com.miller.muckup.domain;
 
 public class Offer {
 

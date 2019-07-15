@@ -1,6 +1,5 @@
 package br.com.miller.muckup.register.presenters;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import br.com.miller.muckup.api.AuthVerification;
 import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.register.models.RegisterModel;
 import br.com.miller.muckup.register.tasks.Task;
 import br.com.miller.muckup.utils.StringUtils;
@@ -19,28 +18,17 @@ import br.com.miller.muckup.utils.StringUtils;
 public class RegisterPresenter implements Task.Model, Task.View, AuthVerification.AuthVerificationListener {
 
     private Task.Presenter presenter;
-    private User user;
     private RegisterModel model;
     private AuthVerification authVerification;
 
     public RegisterPresenter(Task.Presenter presenter) {
         this.presenter = presenter;
         this.model = new RegisterModel(this);
-        this.user = new User();
     }
 
-    public void configureFirstUser(){
+    public void configureFirstUser(){ model.configureFirstUser(); }
 
-        model.configureFirstUser();
-    }
-
-    public void uploadImage(User user, Bitmap bitmap){
-
-        if(bitmap != null)
-            model.uploadImageFirebase(user, bitmap);
-        else
-            presenter.uploaImageError();
-    }
+    public void uploadImage(User user, Bitmap bitmap){ if(bitmap != null) model.uploadImageFirebase(user, bitmap); else presenter.uploaImageError(); }
 
     public void checkRegister(String name, String surname, String email,String city, String phone, String password, String repeatPassword, String birthDate) {
 
@@ -115,22 +103,7 @@ public class RegisterPresenter implements Task.Model, Task.View, AuthVerificatio
 
     }
 
-
-
-    @SuppressLint("SimpleDateFormat")
-    public User setupUser(String name, String surname, String email, String city, String phone, String password, String birthDate){
-
-        user.setName(name);
-        user.setSurname(surname);
-        user.setEmail(email);
-        user.setCity(city);
-        user.setPhone(phone);
-        user.setBirth_date(StringUtils.parseDate(birthDate));
-        model.registerUser(user, password);
-
-        return user;
-
-    }
+    public void setupUser(String name, String surname, String email, String city, String phone, String password, String birthDate){ model.registerUser(model.createUser(name, surname, email, city, phone, birthDate), password); }
 
     @Override
     public void uploadImageListener(boolean state, FirebaseUser firebaseUser) {

@@ -5,7 +5,7 @@
     android:background="@color/backgroundColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".register.activities.Register">
+    tools:context=".register.view.Register">
 
     <ScrollView
         android:id="@+id/main_layout"

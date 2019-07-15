@@ -3,7 +3,6 @@ package br.com.miller.muckup.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import br.com.miller.muckup.helpers.Constants;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public class AuthVerification {
 

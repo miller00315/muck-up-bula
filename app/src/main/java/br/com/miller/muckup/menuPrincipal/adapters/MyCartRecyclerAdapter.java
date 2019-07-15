@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.store.viewHolders.StoreViewHolder;
 
 public class MyCartRecyclerAdapter extends Item {

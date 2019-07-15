@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Evaluate;
 import br.com.miller.muckup.store.tasks.OpinionTasks;
 
 public class OpinionsModel {

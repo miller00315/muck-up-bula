@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.menuPrincipal.presenters.DepartamentPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.DepartamentTask;
-import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.store.adapters.DepartamentRecyclerAdapter;
 
 /**

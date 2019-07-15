@@ -14,7 +14,7 @@ import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.Permissions;
 import br.com.miller.muckup.login.views.Login;
 import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public class MainActivity extends AppCompatActivity implements Permissions.OnPermissionChanged, AuthVerification.AuthVerificationListener {
 

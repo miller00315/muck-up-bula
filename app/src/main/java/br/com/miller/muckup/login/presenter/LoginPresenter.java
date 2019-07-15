@@ -8,7 +8,7 @@ import br.com.miller.muckup.api.AuthVerification;
 import br.com.miller.muckup.login.models.LoginModel;
 import br.com.miller.muckup.login.tasks.LoginTasks;
 import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public class LoginPresenter implements LoginTasks.Model, AuthVerification.AuthVerificationListener, LoginTasks.View {
 

@@ -1,4 +1,4 @@
-package br.com.miller.muckup.models;
+package br.com.miller.muckup.domain;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package br.com.miller.muckup.models;
+package br.com.miller.muckup.domain;
 
 import android.util.Log;
 
@@ -10,6 +10,7 @@ public class Buy {
     private String id;
     private int storeId;
     private int payMode = 0;
+    private int cardFlag;
     private double troco;
     private String storeName;
     private String storeCity;
@@ -20,6 +21,18 @@ public class Buy {
     private Date solicitationDate, deliverDate, receiverDate;
     private ArrayList<Offer> offers;
     private String address;
+
+    public int getCardFlag() {
+        return cardFlag;
+    }
+
+    public void setCardFlag(int cardFlag) {
+        this.cardFlag = cardFlag;
+    }
+
+    public void setTotalValue(Double totalValue) {
+        this.totalValue = totalValue;
+    }
 
     public String getStoreName() {
         return storeName;
@@ -122,9 +135,7 @@ public class Buy {
         return solicitationDate;
     }
 
-    public void setSolicitationDate(Date solicitationDate) {
-        this.solicitationDate = solicitationDate;
-    }
+    public void setSolicitationDate(Date solicitationDate) { this.solicitationDate = solicitationDate; }
 
     public Date getDeliverDate() {
         return deliverDate;

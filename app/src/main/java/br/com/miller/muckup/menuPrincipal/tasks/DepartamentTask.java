@@ -2,7 +2,7 @@ package br.com.miller.muckup.menuPrincipal.tasks;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Departament;
+import br.com.miller.muckup.domain.Departament;
 
 public interface DepartamentTask {
 

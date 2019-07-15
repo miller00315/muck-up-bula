@@ -18,8 +18,8 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.evaluate.presenter.EvaluatePresenter;
 import br.com.miller.muckup.evaluate.task.Task;
 import br.com.miller.muckup.helpers.Constants;
-import br.com.miller.muckup.models.Buy;
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.domain.Evaluate;
 
 public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
 
@@ -34,6 +34,8 @@ public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
     private RatingBar evaluate;
 
     private EditText message;
+
+    private View mainLayout, layoutLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
         nameStore = findViewById(R.id.name_store);
         message = findViewById(R.id.message);
         evaluate = findViewById(R.id.evaluate);
+        mainLayout = findViewById(R.id.main_layout);
+        layoutLoading = findViewById(R.id.loading_layout);
 
         evaluate.setNumStars(5);
 
@@ -78,9 +82,19 @@ public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
 
     }
 
-    public void evaluate(View view){ if(buy != null)this.createEvaluate(buy, Math.round(evaluate.getRating()) , message.getText().toString()); }
+    public void showLoading(){
 
+        layoutLoading.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
+    }
 
+    public void hideLoading(){
+        layoutLoading.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void evaluate(View view){
+        if(buy != null)this.createEvaluate(buy, Math.round(evaluate.getRating()) , message.getText().toString()); }
 
     @Override
     public void evaluateBuy( Evaluate evaluate) { presenter.evaluateBuy(evaluate); }
@@ -97,23 +111,37 @@ public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
     }
 
     @Override
-    public void onBuyRecoveryFailed() { Toast.makeText(this, "Erro ao criar avaliação, tente novamente", Toast.LENGTH_SHORT).show();}
+    public void onBuyRecoveryFailed() {
+
+        hideLoading();
+        Toast.makeText(this, "Erro ao criar avaliação, tente novamente", Toast.LENGTH_SHORT).show();
+        finish();
+    }
 
     @Override
     public void buyAlreadEvaluated(Evaluate evaluate) {
+        hideLoading();
         Toast.makeText(this, "Compra já avaliada", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
-    public void recoveryBuy(String city, String userId, String buyId) { presenter.recoveryBuy(city, userId, buyId);}
+    public void recoveryBuy(String city, String userId, String buyId) {
+        showLoading();
+        presenter.recoveryBuy(city, userId, buyId);
+    }
 
 
     @Override
-    public void createEvaluate(Buy buy, int value, String message) { presenter.createEvaluate(buy, value, message, sharedPreferences.getString(Constants.USER_NAME, "")); }
+    public void createEvaluate(Buy buy, int value, String message) {
+        showLoading();
+        presenter.createEvaluate(buy, value, message, sharedPreferences.getString(Constants.USER_NAME, ""));
+    }
 
     @Override
-    public void onEvaluateCreated(Evaluate evaluate) { this.evaluateBuy(evaluate); }
+    public void onEvaluateCreated(Evaluate evaluate) {
+        this.evaluateBuy(evaluate);
+    }
 
     @Override
     public void onEvaluateSuccess() {
@@ -122,8 +150,14 @@ public class EvaluateAct extends AppCompatActivity implements Task.Presenter {
     }
 
     @Override
-    public void onEvaluateFailed() { Toast.makeText(this, "Erro ao realizar avaliação, tente novamente", Toast.LENGTH_SHORT).show();}
+    public void onEvaluateFailed() {
+        hideLoading();
+        Toast.makeText(this, "Erro ao realizar avaliação, tente novamente", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
-    public void canEvaluate() { Toast.makeText(this, "Pronto para avaliar.", Toast.LENGTH_SHORT).show();}
+    public void canEvaluate() {
+        hideLoading();
+        Toast.makeText(this, "Pronto para avaliar.", Toast.LENGTH_SHORT).show();
+    }
 }

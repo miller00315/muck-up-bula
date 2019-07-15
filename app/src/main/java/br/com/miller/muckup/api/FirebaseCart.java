@@ -2,7 +2,6 @@ package br.com.miller.muckup.api;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,7 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Offer;
 
 public class FirebaseCart {
 
@@ -111,32 +110,6 @@ public class FirebaseCart {
 
             }
         });
-    }
-
-    public static void getCartCount(String city, String idFirebase, final TextView textView){
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-
-        firebaseDatabase.getReference()
-                .child("carts")
-                .child(city)
-                .child(idFirebase)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        textView.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        textView.setText(String.valueOf(0));
-
-                    }
-
-                });
-
     }
 
     public void firebaseCartgetOffers(String city, String idFirebase){

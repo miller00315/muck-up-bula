@@ -1,10 +1,8 @@
 package br.com.miller.muckup.store.presenters;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
-import br.com.miller.muckup.models.Evaluate;
+import br.com.miller.muckup.domain.Evaluate;
 import br.com.miller.muckup.store.models.OpinionsModel;
 import br.com.miller.muckup.store.tasks.OpinionTasks;
 

@@ -1,7 +1,6 @@
 package br.com.miller.muckup.menuPrincipal.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.viewHolders.ViewHolderAdv;
-import br.com.miller.muckup.models.Adv;
+import br.com.miller.muckup.domain.Adv;
 
 public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseImageListener {
 

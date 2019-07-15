@@ -9,50 +9,61 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.menuPrincipal.tasks.AdvTasks;
-import br.com.miller.muckup.domain.Adv;
+import br.com.miller.muckup.domain.Buy;
+import br.com.miller.muckup.menuPrincipal.tasks.MyBuysTasks;
 
-public class AdvModel {
+public class MyBuysModel {
 
-    private AdvTasks.Model model;
 
     private FirebaseDatabase firebaseDatabase;
+    private MyBuysTasks.Model model;
 
-    public AdvModel(AdvTasks.Model model) {
+    public MyBuysModel(MyBuysTasks.Model model) {
+
         this.model = model;
+
         firebaseDatabase = FirebaseDatabase.getInstance();
     }
 
-    public void getAdv(String city){
+    public void getBuys(String userCity, String userId){
 
-        firebaseDatabase.getReference().child("advs").child(city)
+        firebaseDatabase.getReference()
+                .child("buys")
+                .child(userCity)
+                .child("users")
+                .child(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if(dataSnapshot.exists()){
 
-                            ArrayList<Adv> advs = new ArrayList<>();
+                            ArrayList<Buy> buys = new ArrayList<>();
 
-                            for(DataSnapshot child: dataSnapshot.getChildren()){
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                                if(child != null)
-                                    advs.add(child.getValue(Adv.class));
+                                buys.add(child.getValue(Buy.class));
                             }
 
-                            model.onAdvsSuccess(advs);
+                            if(buys.size() > 0){
 
+                                model.onBuySuccess(buys);
+
+                            }else{
+                                model.onBuyEmpty();
+                            }
                         }else{
-                            model.onAdvFialed();
+
+                            model.onBuyEmpty();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        model.onAdvFialed();
+
+                        model.onBuyFailed();
                     }
                 });
-
     }
 
 }

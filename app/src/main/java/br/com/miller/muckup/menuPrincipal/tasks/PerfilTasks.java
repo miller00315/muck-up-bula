@@ -2,7 +2,7 @@ package br.com.miller.muckup.menuPrincipal.tasks;
 
 import android.graphics.Bitmap;
 
-import br.com.miller.muckup.models.User;
+import br.com.miller.muckup.domain.User;
 
 public interface PerfilTasks {
 
@@ -14,12 +14,17 @@ public interface PerfilTasks {
         void onPerfilUpdatedSuccess(User user);
         void onImageUpdateSuccess(Bitmap bitmap);
         void onImageUpdateFailed();
+        void onBuyCountSuccess(int buyCount);
+        void onBuyCountFailded();
+        void onCartCountSuccess(int cartCount);
+        void onCartCountFailed();
 
     }
 
     interface View{
 
         void getImageFromMemory();
+        void getCartCount(String userCity, String userId);
         void updateImage(User user, Bitmap image);
         void getUserDate(String city, String firebaseId);
         void updateUser(User user, Object o, int type);
@@ -33,5 +38,9 @@ public interface PerfilTasks {
         void onPerfilUpdatedSuccess(User user);
         void onImageUpdateSuccess(Bitmap bitmap);
         void onImageUpdateFailed();
+        void onBuyCountSuccess(int buyCount);
+        void onBuyCountFailded();
+        void onCartCountSuccess(int cartCount);
+        void onCartCountFailed();
     }
 }

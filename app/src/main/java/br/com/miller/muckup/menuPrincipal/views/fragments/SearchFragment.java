@@ -28,8 +28,8 @@ import br.com.miller.muckup.menuPrincipal.presenters.AdvPresenter;
 import br.com.miller.muckup.menuPrincipal.presenters.SearchPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.AdvTasks;
 import br.com.miller.muckup.menuPrincipal.tasks.SearchTask;
-import br.com.miller.muckup.models.Adv;
-import br.com.miller.muckup.models.Offer;
+import br.com.miller.muckup.domain.Adv;
+import br.com.miller.muckup.domain.Offer;
 
 /**
  * A simple {@link Fragment} subclass.
