@@ -232,7 +232,7 @@ public class SearchFragment extends Fragment implements
             if(searchResultAdapter.getItemCount() > 0) searchResultAdapter.clear();
 
             if(offers.isEmpty()) {
-                Toast.makeText(getContext(), "Nada encontrado", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Nada encontramos ofertas neste departamento", Toast.LENGTH_LONG).show();
                 recyclerResult.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.INVISIBLE);
                 recyclerAdv.setVisibility(View.VISIBLE);
@@ -245,7 +245,7 @@ public class SearchFragment extends Fragment implements
 
         }else{
 
-            Toast.makeText(getContext(), "Não encontramos ofertas.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Não encontramos ofertas neste departamento.", Toast.LENGTH_SHORT).show();
             recyclerResult.setVisibility(View.INVISIBLE);
             loading.setVisibility(View.INVISIBLE);
             recyclerAdv.setVisibility(View.VISIBLE);
