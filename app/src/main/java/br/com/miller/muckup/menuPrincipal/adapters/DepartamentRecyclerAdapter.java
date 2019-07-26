@@ -1,6 +1,5 @@
-package br.com.miller.muckup.store.adapters;
+package br.com.miller.muckup.menuPrincipal.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,36 +11,22 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseOffer;
-import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
-import br.com.miller.muckup.menuPrincipal.adapters.Item;
-import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.domain.Departament;
-import br.com.miller.muckup.domain.Offer;
-import br.com.miller.muckup.store.activities.Store;
-import br.com.miller.muckup.store.viewHolders.StoreViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.StoreViewHolder;
 
-public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.FirebaseOfferListener {
+
+public class DepartamentRecyclerAdapter extends Item  {
 
     private ArrayList<Departament> departments;
 
     private Context context;
 
-    private FirebaseOffer firebaseOffer;
+    public DepartamentRecyclerAdapter(Item.OnAdapterInteract onAdapterInteract, Context context) {
 
-    private Activity act;
-
-    public DepartamentRecyclerAdapter(Context context) {
-        if(context instanceof OnAdapterInteract) {
-            this.context = context;
-            firebaseOffer = new FirebaseOffer(this);
-            listener = (OnAdapterInteract) context;
-            act = (Activity) context;
+            listener = onAdapterInteract;
             departments = new ArrayList<>();
-        }else{
-            throw new RuntimeException(context.toString()
-                    + " must implement OnAdapter");
-        }
+            this.context = context;
+
     }
 
     @NonNull
@@ -58,18 +43,12 @@ public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.Fi
 
             final StoreViewHolder storeViewHolder = (StoreViewHolder) viewHolder;
 
-            storeViewHolder.setDepartamentTitle(departments.get(i).getName());
+            storeViewHolder.setDepartamentTitle(departments.get(i).getTitle());
 
-            OffersRecyclerAdapter offersRecyclerAdapter = new OffersRecyclerAdapter(context);
+            OffersRecyclerAdapter offersRecyclerAdapter = new OffersRecyclerAdapter(listener, context);
 
-            if(context instanceof MenuPrincipal)
-
-                firebaseOffer.FirebaseGetOffers(departments.get(i).getCity(), String.valueOf(departments.get(i).getId()), offersRecyclerAdapter);
-
-            else if(context instanceof Store)
-               firebaseOffer.firebaseGetOffersByDepartamentandStore(departments.get(i).getCity(),
-                       String.valueOf(departments.get(i).getStoreId()),
-                        String.valueOf(departments.get(i).getId()), offersRecyclerAdapter);
+            if(departments.get(i).getOffers() != null)
+                offersRecyclerAdapter.setArray(departments.get(i).getOffers());
 
             storeViewHolder.setDepartamentRecyclerOffer(offersRecyclerAdapter, context);
 
@@ -78,6 +57,13 @@ public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.Fi
             }else{
                 storeViewHolder.getLayoutOffer().setBackgroundColor(context.getResources().getColor(R.color.backgroundColor));
             }
+
+            storeViewHolder.getDepartamentTitle().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showItem(storeViewHolder.getAdapterPosition());
+                }
+            });
 
             storeViewHolder.getDepartamentMenu().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,14 +83,11 @@ public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.Fi
     public void showItem(int i) {
 
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 0);
-        bundle.putString("name_departament", departments.get(i).getName());
+        bundle.putString("type", this.getClass().getName());
+        bundle.putString("name_departament", departments.get(i).getTitle());
         bundle.putString("city", departments.get(i).getCity());
-        bundle.putInt("id_departament", departments.get(i).getId());
-
-        if(act.getLocalClassName().contains(Store.class.getSimpleName())) {
-            bundle.putInt("id_store", departments.get(i).getStoreId());
-        }
+        bundle.putString("id_departament", departments.get(i).getId());
+        bundle.putString("id_store", departments.get(i).getIdStore());
 
         listener.onAdapterInteract(bundle);
     }
@@ -128,8 +111,4 @@ public class DepartamentRecyclerAdapter extends Item implements FirebaseOffer.Fi
     }
 
 
-    @Override
-    public void firebaseOfferReceiver(Offer offer) {
-
-    }
 }

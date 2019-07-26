@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import br.com.miller.muckup.menuPrincipal.views.fragments.SearchFragment;
-import br.com.miller.muckup.menuPrincipal.views.fragments.OffersFragment;
+import br.com.miller.muckup.menuPrincipal.views.fragments.DepartamentsFragment;
 import br.com.miller.muckup.menuPrincipal.views.fragments.PerfilFragment;
 import br.com.miller.muckup.menuPrincipal.views.fragments.StoresFragment;
 
@@ -32,7 +32,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
                 return Fragment.instantiate(context, SearchFragment.class.getName());
 
             case 1:
-                return Fragment.instantiate(context, OffersFragment.class.getName());
+                return Fragment.instantiate(context, DepartamentsFragment.class.getName());
 
             case 2:
                 return Fragment.instantiate(context, StoresFragment.class.getName());

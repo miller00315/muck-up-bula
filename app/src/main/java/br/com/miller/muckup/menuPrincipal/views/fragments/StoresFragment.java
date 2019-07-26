@@ -2,6 +2,7 @@ package br.com.miller.muckup.menuPrincipal.views.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,22 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.helpers.Constants;
+import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.StoreRecyclerAdapter;
 import br.com.miller.muckup.domain.Store;
 import br.com.miller.muckup.store.presenters.StorePresenter;
 import br.com.miller.muckup.store.tasks.StoreTasks;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StoresFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * create an instance of this fragment.
- */
-public class StoresFragment extends Fragment implements StoreTasks.Presenter {
+
+public class StoresFragment extends Fragment implements StoreTasks.Presenter,
+        Item.OnAdapterInteract {
 
     private StoreRecyclerAdapter storeRecyclerAdapter;
 
@@ -43,11 +41,11 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        storeRecyclerAdapter = new StoreRecyclerAdapter(getContext());
+        storeRecyclerAdapter = new StoreRecyclerAdapter(this, getContext());
 
         storePresenter = new StorePresenter(this);
 
-        sharedPreferences = getContext().getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
     }
 
@@ -100,21 +98,29 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter {
     public void onStoreSuccess(Store store) { }
 
     @Override
+    public void onDownloadImageSuccess(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void onDownloadImageFailed() {
+
+    }
+
+    @Override
     public void onStoreFailed() { }
 
     @Override
     public void onStoresFailed() { }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onAdapterInteract(Bundle bundle) {
+
+        bundle.putString("code", this.getClass().getName());
+
+        mListener.onFragmentInteraction(bundle);
+    }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Bundle bundle);
     }

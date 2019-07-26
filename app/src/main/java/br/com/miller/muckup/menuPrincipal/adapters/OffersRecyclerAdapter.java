@@ -12,30 +12,22 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.menuPrincipal.viewHolders.OffersViewHolder;
+import br.com.miller.muckup.menuPrincipal.views.viewHolders.OffersViewHolder;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
 import br.com.miller.muckup.domain.Offer;
 
 public class OffersRecyclerAdapter extends Item {
 
     private ArrayList<Offer> offers;
-
     private Context context;
+    public static final String ID = OffersRecyclerAdapter.class.getName();
 
-    private FirebaseImage firebaseImage;
+    public OffersRecyclerAdapter(Item.OnAdapterInteract onAdapterInteract, Context context) {
 
-    public OffersRecyclerAdapter(Context context) {
-
-        if(context instanceof OnAdapterInteract) {
             this.context = context;
-            listener = (OnAdapterInteract) context;
-            firebaseImage = new FirebaseImage(context);
+            listener = onAdapterInteract;
             offers = new ArrayList<>();
-        }else{
-            throw new RuntimeException(context.toString()
-                    + " must implement OnAdapter");
-        }
+
     }
 
     @NonNull
@@ -53,18 +45,19 @@ public class OffersRecyclerAdapter extends Item {
             final OffersViewHolder offersViewHolder = (OffersViewHolder) viewHolder;
 
             if(context instanceof MyCart){
-                offersViewHolder.valueSendOffer.setVisibility(View.INVISIBLE);
-                offersViewHolder.valueSendOffer.setHeight(0);
-                offersViewHolder.valueSendOffer.setWidth(0);
+                offersViewHolder.getValueSendOffer().setVisibility(View.INVISIBLE);
+                offersViewHolder.getValueSendOffer().setHeight(0);
+                offersViewHolder.getValueSendOffer().setWidth(0);
             }
 
-            offersViewHolder.valueSendOffer.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offers.get(i).getSendValue())));
-            offersViewHolder.descriptionOffer.setText(offers.get(i).getDescription());
-            offersViewHolder.titleOffer.setText(offers.get(i).getTitle().concat(offers.get(i).getQuantity() > 0 ? ", " + String.valueOf(offers.get(i).getQuantity()) : ""));
-            offersViewHolder.valueOffer.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offers.get(i).getValue())));
-            firebaseImage.downloadFirebaseImage("offers", offers.get(i).getCity(), offers.get(i).getImage(), offersViewHolder.imageOffer);
+            offersViewHolder.getValueSendOffer().setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offers.get(i).getSendValue())));
+            offersViewHolder.getDescriptionOffer().setText(offers.get(i).getDescription());
+            offersViewHolder.getTitleOffer().setText(offers.get(i).getTitle().concat(offers.get(i).getQuantity() > 0 ? ", " + offers.get(i).getQuantity() : ""));
+            offersViewHolder.getValueOffer().setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f", offers.get(i).getValue())));
 
-            offersViewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            offersViewHolder.downloaImage("offers",offers.get(i).getCity(), offers.get(i).getImage());
+
+            offersViewHolder.getMainLayout().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showItem(offersViewHolder.getAdapterPosition());
@@ -78,11 +71,13 @@ public class OffersRecyclerAdapter extends Item {
 
         Bundle bundle = new Bundle();
 
-        bundle.putInt("type", 1);
+        bundle.putString("type", ID);
         bundle.putInt("adapter_position", i);
         bundle.putString("id_offer", String.valueOf(offers.get(i).getId()));
         bundle.putString("city", offers.get(i).getCity());
         bundle.putString("title", offers.get(i).getTitle().toLowerCase());
+        bundle.putString("storeId", offers.get(i).getStoreId());
+        bundle.putString("departamentId", offers.get(i).getDepartamentId());
 
         listener.onAdapterInteract(bundle);
     }

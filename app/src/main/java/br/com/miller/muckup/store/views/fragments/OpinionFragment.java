@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.fragments;
+package br.com.miller.muckup.store.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

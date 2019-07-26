@@ -28,7 +28,7 @@ public class FirebaseImageUtils {
         StorageReference usuarioRef = storageReference.child("images")
                 .child("users")
                 .child(user.getCity())
-                .child(user.getId_firebase() + ".jpg");
+                .child(user.getId_firebase().concat(".jpg"));
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -54,24 +54,26 @@ public class FirebaseImageUtils {
         }
     }
 
-    public void deleteImage(User user){
+    public void downloadImage(String type, String city, String image){
 
-        storageReference.child("image")
-                .child("user")
-                .child(user.getCity())
-                .child(user.getId_firebase().concat(".jpg"))
-                .delete().addOnFailureListener(new OnFailureListener() {
+        storageReference.child("images")
+                .child(type)
+                .child(city)
+                .child(image.concat(".jpg"))
+                .getBytes(Long.MAX_VALUE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        firebaseImageTask.onDownloadImageSuccess(ImageUtils.convertByteArraytoBitmap(bytes));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                firebaseImageTask.onImageDeleteFailed();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                firebaseImageTask.onImageDeleteSuccess();
+                firebaseImageTask.onDowloadImageFail();
             }
         });
     }
+
 
     public interface FirebaseImageTask{
 
@@ -79,6 +81,9 @@ public class FirebaseImageUtils {
         void onImageUploadFails();
         void onImageDeleteSuccess();
         void onImageDeleteFailed();
+        void onDownloadImageSuccess(Bitmap bitmap);
+        void onDowloadImageFail();
+        void downloaImage(String type, String city, String image);
     }
 
 

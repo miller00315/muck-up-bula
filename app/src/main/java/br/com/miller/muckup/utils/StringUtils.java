@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.text.DateFormat;
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
+
+    public static String value =
+            "À Á Â Ã Ä Å Æ Ç È É Ê Ë Ì " +
+                    "Í Î Ï Ð Ñ Ò Ó Ô Õ Ö Ø Ù Ú Û Ü Ý Þ ß " +
+                    "à á â ã ä å æ ç è é ê ë ì í î ï ð ñ " +
+                    "ò ó ô õ ö ø ù ú û ü ý þ ÿ ";
 
     public static boolean isValidPhone(String phoneNumber) {
         return phoneNumber.matches(".((10)|([1-9][1-9]).)\\s9?[6-9][0-9]{3}-[0-9]{4}") ||
@@ -57,6 +64,17 @@ public class StringUtils {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
 
+    }
+
+    public static String normalizer(String title){
+
+        if(title.contains(" "))
+            title = title.toLowerCase().replaceAll(" ", "_");
+
+        String nfdNormalizedString = Normalizer.normalize(title, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 
     public static boolean isValidDate(String date) {

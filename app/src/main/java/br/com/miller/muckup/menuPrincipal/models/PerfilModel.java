@@ -164,4 +164,19 @@ public class PerfilModel implements FirebaseImageUtils.FirebaseImageTask {
     public void onImageDeleteFailed() {
 
     }
+
+    @Override
+    public void onDownloadImageSuccess(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void onDowloadImageFail() {
+
+    }
+
+    @Override
+    public void downloaImage(String type, String city, String image) {
+
+    }
 }

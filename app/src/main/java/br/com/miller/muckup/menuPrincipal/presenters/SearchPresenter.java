@@ -2,9 +2,11 @@ package br.com.miller.muckup.menuPrincipal.presenters;
 
 import java.util.ArrayList;
 
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.menuPrincipal.models.SearchModel;
 import br.com.miller.muckup.menuPrincipal.tasks.SearchTask;
 import br.com.miller.muckup.domain.Offer;
+import br.com.miller.muckup.utils.StringUtils;
 
 public class SearchPresenter implements SearchTask.Model, SearchTask.View {
 
@@ -29,12 +31,21 @@ public class SearchPresenter implements SearchTask.Model, SearchTask.View {
     public void onSuggestionFailed() { presenter.onSuggestionFailed(); }
 
     @Override
-    public void makeSearch(String search, String city) {
+    public void onDepartamentsSuccess(ArrayList<Departament> departaments) { presenter.onDepartamentsSuccess(departaments);}
 
-        if(search.isEmpty() || city.isEmpty())
+    @Override
+    public void onDepartamentsFailed() { presenter.onDepartamentsFailed(); }
+
+    @Override
+    public void makeSearch(String search, String city, Object o) {
+
+        if(search.isEmpty())
             presenter.emptySearch();
-        else
-            model.searchFirebase(search.toLowerCase(), city);
+        else if(o instanceof Departament){
+
+            model.searchFirebase(StringUtils.normalizer(search), city, ((Departament) o).getId() );
+
+        }
 
     }
 

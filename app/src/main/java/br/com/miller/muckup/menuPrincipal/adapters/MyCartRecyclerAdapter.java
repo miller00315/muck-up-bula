@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.domain.Departament;
-import br.com.miller.muckup.store.viewHolders.StoreViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.StoreViewHolder;
 
 public class MyCartRecyclerAdapter extends Item {
 
@@ -45,9 +45,9 @@ public class MyCartRecyclerAdapter extends Item {
 
             final StoreViewHolder storeViewHolder = (StoreViewHolder) viewHolder;
 
-            storeViewHolder.setDepartamentTitle(departments.get(i).getName());
+            storeViewHolder.setDepartamentTitle(departments.get(i).getTitle());
 
-            OffersRecyclerAdapter offersRecyclerAdapter = new OffersRecyclerAdapter(context);
+            OffersRecyclerAdapter offersRecyclerAdapter = new OffersRecyclerAdapter(listener, context);
 
             offersRecyclerAdapter.setArray(departments.get(i).getOffers());
 
@@ -79,7 +79,7 @@ public class MyCartRecyclerAdapter extends Item {
         Bundle bundle = new Bundle();
 
         bundle.putInt("type", 0);
-        bundle.putInt("id_cart", departments.get(i).getId());
+        bundle.putString("id_cart", departments.get(i).getId());
 
         listener.onAdapterInteract(bundle);
     }

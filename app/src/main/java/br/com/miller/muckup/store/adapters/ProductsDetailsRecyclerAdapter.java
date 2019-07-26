@@ -12,7 +12,7 @@ import java.util.Locale;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Offer;
-import br.com.miller.muckup.store.viewHolders.ProductsViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.ProductsViewHolder;
 
 public class ProductsDetailsRecyclerAdapter extends Item {
 

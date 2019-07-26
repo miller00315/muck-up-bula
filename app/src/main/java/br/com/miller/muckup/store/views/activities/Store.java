@@ -1,7 +1,6 @@
-package br.com.miller.muckup.store.activities;
+package br.com.miller.muckup.store.views.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,26 +9,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.medicine.activities.Medicine;
+import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.views.activities.DepartamentManager;
-import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.store.adapters.TabPagerStoreAdapter;
-import br.com.miller.muckup.store.fragments.OpinionFragment;
-import br.com.miller.muckup.store.fragments.DepartamentFragment;
 import br.com.miller.muckup.store.fragments.HomeStoreFragment;
+import br.com.miller.muckup.store.views.fragments.DepartamentStoreFragment;
+import br.com.miller.muckup.store.views.fragments.OpinionFragment;
 
 public class Store extends AppCompatActivity implements
-        DepartamentFragment.OnFragmentInteractionListener,
+        DepartamentStoreFragment.OnFragmentInteractionListener,
         HomeStoreFragment.OnFragmentInteractionListener,
-        OpinionFragment.OnFragmentInteractionListener,
-        FirebaseImage.FirebaseImageListener,
-        Item.OnAdapterInteract {
+        OpinionFragment.OnFragmentInteractionListener {
 
     private ViewPager storePager;
 
@@ -83,66 +78,13 @@ public class Store extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
-        }
+        if (item.getItemId()  == android.R.id.home)
+            finish();
+
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onAdapterInteract(Bundle bundle) {
-
-        if(bundle != null){
-
-            Intent intent;
-
-            switch (bundle.getInt("type")){
-
-                case 0:
-
-                    intent = new Intent(this, DepartamentManager.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-
-                case 1:
-                    intent = new Intent(this, Medicine.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-
-                case 2:
-                    break;
-
-                case 3:
-                    break;
-
-                    default:
-                        break;
-
-            }
-        }
-    }
-
-    @Override
-    public void onImageDownloadSuccess() {
-
-    }
-
-    @Override
-    public void onImageDownloadError() {
-
-        Toast.makeText(this, "Erro ao obter imagem, tente novamente", Toast.LENGTH_LONG).show();
-
     }
 
     @Override
@@ -152,6 +94,22 @@ public class Store extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(Bundle bundle) {
+
+        Intent intent;
+
+        if(Objects.equals(bundle.getString("type"), OffersRecyclerAdapter.ID)){
+
+            intent = new Intent(this, Medicine.class);
+            intent.putExtra("data", bundle);
+            startActivity(intent);
+
+        }else if(Objects.equals(bundle.getString("code"), DepartamentStoreFragment.ID)){
+
+            intent = new Intent(this, DepartamentManager.class);
+            intent.putExtra("data", bundle);
+            startActivity(intent);
+
+        }
 
     }
 }

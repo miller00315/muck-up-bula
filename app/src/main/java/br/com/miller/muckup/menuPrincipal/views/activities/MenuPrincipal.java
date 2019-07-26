@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,21 +28,23 @@ import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
-import br.com.miller.muckup.menuPrincipal.adapters.Item.OnAdapterInteract;
+import br.com.miller.muckup.menuPrincipal.adapters.AdvRecyclerAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.SearchResultAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.StoreRecyclerAdapter;
+import br.com.miller.muckup.menuPrincipal.views.fragments.DepartamentsFragment;
 import br.com.miller.muckup.menuPrincipal.views.fragments.SearchFragment;
-import br.com.miller.muckup.menuPrincipal.views.fragments.OffersFragment;
 import br.com.miller.muckup.menuPrincipal.adapters.TabPagerAdapter;
 import br.com.miller.muckup.menuPrincipal.views.fragments.PerfilFragment;
 import br.com.miller.muckup.menuPrincipal.views.fragments.StoresFragment;
-import br.com.miller.muckup.store.activities.Store;
+import br.com.miller.muckup.store.views.activities.Store;
 
-public class MenuPrincipal extends AppCompatActivity implements SearchFragment.OnFragmentInteractionListener,
-        OffersFragment.OnFragmentInteractionListener,
+public class MenuPrincipal extends AppCompatActivity implements
+        SearchFragment.OnFragmentInteractionListener,
+        DepartamentsFragment.OnFragmentInteractionListener,
         StoresFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener,
         AlertContructor.OnAlertInteract,
-        FirebaseImage.FirebaseImageListener,
-        OnAdapterInteract {
+        FirebaseImage.FirebaseImageListener {
 
     private ViewPager menuPrincipal;
 
@@ -147,81 +150,40 @@ public class MenuPrincipal extends AppCompatActivity implements SearchFragment.O
 
             Intent intent;
 
-            switch (bundle.getInt("id")){
+           if(Objects.equals(bundle.getString("type"), AdvRecyclerAdapter.ID)){
 
-                case 2:
-                    intent = new Intent(this, Store.class);
-                    startActivity(intent);
-                    break;
+               intent = new Intent(this, Store.class);
+               intent.putExtra("data", bundle);
+               startActivity(intent);
 
-                case 3:
+           } else if(Objects.equals(bundle.getString("type"), StoreRecyclerAdapter.ID)){
 
-                    intent = new Intent(this, MyBuys.class);
-                    startActivity(intent);
+               intent = new Intent(this, Store.class);
+               intent.putExtra("data", bundle);
+               startActivity(intent);
 
-                    break;
+           } else if(Objects.equals(bundle.getString("code"), PerfilFragment.ID)){
 
-                case 4:
+               intent = new Intent(Intent.ACTION_GET_CONTENT);
+               intent.setType("image/*");
+               startActivityForResult(intent, Constants.INTERNAL_IMAGE);
 
-                    intent = new Intent(this, MyCart.class);
-                    startActivity(intent);
+           } else if(Objects.equals(bundle.getString("type"), SearchResultAdapter.ID)){
 
-                    break;
+               intent = new Intent(this, Medicine.class);
+               intent.putExtra("data", bundle);
+               startActivity(intent);
 
-                case 5:
+           }else if(Objects.equals(bundle.getString("code"), DepartamentsFragment.ID)){
 
-                    intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, Constants.INTERNAL_IMAGE);
+               intent = new Intent(this, DepartamentManager.class);
+               intent.putExtra("data", bundle);
+               startActivity(intent);
 
-                    break;
-
-                    default:
-                        break;
-            }
-        }
-    }
-
-
-    @Override
-    public void onAdapterInteract(Bundle bundle) {
-
-        if(bundle != null){
-
-            Intent intent;
-
-            switch(bundle.getInt("type")){
-
-                case 0:
-                    intent = new Intent(this, DepartamentManager.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-                case 1:
-                    intent = new Intent(this, Medicine.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-
-                case 2:
-                    intent = new Intent(this, Store.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-
-                case 3:
-                    intent = new Intent(this, DepartamentManager.class);
-                    intent.putExtra("data", bundle);
-                    startActivity(intent);
-                    break;
-
-                    default:
-                        break;
-
-            }
-
+           }
 
         }
+
     }
 
     @Override

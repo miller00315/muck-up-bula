@@ -1,5 +1,6 @@
-package br.com.miller.muckup.store.viewHolders;
+package br.com.miller.muckup.store.views.viewHolders;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,15 +9,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import br.com.miller.muckup.R;
+import br.com.miller.muckup.utils.FirebaseImageUtils;
 
-public class BuyViewHolder extends RecyclerView.ViewHolder {
+public class BuyViewHolder extends RecyclerView.ViewHolder implements FirebaseImageUtils.FirebaseImageTask {
 
     private TextView nameProduct, priceProduct, storeProduct;
     private RelativeLayout layoutProduct;
     private ImageView imageProduct;
+    private FirebaseImageUtils firebaseImageUtils;
 
     public BuyViewHolder(@NonNull View itemView) {
         super(itemView);
+
+        firebaseImageUtils = new FirebaseImageUtils(this);
 
         nameProduct = itemView.findViewById(R.id.name_product);
         priceProduct = itemView.findViewById(R.id.price_product);
@@ -64,4 +69,35 @@ public class BuyViewHolder extends RecyclerView.ViewHolder {
     public void setLayoutProduct(RelativeLayout layoutProduct) {
         this.layoutProduct = layoutProduct;
     }
+
+    @Override
+    public void onImageUploadSucces(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void onImageUploadFails() {
+
+    }
+
+    @Override
+    public void onImageDeleteSuccess() {
+
+    }
+
+    @Override
+    public void onImageDeleteFailed() {
+
+    }
+
+    @Override
+    public void onDownloadImageSuccess(Bitmap bitmap) { imageProduct.setImageBitmap(bitmap);}
+
+    @Override
+    public void onDowloadImageFail() {
+
+    }
+
+    @Override
+    public void downloaImage(String type, String city, String image) { firebaseImageUtils.downloadImage(type, city, image);}
 }

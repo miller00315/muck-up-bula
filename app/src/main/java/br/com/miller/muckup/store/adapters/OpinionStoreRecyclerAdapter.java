@@ -12,7 +12,7 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Evaluate;
-import br.com.miller.muckup.store.viewHolders.OpinionUserViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.OpinionUserViewHolder;
 import br.com.miller.muckup.utils.StringUtils;
 
 public class OpinionStoreRecyclerAdapter extends Item {

@@ -55,7 +55,7 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     private TextView addressBuy;
     private SharedPreferences sharedPreferences;
     private Bundle bundle;
-    private EditText editTextTroco;
+    private EditText editTextTroco, observacao;
     private RadioGroup payMethod, card_flag;
     private BuyPresenter buyPresenter;
     private RelativeLayout layoutLoading;
@@ -113,7 +113,7 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         textPayMode = findViewById(R.id.text_pay_mode);
         layoutLoading = findViewById(R.id.loading_layout);
         main_layout = findViewById(R.id.main_layout);
-
+        observacao = findViewById(R.id.solicitation_observation);
 
         payMethod = findViewById(R.id.pay_method);
 
@@ -213,9 +213,8 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -264,7 +263,9 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
                 payMethod.getCheckedRadioButtonId(),
                 editTextTroco.getText().toString(),
                 card_flag.getCheckedRadioButtonId(),
-                buyRecyclerAdapter.getOffers());
+                buyRecyclerAdapter.getOffers(),
+                sharedPreferences.getString(Constants.USER_NAME, ""),
+                observacao.getText().toString());
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,16 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.ImageHelper;
+import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.presenters.PerfilPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
 import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.utils.AlertDialogUtils;
 
-public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, AlertDialogUtils.AltertDialogUtilsTask {
+public class PerfilFragment extends Fragment implements
+        PerfilTasks.Presenter,
+        AlertDialogUtils.AltertDialogUtilsTask,
+        Item.OnAdapterInteract {
 
     private SharedPreferences sharedPreferences;
     private PerfilPresenter perfilPresenter;
@@ -36,8 +41,10 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
     private TextView name, phone, address, email, countCart, countBuy;
     private User user;
 
-    CardView buys;
-    CardView cart;
+    public static final String ID = PerfilFragment.class.getName();
+
+    private CardView buys;
+    private CardView cart;
 
     private OnFragmentInteractionListener mListener;
 
@@ -139,10 +146,8 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putInt("id", 5);
 
-                mListener.onFragmentInteraction(bundle);
-
+                onAdapterInteract(bundle);
             }
         });
 
@@ -273,6 +278,15 @@ public class PerfilFragment extends Fragment implements PerfilTasks.Presenter, A
 
     @Override
     public void onAlertNegative() {
+
+    }
+
+    @Override
+    public void onAdapterInteract(Bundle bundle) {
+
+        bundle.putString("code", ID);
+
+        mListener.onFragmentInteraction(bundle);
 
     }
 

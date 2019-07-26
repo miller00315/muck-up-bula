@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.viewHolders;
+package br.com.miller.muckup.store.views.viewHolders;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;

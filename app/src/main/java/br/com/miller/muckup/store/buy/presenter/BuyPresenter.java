@@ -29,7 +29,7 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
     private void generateSendValue(ArrayList<Offer> offers){
 
-        ArrayList<Integer> storesIds = new ArrayList<>();
+        ArrayList<String> storesIds = new ArrayList<>();
         ArrayList<Offer> sendValues = new ArrayList<>();
 
         double sendValue = 0.0;
@@ -38,7 +38,7 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
             if(storesIds.size() == 0){
 
-                storesIds.add(offer.getIdStore());
+                storesIds.add(offer.getStoreId());
 
                 sendValue += offer.getSendValue();
 
@@ -48,9 +48,9 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
                 boolean exist = false;
 
-                for(int storeId : storesIds){
+                for(String storeId : storesIds){
 
-                    if(storeId == offer.getStoreId()) {
+                    if(storeId.equals(offer.getStoreId())) {
                         exist = true;
                         break;
                     }
@@ -58,7 +58,7 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
                 }
 
                 if(!exist){
-                    storesIds.add(offer.getIdStore());
+                    storesIds.add(offer.getStoreId());
                     sendValues.add(offer);
                     sendValue += offer.getSendValue();
                 }
@@ -101,7 +101,7 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
     public void onOffersFailed() { presenter.onOffersFail(); }
 
     @Override
-    public void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardFlag, ArrayList<Offer> offers) {
+    public void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardFlag, ArrayList<Offer> offers, String userName, String observation) {
 
         boolean ok = true;
 
@@ -129,6 +129,6 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
         buyModel.generateBuys(offers, city, idFirebase, address, payMode,
                 Double.valueOf(StringUtils.cleanMoneyString(troco, Locale.getDefault())),
-                cardFlag);
+                cardFlag, userName, observation);
     }
 }

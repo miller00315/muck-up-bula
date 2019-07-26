@@ -1,34 +1,66 @@
-package br.com.miller.muckup.store.models;
+package br.com.miller.muckup.medicine.activities;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
-import br.com.miller.muckup.domain.Store;
-import br.com.miller.muckup.store.tasks.StoreTasks;
+import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.utils.FirebaseImageUtils;
 
-public class StoreModel implements FirebaseImageUtils.FirebaseImageTask {
+public class MedicineModel implements FirebaseImageUtils.FirebaseImageTask {
 
     private FirebaseDatabase firebaseDatabase;
-    private StoreTasks.Model model;
+    private MedicineTasks.Model model;
     private FirebaseImageUtils firebaseImageUtils;
 
-    public StoreModel(StoreTasks.Model model) {
+    public MedicineModel(MedicineTasks.Model model) {
+
         this.model = model;
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseImageUtils = new FirebaseImageUtils(this);
+
     }
 
-    public void getStore(String id, String city){
-        firebaseDatabase.getReference().child("stores")
+    public void getMedicineByStore(String city, String storeId, String departamentId, String offerId){
+
+        firebaseDatabase.getReference()
+                .child("storeDepartaments")
                 .child(city)
+                .child(storeId)
+                .child(departamentId)
+                .child("offers")
+                .child(offerId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists())
+                            model.onMedicineDataSuccess(dataSnapshot.getValue(Offer.class));
+                        else
+                            model.onMedicineDataFailed();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        model.onMedicineDataFailed();
+                    }
+                });
+
+    }
+
+    public void getMedicine(String city, String type, String id, String departamentId){
+
+        Log.w("this", departamentId);
+
+        firebaseDatabase.getReference()
+                .child("offersDepartaments")
+                .child(city)
+                .child(departamentId)
+                .child(type)
                 .child(id)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -36,56 +68,21 @@ public class StoreModel implements FirebaseImageUtils.FirebaseImageTask {
 
                         if(dataSnapshot.exists()){
 
-                            Store store = dataSnapshot.getValue(Store.class);
-
-                            model.onStoreSuccess(store);
+                            model.onMedicineDataSuccess(dataSnapshot.getValue(Offer.class));
 
                         }else{
-                            model.onStoreFailed();
+
+                            model.onMedicineDataFailed();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        model.onStoreFailed();
+
+                        model.onMedicineDataFailed();
                     }
                 });
-    }
 
-    public void getStores(String city){
-        firebaseDatabase.getReference().child("stores").child(city)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        if(dataSnapshot.exists()){
-
-                            ArrayList<Store> stores = new ArrayList<>();
-
-                            for(DataSnapshot child : dataSnapshot.getChildren()){
-
-                                Store store = child.getValue(Store.class);
-
-                                if(store != null)
-                                    stores.add(store);
-
-                            }
-
-                            model.onStoresSuccess(stores);
-
-                        }else{
-
-                            model.onStoreFailed();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        model.onStoreFailed();
-                    }
-                });
     }
 
     @Override
@@ -101,11 +98,11 @@ public class StoreModel implements FirebaseImageUtils.FirebaseImageTask {
     public void onImageDeleteFailed() { }
 
     @Override
-    public void onDownloadImageSuccess(Bitmap bitmap) { model.onDownloadImageSuccess(bitmap); }
+    public void onDownloadImageSuccess(Bitmap bitmap) { model.onImageDownloadSuccess(bitmap); }
 
     @Override
-    public void onDowloadImageFail() { model.onDownloadImageFailed(); }
+    public void onDowloadImageFail() { model.onImageDownloadFailed(); }
 
     @Override
-    public void downloaImage(String type, String city, String image) { firebaseImageUtils.downloadImage(type, city, image);}
+    public void downloaImage(String type, String city, String image) { firebaseImageUtils.downloadImage(type, city, image); }
 }

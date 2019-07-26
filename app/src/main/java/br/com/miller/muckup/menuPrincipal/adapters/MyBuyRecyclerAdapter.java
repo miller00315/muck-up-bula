@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.domain.Buy;
-import br.com.miller.muckup.store.viewHolders.MyBuysViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.MyBuysViewHolder;
 import br.com.miller.muckup.utils.StringUtils;
 
 public class MyBuyRecyclerAdapter extends Item {

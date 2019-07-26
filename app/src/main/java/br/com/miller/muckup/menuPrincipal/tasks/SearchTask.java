@@ -2,6 +2,7 @@ package br.com.miller.muckup.menuPrincipal.tasks;
 
 import java.util.ArrayList;
 
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.domain.Offer;
 
 public interface SearchTask {
@@ -18,6 +19,10 @@ public interface SearchTask {
 
         void emptySearch();
 
+        void onDepartamentsSuccess(ArrayList<Departament> departaments);
+
+        void onDepartamentsFailed();
+
     }
 
     interface Model{
@@ -29,11 +34,15 @@ public interface SearchTask {
         void onSuggetionsSuccess(String[] suggestions);
 
         void onSuggestionFailed();
+
+        void onDepartamentsSuccess(ArrayList<Departament> departaments);
+
+        void onDepartamentsFailed();
     }
 
     interface View{
 
-        void makeSearch(String search, String city);
+        void makeSearch(String search, String city, Object o);
 
         void getSuggetions(String city);
     }

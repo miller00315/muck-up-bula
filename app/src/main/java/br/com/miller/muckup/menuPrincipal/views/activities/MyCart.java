@@ -31,7 +31,7 @@ import br.com.miller.muckup.store.buy.view.BuyActivity;
 
 public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         FirebaseCart.FirebaseCartListener,
-        AlertContructor.OnAlertInteract {
+        AlertContructor.OnAlertInteract{
 
     private boolean isFabOpen;
     private RecyclerView recyclerCart;
@@ -47,7 +47,7 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cart);
 
-        offersRecyclerAdapter = new OffersRecyclerAdapter(this);
+        offersRecyclerAdapter = new OffersRecyclerAdapter(this, this);
         firebaseCart = new FirebaseCart(this);
 
         isFabOpen = false;

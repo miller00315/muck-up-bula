@@ -1,5 +1,7 @@
 package br.com.miller.muckup.store.presenters;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 import br.com.miller.muckup.domain.Store;
@@ -13,7 +15,6 @@ public class StorePresenter implements StoreTasks.Model, StoreTasks.View {
 
     public StorePresenter(StoreTasks.Presenter presenter) {
         this.presenter = presenter;
-
         storeModel = new StoreModel(this);
     }
 
@@ -24,10 +25,13 @@ public class StorePresenter implements StoreTasks.Model, StoreTasks.View {
     public void onStoreSuccess(Store store) { presenter.onStoreSuccess(store); }
 
     @Override
-    public void onStoreFailed() { presenter.onStoreFailed(); }
+    public void onDownloadImageSuccess(Bitmap bitmap) { presenter.onDownloadImageSuccess(bitmap); }
 
     @Override
-    public void onStoresFailed() { presenter.onStoresFailed();}
+    public void onDownloadImageFailed() { presenter.onDownloadImageFailed(); }
+
+    @Override
+    public void onStoreFailed() { presenter.onStoreFailed(); }
 
     @Override
     public void getStore(String id, String city) {
@@ -38,4 +42,7 @@ public class StorePresenter implements StoreTasks.Model, StoreTasks.View {
 
     @Override
     public void getStores(String city) { storeModel.getStores(city); }
+
+    @Override
+    public void getImage(String type, String city, String image) { storeModel.downloaImage(type, city, image);}
 }

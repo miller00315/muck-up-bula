@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +21,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.helpers.SearchHelper;
 import br.com.miller.muckup.menuPrincipal.adapters.AdvRecyclerAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.SearchResultAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.SpinnerArrayAdapter;
 import br.com.miller.muckup.menuPrincipal.presenters.AdvPresenter;
 import br.com.miller.muckup.menuPrincipal.presenters.SearchPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.AdvTasks;
@@ -31,13 +35,11 @@ import br.com.miller.muckup.menuPrincipal.tasks.SearchTask;
 import br.com.miller.muckup.domain.Adv;
 import br.com.miller.muckup.domain.Offer;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
-public class SearchFragment extends Fragment implements SearchTask.Presenter, AdvTasks.Presenter {
+
+public class SearchFragment extends Fragment implements
+        SearchTask.Presenter,
+        AdvTasks.Presenter,
+        Item.OnAdapterInteract {
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,15 +63,19 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
 
     private SearchPresenter searchPresenter;
 
+    private Spinner spinner;
+
+    public static final String ID = SearchFragment.class.getName();
+
     public SearchFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchResultAdapter = new SearchResultAdapter(getContext());
+        searchResultAdapter = new SearchResultAdapter(this, getContext());
 
-        advRecyclerAdapter = new AdvRecyclerAdapter(getContext());
+        advRecyclerAdapter = new AdvRecyclerAdapter(this, getContext());
 
         searchPresenter = new SearchPresenter(this);
 
@@ -89,6 +95,7 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
         recyclerAdv = view.findViewById(R.id.recycler_adv);
         header = view.findViewById(R.id.header);
         loading = view.findViewById(R.id.loading_layout);
+        spinner = view.findViewById(R.id.spinner_departament);
 
         bindViews(view);
 
@@ -101,7 +108,7 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
 
         if(searchView != null){
 
-                searchPresenter.getSuggetions(sharedPreferences.getString(Constants.USER_CITY, ""));
+            searchPresenter.getSuggetions(sharedPreferences.getString(Constants.USER_CITY, ""));
 
             if(advRecyclerAdapter.getItemCount() > 0) advRecyclerAdapter.clear();
                 advPresenter.getAdvs(sharedPreferences.getString(Constants.USER_CITY, ""));
@@ -135,8 +142,8 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
 
         searchView.clearFocus();
 
-        header.setText("Bem vindo ".concat(sharedPreferences.getString(Constants.USER_NAME, "").substring(0,1).toUpperCase() +
-                sharedPreferences.getString(Constants.USER_NAME, "").substring(1)).concat("! Procure abaixo o que você precisa."));
+        header.setText(getResources().getString(R.string.ola).concat(" ").concat(sharedPreferences.getString(Constants.USER_NAME, "").substring(0,1).toUpperCase() +
+                sharedPreferences.getString(Constants.USER_NAME, "").substring(1)).concat(getResources().getString(R.string.escolha_o_departamento)));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -145,7 +152,7 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
                 if(searchResultAdapter.getItemCount() > 0)
                     searchResultAdapter.clear();
 
-                searchPresenter.makeSearch(s, sharedPreferences.getString(Constants.USER_CITY, ""));
+                searchPresenter.makeSearch(s, sharedPreferences.getString(Constants.USER_CITY, ""), spinner.getSelectedItem());
 
                 recyclerResult.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.VISIBLE);
@@ -174,7 +181,7 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
 
                 if(searchResultAdapter.getItemCount() > 0) searchResultAdapter.clear();
 
-                searchPresenter.makeSearch(searchAutoComplete.getAdapter().getItem(i).toString(), sharedPreferences.getString(Constants.USER_CITY, ""));
+                searchPresenter.makeSearch(searchAutoComplete.getAdapter().getItem(i).toString(), sharedPreferences.getString(Constants.USER_CITY, ""), spinner.getSelectedItem());
 
                 recyclerResult.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.VISIBLE);
@@ -188,7 +195,7 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
 
                 if(searchResultAdapter.getItemCount() > 0) searchResultAdapter.clear();
 
-                searchPresenter.makeSearch(searchAutoComplete.getAdapter().getItem(i).toString(), sharedPreferences.getString(Constants.USER_CITY, ""));
+                searchPresenter.makeSearch(searchAutoComplete.getAdapter().getItem(i).toString(), sharedPreferences.getString(Constants.USER_CITY, ""), spinner.getSelectedItem());
 
                 recyclerResult.setVisibility(View.INVISIBLE);
                 loading.setVisibility(View.VISIBLE);
@@ -243,8 +250,6 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
             loading.setVisibility(View.INVISIBLE);
             recyclerAdv.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     @Override
@@ -280,10 +285,29 @@ public class SearchFragment extends Fragment implements SearchTask.Presenter, Ad
     public void emptySearch() { Toast.makeText(getContext(), "O campo de busca está vazio, insira algo.", Toast.LENGTH_SHORT).show(); }
 
     @Override
+    public void onDepartamentsSuccess(ArrayList<Departament> departaments) {
+
+        SpinnerArrayAdapter spinnerArrayAdapter = SpinnerArrayAdapter.newInstance(getContext(), departaments);
+
+        spinner.setAdapter(spinnerArrayAdapter);
+    }
+
+    @Override
+    public void onDepartamentsFailed() { }
+
+    @Override
     public void onAdvsSuccess(ArrayList<Adv> advs) { advRecyclerAdapter.setArray(advs);}
 
     @Override
     public void onAdvFialed() { }
+
+    @Override
+    public void onAdapterInteract(Bundle bundle) {
+
+        bundle.putString("code", ID);
+
+        mListener.onFragmentInteraction(bundle);
+    }
 
     public interface OnFragmentInteractionListener {
 

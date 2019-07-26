@@ -300,6 +300,39 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:text="@string/observacao"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:id="@+id/solicitation_observation"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:hint="@string/obs"
+                        android:background="@drawable/background_input_rounded"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
                         android:text="@string/horário_do_pedido"
                         android:textColor="#000000"
                         android:textStyle="bold"

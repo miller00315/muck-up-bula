@@ -1,6 +1,7 @@
 package br.com.miller.muckup.store.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,24 +15,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.domain.Store;
 import br.com.miller.muckup.store.presenters.StorePresenter;
 import br.com.miller.muckup.store.tasks.StoreTasks;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeStoreFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * create an instance of this fragment.
- */
-public class HomeStoreFragment extends Fragment implements StoreTasks.Presenter{
+public class HomeStoreFragment extends Fragment implements
+        StoreTasks.Presenter {
 
     private OnFragmentInteractionListener mListener;
-
-    private FirebaseImage firebaseImage;
-
     private StorePresenter storePresenter;
     private TextView storeCity, storeDescription,storeTime, classification;
     private ImageView storeImage;
@@ -44,8 +35,6 @@ public class HomeStoreFragment extends Fragment implements StoreTasks.Presenter{
         super.onCreate(savedInstanceState);
 
         storePresenter = new StorePresenter(this);
-
-        firebaseImage = new FirebaseImage(getContext());
 
     }
 
@@ -109,19 +98,26 @@ public class HomeStoreFragment extends Fragment implements StoreTasks.Presenter{
                 storeDescription.setText(store.getDescription());
                 storeTime.setText(store.getTime());
                 classification.setText(String.valueOf(store.getClassification()));
-                firebaseImage.downloadFirebaseImage("stores", store.getCity(), store.getImage(), storeImage);
+
+                storePresenter.getImage("stores", store.getCity(), store.getImage());
+
             }
 
             else Toast.makeText(getContext(), "Problemas ao encontrar a loja", Toast.LENGTH_LONG).show();
 
-
     }
+
+    @Override
+    public void onDownloadImageSuccess(Bitmap bitmap) { storeImage.setImageBitmap(bitmap);}
+
+    @Override
+    public void onDownloadImageFailed() { Toast.makeText(getContext(), "Erro ao baixar imagem.", Toast.LENGTH_SHORT).show();}
 
     @Override
     public void onStoreFailed() { Toast.makeText(getContext(), "Problemas ao encontrar a loja", Toast.LENGTH_LONG).show(); }
 
     @Override
-    public void onStoresFailed() { }
+    public void onStoresFailed() { Toast.makeText(getContext(), "Erro ao obter dados", Toast.LENGTH_SHORT).show(); }
 
     public interface OnFragmentInteractionListener { void onFragmentInteraction(String storeName);}
 }

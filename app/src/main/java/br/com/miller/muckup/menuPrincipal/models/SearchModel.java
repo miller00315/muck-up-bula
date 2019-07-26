@@ -1,14 +1,18 @@
 package br.com.miller.muckup.menuPrincipal.models;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.menuPrincipal.tasks.SearchTask;
 import br.com.miller.muckup.domain.Offer;
 
@@ -22,10 +26,10 @@ public class SearchModel {
         firebaseDatabase = FirebaseDatabase.getInstance();
     }
 
-    public void getSugestions(String city){
+    public void getSugestions(final String city){
 
         firebaseDatabase.getReference()
-                .child("offers")
+                .child("searchHint")
                 .child(city)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -33,13 +37,15 @@ public class SearchModel {
 
                         if(dataSnapshot.exists()){
 
+                            getDepartaments(city);
+
                             String[] temp = new String[(int) dataSnapshot.getChildrenCount()];
 
                             int i = 0;
 
                             for(DataSnapshot suggestion : dataSnapshot.getChildren()){
 
-                                temp[i] = suggestion.getKey();
+                                temp[i] = Objects.requireNonNull(suggestion.child("title").getValue()).toString();
 
                                 i++;
                             }
@@ -56,11 +62,12 @@ public class SearchModel {
     }
 
 
-    public void searchFirebase(String search, String city){
+    public void searchFirebase(String search, String city, String departamentId){
 
         firebaseDatabase.getReference()
-                .child("offers")
+                .child("offersDepartaments")
                 .child(city)
+                .child(departamentId)
                 .child(search)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -89,4 +96,43 @@ public class SearchModel {
                 });
 
     }
+
+    public void getDepartaments(String city){
+
+        firebaseDatabase.getReference()
+                .child("avaliablesDepartaments")
+                .child(city)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.exists()){
+
+                            ArrayList<Departament> departaments = new ArrayList<>();
+
+                            for(DataSnapshot child : dataSnapshot.getChildren()){
+
+                                Departament departament = child.getValue(Departament.class);
+
+                                departaments.add(departament);
+                            }
+
+                           model.onDepartamentsSuccess(departaments);
+
+                        }else{
+
+                            model.onDepartamentsFailed();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        model.onDepartamentsFailed();
+                    }
+                });
+
+    }
+
 }

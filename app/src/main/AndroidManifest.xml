@@ -22,7 +22,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity android:name=".evaluate.view.EvaluateAct" />
         <activity android:name=".passwordRecovery.view.PasswordRecovery" />
-        <activity android:name=".store.activities.ManagerBuy" />
+        <activity android:name=".store.views.activities.ManagerBuy" />
         <activity android:name=".menuPrincipal.views.activities.DepartamentManager" />
         <activity android:name=".menuPrincipal.views.activities.MyBuys" />
         <activity android:name=".menuPrincipal.views.activities.MyCart" />
@@ -31,7 +31,7 @@
             android:label="@string/title_activity_buy"
             android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity
-            android:name=".store.activities.Store"
+            android:name=".store.views.activities.Store"
             android:label="@string/title_activity_store" />
         <activity android:name=".medicine.activities.Medicine" />
         <activity

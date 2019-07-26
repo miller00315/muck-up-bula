@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,27 +27,23 @@ import java.util.Objects;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseCart;
-import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.api.FirebaseOffer;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.buy.view.BuyActivity;
-import br.com.miller.muckup.store.activities.Store;
+import br.com.miller.muckup.store.views.activities.Store;
 
 public class Medicine extends AppCompatActivity implements
         AlertContructor.OnAlertInteract,
-        FirebaseImage.FirebaseImageListener,
         FirebaseCart.FirebaseCartListener,
-        FirebaseOffer.FirebaseOfferListener {
+        MedicineTasks.Presenter{
 
     private FirebaseCart firebaseCart;
     private ImageView imageMedicine;
     private Offer offer;
     private Bundle bundle;
-    private FirebaseOffer firebaseOffer;
+    private MedicinePresenter medicinePresenter;
     private AlertContructor alertContructor;
-    private FirebaseImage firebaseImage;
     private SharedPreferences sharedPreferences;
     private Button buyNow;
     private TextView medicineStore, medicineName, medicineIndication,
@@ -70,10 +68,8 @@ public class Medicine extends AppCompatActivity implements
 
         alertContructor = new AlertContructor(this);
 
-        firebaseImage = new FirebaseImage(this);
-        firebaseOffer = new FirebaseOffer(this);
+        medicinePresenter = new MedicinePresenter(this);
         firebaseCart = new FirebaseCart(this);
-
 
         bundle = getIntent().getBundleExtra("data");
 
@@ -99,7 +95,7 @@ public class Medicine extends AppCompatActivity implements
          valueSendMedicine = findViewById(R.id.value_send_medicine);
          imageMedicine = findViewById(R.id.image_medicine);
 
-         firebaseOffer.firebaseGetOffer(bundle.getString("city"), bundle.getString("title"), bundle.getString("id_offer"));
+         medicinePresenter.getMedicine(bundle);
 
      }
 
@@ -203,7 +199,7 @@ public class Medicine extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         Intent intent = new Intent(Medicine.this, BuyActivity.class);
 
-        bundle.putInt("id",offer.getId());
+        bundle.putString("id",offer.getId());
         bundle.putString("city",offer.getCity());
         bundle.putString("type",offer.getTitle().toLowerCase());
         bundle.putInt("quantity", offer.getQuantity());
@@ -213,12 +209,10 @@ public class Medicine extends AppCompatActivity implements
         startActivityForResult(intent, 11);
 
     }
-
-
     public void goToStore(View view) {
 
         Bundle bundle = new Bundle();
-        bundle.putString("id_store", String.valueOf(offer.getIdStore()));
+        bundle.putString("id_store", String.valueOf(offer.getStoreId()));
         bundle.putString("city", offer.getCity());
 
         Intent intent = new Intent(this, Store.class);
@@ -238,55 +232,14 @@ public class Medicine extends AppCompatActivity implements
     }
 
     @Override
-    public void firebaseOfferReceiver(Offer offer) {
-
-
-        if(offer != null){
-
-            this.offer = offer;
-
-            buyNow.setText("Compre agora - R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getValue())));
-            valueSendMedicine.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getSendValue())));
-            firebaseImage.downloadFirebaseImage("offers",offer.getCity(),offer.getImage(), imageMedicine);
-            medicineName.setText(offer.getDescription());
-            Objects.requireNonNull(getSupportActionBar()).setTitle(offer.getTitle());
-            medicineActive.setText(offer.getActive());
-            medicineIndication.setText(offer.getIndication());
-            medicineNoIndication.setText(offer.getNoIndication());
-            medicineStore.setText(offer.getStore());
-
-        }else{
-            Toast.makeText(this, "Erro ao procurar oferta, tente novamente", Toast.LENGTH_LONG).show();
-             finish();
-        }
-    }
-
-    @Override
-    public void onImageDownloadSuccess() {
-
-    }
-
-    @Override
-    public void onImageDownloadError() {
-
-    }
-
-    @Override
     public void onAlertPositive(Object object) {
 
-        if(object != null){
-
-            defineQuantity(1);
-
-        }
+        if(object != null){ defineQuantity(1); }
 
     }
 
     @Override
-    public void onAlertNegative() {
-
-
-    }
+    public void onAlertNegative() { }
 
     @Override
     public void onAlertError() {
@@ -310,12 +263,35 @@ public class Medicine extends AppCompatActivity implements
     }
 
     @Override
-    public void firebaseCartListenerReceiverOffers(ArrayList<Offer> offers) {
+    public void firebaseCartListenerReceiverOffers(ArrayList<Offer> offers) { }
+
+    @Override
+    public void firebaseCartOnItemDeleted(boolean status) { }
+
+    @Override
+    public void onMedicineDataSuccess(Offer offer) {
+
+        this.offer = offer;
+
+        buyNow.setText("Compre agora - R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getValue())));
+        valueSendMedicine.setText("R$ ".concat(String.format(Locale.getDefault(),"%.2f",offer.getSendValue())));
+        medicineName.setText(offer.getDescription());
+        Objects.requireNonNull(getSupportActionBar()).setTitle(offer.getTitle());
+        medicineActive.setText(offer.getActive());
+        medicineIndication.setText(offer.getIndication());
+        medicineNoIndication.setText(offer.getNoIndication());
+        medicineStore.setText(offer.getStore());
+
+        medicinePresenter.downloadImage("offers", offer.getCity(), offer.getImage());
 
     }
 
     @Override
-    public void firebaseCartOnItemDeleted(boolean status) {
+    public void onMedicineDataFailed() { }
 
-    }
+    @Override
+    public void onImageDownloadSuccess(Bitmap bitmap) { imageMedicine.setImageBitmap(bitmap);}
+
+    @Override
+    public void onImageDownloadFailed() { Toast.makeText(this, "Erro ao realizar download da image", Toast.LENGTH_SHORT).show(); }
 }

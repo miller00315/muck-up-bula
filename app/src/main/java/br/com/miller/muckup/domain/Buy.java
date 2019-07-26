@@ -13,6 +13,7 @@ public class Buy {
     private int cardFlag;
     private double troco;
     private String storeName;
+    private String userName;
     private String storeCity;
     private String userCity;
     private String userId;
@@ -21,6 +22,32 @@ public class Buy {
     private Date solicitationDate, deliverDate, receiverDate;
     private ArrayList<Offer> offers;
     private String address;
+    private String observations;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getObservations() {
+        return observations;
+    }
+
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
 
     public int getCardFlag() {
         return cardFlag;

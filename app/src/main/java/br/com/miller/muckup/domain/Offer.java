@@ -1,9 +1,14 @@
 package br.com.miller.muckup.domain;
 
-public class Offer {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private int id;
-    private int idStore;
+import java.util.HashMap;
+import java.util.Objects;
+
+public class Offer implements Parcelable {
+
+    private String id;
     private double value;
     private int quantity;
     private String description;
@@ -16,17 +21,9 @@ public class Offer {
     private String noIndication;
     private String active;
     private String store;
-    private int storeId;
-    private int departamentId;
+    private String storeId;
+    private String departamentId;
     private String cartId;
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 
     public String getCartId() {
         return cartId;
@@ -36,12 +33,44 @@ public class Offer {
         this.cartId = cartId;
     }
 
-    public int getDepartamentId() {
-        return departamentId;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public void setDepartamentId(int departamentId) {
-        this.departamentId = departamentId;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getType() {
@@ -60,28 +89,20 @@ public class Offer {
         this.city = city;
     }
 
-    public String getStore() {
-        return store;
+    public double getSendValue() {
+        return sendValue;
     }
 
-    public void setStore(String store) {
-        this.store = store;
+    public void setSendValue(double sendValue) {
+        this.sendValue = sendValue;
     }
 
-    public int getStoreId() {
-        return storeId;
+    public String getImage() {
+        return image;
     }
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
-    }
-
-    public int getIdStore() {
-        return idStore;
-    }
-
-    public void setIdStore(int idStore) {
-        this.idStore = idStore;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getIndication() {
@@ -108,52 +129,112 @@ public class Offer {
         this.active = active;
     }
 
-    public String getImage() {
-        return image;
+    public String getStore() {
+        return store;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setStore(String store) {
+        this.store = store;
     }
 
-    public int getId() {
-        return id;
+    public String getStoreId() {
+        return storeId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 
-    public double getValue() {
-        return value;
+    public String getDepartamentId() {
+        return departamentId;
     }
 
-    public void setValue(double value) {
-        this.value =  value;
+    public void setDepartamentId(String departamentId) {
+        this.departamentId = departamentId;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeDouble(this.value);
+        dest.writeInt(this.quantity);
+        dest.writeString(this.description);
+        dest.writeString(this.title);
+        dest.writeString(this.type);
+        dest.writeString(this.city);
+        dest.writeDouble(this.sendValue);
+        dest.writeString(this.image);
+        dest.writeString(this.indication);
+        dest.writeString(this.noIndication);
+        dest.writeString(this.active);
+        dest.writeString(this.store);
+        dest.writeString(this.storeId);
+        dest.writeString(this.departamentId);
+        dest.writeString(this.cartId);
     }
 
-    public String getTitle() {
-        return title;
+    public Offer() {
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public Offer(Object o){
+
+        if(o instanceof HashMap){
+
+            HashMap hashMap = (HashMap) o;
+
+            this.id = Objects.requireNonNull(hashMap.get("id")).toString();
+            this.value = Double.valueOf(Objects.requireNonNull(hashMap.get("value")).toString());
+            this.quantity = Integer.valueOf(Objects.requireNonNull(hashMap.get("quantity")).toString());
+            this.description = Objects.requireNonNull(hashMap.get("description")).toString();
+            this.title = Objects.requireNonNull(hashMap.get("title")).toString();
+            this.type = Objects.requireNonNull(hashMap.get("type")).toString();
+            this.city = Objects.requireNonNull(hashMap.get("city")).toString();
+            this.sendValue = Double.valueOf(Objects.requireNonNull(hashMap.get("sendValue")).toString());
+            this.image = Objects.requireNonNull(hashMap.get("image")).toString();
+            this.indication = Objects.requireNonNull(hashMap.get("indication")).toString();
+            this.noIndication = Objects.requireNonNull(hashMap.get("noIndication")).toString();
+            this.active = Objects.requireNonNull(hashMap.get("active")).toString();
+            this.store = Objects.requireNonNull(hashMap.get("store")).toString();
+            this.storeId = Objects.requireNonNull(hashMap.get("storeId")).toString();
+            this.departamentId = Objects.requireNonNull(hashMap.get("departamentId")).toString();
+
+        }
     }
 
-    public double getSendValue() {
-        return sendValue;
+    protected Offer(Parcel in) {
+        this.id = in.readString();
+        this.value = in.readDouble();
+        this.quantity = in.readInt();
+        this.description = in.readString();
+        this.title = in.readString();
+        this.type = in.readString();
+        this.city = in.readString();
+        this.sendValue = in.readDouble();
+        this.image = in.readString();
+        this.indication = in.readString();
+        this.noIndication = in.readString();
+        this.active = in.readString();
+        this.store = in.readString();
+        this.storeId = in.readString();
+        this.departamentId = in.readString();
+        this.cartId = in.readString();
     }
 
-    public void setSendValue(double sendValue) {
-        this.sendValue = sendValue;
-    }
+    public static final Parcelable.Creator<Offer> CREATOR = new Parcelable.Creator<Offer>() {
+        @Override
+        public Offer createFromParcel(Parcel source) {
+            return new Offer(source);
+        }
+
+        @Override
+        public Offer[] newArray(int size) {
+            return new Offer[size];
+        }
+    };
 
 }

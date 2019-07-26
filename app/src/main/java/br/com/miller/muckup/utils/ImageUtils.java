@@ -3,6 +3,7 @@ package br.com.miller.muckup.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,11 @@ public class ImageUtils {
 
     }
 
+    public static Bitmap convertByteArraytoBitmap(byte[] bytes){
+
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
     public static void setImageFromMemory(Intent data, Activity act, ImageView imageView){
 
         Uri uri;
@@ -56,8 +62,6 @@ public class ImageUtils {
 
             }
         }
-
-
 
     }
 }

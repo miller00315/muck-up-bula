@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.activities;
+package br.com.miller.muckup.store.views.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

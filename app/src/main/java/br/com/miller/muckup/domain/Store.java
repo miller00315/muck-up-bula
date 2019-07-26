@@ -1,19 +1,18 @@
 package br.com.miller.muckup.domain;
 
-import java.util.ArrayList;
 
 public class Store {
 
     private int id;
     private String name;
     private String description;
-    private ArrayList<Departament> departaments;
     private String image;
     private String address;
     private String time;
     private String phone;
     private String city;
     private int classification = 0;
+    private double sendValue;
 
     public int getClassification() { return classification; }
 
@@ -83,11 +82,11 @@ public class Store {
         this.description = description;
     }
 
-    public ArrayList<Departament> getDepartaments() {
-        return departaments;
+    public double getSendValue() {
+        return sendValue;
     }
 
-    public void setDepartaments(ArrayList<Departament> departaments) {
-        this.departaments = departaments;
+    public void setSendValue(double sendValue) {
+        this.sendValue = sendValue;
     }
 }

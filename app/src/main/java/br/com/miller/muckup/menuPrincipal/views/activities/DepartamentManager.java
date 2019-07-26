@@ -6,23 +6,28 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseOffer;
+import br.com.miller.muckup.domain.Departament;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
-import br.com.miller.muckup.domain.Offer;
+import br.com.miller.muckup.menuPrincipal.presenters.DepartamentManagerPresenter;
+import br.com.miller.muckup.menuPrincipal.tasks.DepartamentManagerTask;
 
-public class DepartamentManager extends AppCompatActivity implements Item.OnAdapterInteract, FirebaseOffer.FirebaseOfferListener {
+public class DepartamentManager extends AppCompatActivity implements
+        Item.OnAdapterInteract,
+        DepartamentManagerTask.Presenter {
 
     private RecyclerView recyclerView;
     private OffersRecyclerAdapter offersRecyclerAdapter;
     private Bundle bundle;
-    private FirebaseOffer firebaseOffer;
+    private DepartamentManagerPresenter departamentManagerPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +37,11 @@ public class DepartamentManager extends AppCompatActivity implements Item.OnAdap
         Toolbar toolbar =  findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recycler_cart_manager);
 
-        firebaseOffer = new FirebaseOffer(this);
+        departamentManagerPresenter = new DepartamentManagerPresenter(this);
 
         bundle = getIntent().getBundleExtra("data");
 
-        offersRecyclerAdapter = new OffersRecyclerAdapter(this);
+        offersRecyclerAdapter = new OffersRecyclerAdapter(this, this);
 
         setSupportActionBar(toolbar);
 
@@ -54,20 +59,7 @@ public class DepartamentManager extends AppCompatActivity implements Item.OnAdap
 
             Objects.requireNonNull(getSupportActionBar()).setTitle(bundle.getString("name_departament", ""));
 
-            if(bundle.containsKey("id_store") && bundle.containsKey("id_departament") && bundle.containsKey("city")){
-
-                firebaseOffer.firebaseGetOffersByDepartamentandStore(bundle.getString("city"),
-                        String.valueOf(bundle.getInt("id_store")),
-                        String.valueOf(bundle.getInt("id_departament")),
-                        offersRecyclerAdapter
-                        );
-
-            }else if(bundle.containsKey("id_departament") && bundle.containsKey("city")) {
-
-                firebaseOffer.FirebaseGetOffers(bundle.getString("city"),
-                        String.valueOf(bundle.getInt("id_departament")),
-                        offersRecyclerAdapter);
-            }
+            departamentManagerPresenter.getDepartamentCheck(bundle);
 
         }
 
@@ -94,22 +86,32 @@ public class DepartamentManager extends AppCompatActivity implements Item.OnAdap
     @Override
     public void onAdapterInteract(Bundle bundle) {
 
-        switch (bundle.getInt("type")){
+        bundle.putString("code", this.bundle.getString("code"));
 
-            case 1:
-                Intent intent = new Intent(this, Medicine.class);
-                intent.putExtra("data", bundle);
-                startActivity(intent);
-                break;
+        Intent intent = new Intent(this, Medicine.class);
+        intent.putExtra("data", bundle);
 
-                default:
-                    break;
-        }
+        startActivity(intent);
 
     }
+
 
     @Override
-    public void firebaseOfferReceiver(Offer offer) {
+    public void onDepartamentsSuccess(ArrayList<Departament> departaments) { }
 
-    }
+    @Override
+    public void onDepartamentsStoreSuccess(ArrayList<Departament> departaments) { }
+
+    @Override
+    public void onDepartamentsStoreFailed() { }
+
+    @Override
+    public void onSingleDepartamenteFailed() { }
+
+    @Override
+    public void onSingleDepartmentSuccess(Departament departament) { offersRecyclerAdapter.setArray(departament.getOffers()); }
+
+    @Override
+    public void onDepartmentsFailed() { }
+
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.menuPrincipal.viewHolders.ViewHolderAdv;
+import br.com.miller.muckup.menuPrincipal.views.viewHolders.ViewHolderAdv;
 import br.com.miller.muckup.domain.Adv;
 
 public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseImageListener {
@@ -21,21 +21,13 @@ public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseIm
 
     private Context context;
 
-    private FirebaseImage firebaseImage;
+    public static String ID = AdvRecyclerAdapter.class.getName();
 
-    public AdvRecyclerAdapter(Context context) {
-
-        if(context instanceof OnAdapterInteract) {
+    public AdvRecyclerAdapter( Item.OnAdapterInteract onAdapterInteract, Context context) {
 
             this.context = context;
-            listener = (OnAdapterInteract) context;
+            listener = onAdapterInteract;
             advs = new ArrayList<>();
-            firebaseImage = new FirebaseImage(context);
-
-        }else{
-            throw new RuntimeException(context.toString()
-                    + " must implement OnAdapter");
-        }
 
     }
 
@@ -53,16 +45,11 @@ public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseIm
 
             final ViewHolderAdv viewHolderAdv = (ViewHolderAdv) viewHolder;
 
-            firebaseImage.downloadFirebaseImage(advs.get(i).getType(),
-                    advs.get(i).getCity(),
-                    advs.get(i).getImage(),
-                    ((ViewHolderAdv) viewHolder).getImageAdv());
+            viewHolderAdv.downloaImage(advs.get(i).getType(), advs.get(i).getCity(), advs.get(i).getImage());
 
-                viewHolderAdv.getImageAdv().setOnClickListener(new View.OnClickListener() {
+            viewHolderAdv.getImageAdv().setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        showItem(viewHolderAdv.getAdapterPosition());
-                    }
+                    public void onClick(View v) { showItem(viewHolderAdv.getAdapterPosition()); }
                 });
 
 
@@ -78,10 +65,9 @@ public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseIm
     public void showItem(int i) {
 
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 2);
+        bundle.putString("type", ID);
         bundle.putString("id_store", String.valueOf(advs.get(i).getStoreId()));
         bundle.putString("city", advs.get(i).getCity());
-
 
         listener.onAdapterInteract(bundle);
 

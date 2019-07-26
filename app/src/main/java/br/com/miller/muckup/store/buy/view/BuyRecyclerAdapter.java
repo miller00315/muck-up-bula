@@ -12,23 +12,20 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Offer;
-import br.com.miller.muckup.store.viewHolders.BuyViewHolder;
+import br.com.miller.muckup.store.views.viewHolders.BuyViewHolder;
 
 public class BuyRecyclerAdapter extends Item {
 
     private ArrayList<Offer> products;
     private Context context;
-    private FirebaseImage firebaseImage;
 
     public BuyRecyclerAdapter(Context context) {
         if(context instanceof OnAdapterInteract) {
             this.context = context;
             listener = (OnAdapterInteract) context;
             products = new ArrayList<>();
-            firebaseImage = new FirebaseImage(context);
         }else{
             throw new RuntimeException(context.toString()
                     + " must implement OnAdapter");
@@ -51,7 +48,7 @@ public class BuyRecyclerAdapter extends Item {
 
             buyViewHolder.setIdbuy(products.get(i).getTitle().concat(", Quant.: ").concat(String.valueOf(products.get(i).getQuantity())));
             buyViewHolder.setDateBuy("R$ " .concat(String.format(Locale.getDefault(),"%.2f",products.get(i).getValue())));
-            firebaseImage.downloadFirebaseImage(products.get(i).getType(), products.get(i).getCity(), products.get(i).getImage(), buyViewHolder.getImageProduct());
+            buyViewHolder.downloaImage(products.get(i).getType(), products.get(i).getCity(), products.get(i).getImage());
             buyViewHolder.setStoreProduct(products.get(i).getStore());
             buyViewHolder.getLayoutBuy().setOnClickListener(new View.OnClickListener() {
                 @Override

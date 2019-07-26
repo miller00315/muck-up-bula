@@ -11,27 +11,21 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.menuPrincipal.viewHolders.StoreViewHolder;
+import br.com.miller.muckup.menuPrincipal.views.viewHolders.StoreViewHolder;
 import br.com.miller.muckup.domain.Store;
 
 public class StoreRecyclerAdapter extends Item {
 
     private ArrayList<Store> stores;
-    private FirebaseImage firebaseImage;
     private Context context;
+    public static final String ID = StoreRecyclerAdapter.class.getName();
 
-    public StoreRecyclerAdapter(Context context) {
+    public StoreRecyclerAdapter(Item.OnAdapterInteract onAdapterInteract,Context context) {
 
-        if(context instanceof OnAdapterInteract) {
             this.context = context;
-            listener = (OnAdapterInteract) context;
-            firebaseImage = new FirebaseImage(context);
+            listener = onAdapterInteract;
             stores = new ArrayList<>();
-        }else{
-            throw new RuntimeException(context.toString()
-                    + " must implement OnAdapter");
-        }
+
     }
 
     @NonNull
@@ -52,8 +46,7 @@ public class StoreRecyclerAdapter extends Item {
             storeViewHolder.setNameStore(stores.get(i).getName());
             storeViewHolder.setClassificatioStore(stores.get(i).getClassification());
 
-            firebaseImage
-                    .downloadFirebaseImage("stores", stores.get(i).getCity(), stores.get(i).getImage(), storeViewHolder.getImageStore());
+            storeViewHolder.downloaImage("stores", stores.get(i).getCity(), stores.get(i).getImage());
 
             storeViewHolder.getLayoutStore().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -68,7 +61,7 @@ public class StoreRecyclerAdapter extends Item {
     public void showItem(int i){
 
         Bundle bundle = new Bundle();
-        bundle.putInt("type", 2);
+        bundle.putString("type", this.getClass().getName());
         bundle.putString("id_store", String.valueOf(stores.get(i).getId()));
         bundle.putString("city", stores.get(i).getCity());
 

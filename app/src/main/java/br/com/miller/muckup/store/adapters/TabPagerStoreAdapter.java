@@ -9,9 +9,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.store.fragments.OpinionFragment;
-import br.com.miller.muckup.store.fragments.DepartamentFragment;
 import br.com.miller.muckup.store.fragments.HomeStoreFragment;
+import br.com.miller.muckup.store.views.fragments.DepartamentStoreFragment;
+import br.com.miller.muckup.store.views.fragments.OpinionFragment;
 
 public class TabPagerStoreAdapter extends FragmentPagerAdapter {
 
@@ -35,7 +35,7 @@ public class TabPagerStoreAdapter extends FragmentPagerAdapter {
         fragmentsAdapters = new ArrayList<>();
 
         fragmentsAdapters.add(HomeStoreFragment.class.getName());
-        fragmentsAdapters.add(DepartamentFragment.class.getName());
+        fragmentsAdapters.add(DepartamentStoreFragment.class.getName());
         fragmentsAdapters.add(OpinionFragment.class.getName());
 
     }

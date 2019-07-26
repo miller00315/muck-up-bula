@@ -13,26 +13,21 @@ import java.util.Locale;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.api.FirebaseImage;
-import br.com.miller.muckup.menuPrincipal.viewHolders.SearchViewHolder;
+import br.com.miller.muckup.menuPrincipal.views.viewHolders.SearchViewHolder;
 import br.com.miller.muckup.domain.Offer;
 
 public class SearchResultAdapter extends Item{
 
     private ArrayList<Offer> results;
     private Context context;
-    private FirebaseImage firebaseImage;
+    public static String ID = SearchResultAdapter.class.getName();
 
-    public SearchResultAdapter(Context context) {
+    public SearchResultAdapter( Item.OnAdapterInteract onAdapterInteract, Context context) {
 
-        if(context instanceof OnAdapterInteract) {
             this.context = context;
-            listener = (OnAdapterInteract) context;
+            listener = onAdapterInteract;
             results = new ArrayList<>();
-            firebaseImage = new FirebaseImage(context);
-        }else{
-            throw new RuntimeException(context.toString()
-                    + " must implement OnAdapter");
-        }
+
     }
 
     @NonNull
@@ -49,17 +44,14 @@ public class SearchResultAdapter extends Item{
 
             final SearchViewHolder searchViewHolder = (SearchViewHolder) viewHolder;
 
-            searchViewHolder.valueSendResult.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f",results.get(i).getSendValue())));
-            searchViewHolder.descriptionResult.setText(results.get(i).getDescription());
-            searchViewHolder.titleResullt.setText(results.get(i).getTitle());
-            searchViewHolder.valueResult.setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f",results.get(i).getValue())));
+            searchViewHolder.getValueSendResult().setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f",results.get(i).getSendValue())));
+            searchViewHolder.getDescriptionResult().setText(results.get(i).getDescription());
+            searchViewHolder.getTitleResullt().setText(results.get(i).getTitle());
+            searchViewHolder.getValueResult().setText("R$ " .concat(String.format(Locale.getDefault(),"%.2f",results.get(i).getValue())));
 
-            firebaseImage.downloadFirebaseImage(results.get(i).getType(),
-                    results.get(i).getCity(),
-                    results.get(i).getImage(),
-                    ((SearchViewHolder) viewHolder).ImageResult);
+            searchViewHolder.getImage(results.get(i).getCity(), results.get(i).getImage());
 
-            searchViewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
+            searchViewHolder.getMainLayout().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showItem(searchViewHolder.getAdapterPosition());
@@ -74,10 +66,11 @@ public class SearchResultAdapter extends Item{
 
         Bundle bundle = new Bundle();
 
-        bundle.putInt("type", 1);
-        bundle.putString("id_offer", String.valueOf(results.get(i).getId()));
+        bundle.putString("type", ID);
+        bundle.putString("id_offer", results.get(i).getId());
         bundle.putString("city", results.get(i).getCity());
-        bundle.putString("title", results.get(i).getTitle().toLowerCase());
+        bundle.putString("title",  results.get(i).getTitle().toLowerCase());
+        bundle.putString("departamentId", results.get(i).getDepartamentId());
 
         listener.onAdapterInteract(bundle);
     }

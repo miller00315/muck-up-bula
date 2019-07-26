@@ -30,7 +30,7 @@ public class BuyModel {
 
     }
 
-    public void generateBuys(ArrayList<Offer> offers, String userCity, String userId, String address, int payMode, Double troco, int cardFlag){
+    public void generateBuys(ArrayList<Offer> offers, String userCity, String userId, String address, int payMode, Double troco, int cardFlag, String userName, String observation){
 
         ArrayList<Buy> buys = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class BuyModel {
 
            if(buys.size() == 0) {
 
-               buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag));
+               buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation));
 
            }else{
 
@@ -46,7 +46,7 @@ public class BuyModel {
 
                for(Buy buy: buys){
 
-                   if(buy.getStoreId() == offer.getStoreId()){
+                   if(buy.getStoreId() == Integer.valueOf(offer.getStoreId())){
 
                        buy.getOffers().add(offer);
                        buy.setTotalValue(offer.getValue(), offer.getQuantity());
@@ -59,7 +59,7 @@ public class BuyModel {
 
                if(!ok)
                {
-                   buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag));
+                   buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation));
                }
 
            }
@@ -69,21 +69,24 @@ public class BuyModel {
             model.onBuysGenerated(buys);
     }
 
-    private Buy createBuy(Offer offer, String userCity, String userId, String address, int payMode, Double troco, int cardFlag){
+    private Buy createBuy(Offer offer, String userCity, String userId, String address, int payMode, Double troco, int cardFlag, String userName, String observation){
 
         Buy buy = new Buy();
 
         buy.setId(String.valueOf(new Date().getTime()).concat(String.valueOf(offer.getStoreId())).concat(userId));
-        buy.setStoreId(offer.getStoreId());
+        buy.setStoreId(Integer.valueOf(offer.getStoreId()));
         buy.setOffers(new ArrayList<Offer>());
         buy.setStoreCity(offer.getCity());
         buy.setUserCity(userCity);
         buy.setUserId(userId);
+        buy.setUserName(userName);
+        buy.setObservations(observation);
         buy.setSendValue(offer.getSendValue());
         buy.setSolicitationDate(new Date());
         buy.setStoreName(offer.getStore());
         buy.getOffers().add(offer);
         buy.setAddress(address);
+        buy.setStatus("news");
 
         switch (payMode){
 
@@ -182,6 +185,7 @@ public class BuyModel {
                     .child(buy.getStoreCity())
                     .child("stores")
                     .child(String.valueOf(buy.getStoreId()))
+                    .child("news")
                     .updateChildren(map)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

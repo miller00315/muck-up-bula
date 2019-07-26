@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.viewHolders;
+package br.com.miller.muckup.store.views.viewHolders;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

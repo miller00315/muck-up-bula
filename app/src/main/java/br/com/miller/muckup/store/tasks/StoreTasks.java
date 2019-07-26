@@ -1,5 +1,7 @@
 package br.com.miller.muckup.store.tasks;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 import br.com.miller.muckup.domain.Store;
@@ -10,8 +12,9 @@ public interface StoreTasks {
 
         void onStoresSuccess(ArrayList<Store> stores);
         void onStoreSuccess(Store store);
+        void onDownloadImageSuccess(Bitmap bitmap);
+        void onDownloadImageFailed();
         void onStoreFailed();
-        void onStoresFailed();
 
     }
 
@@ -19,6 +22,8 @@ public interface StoreTasks {
 
         void onStoresSuccess(ArrayList<Store> stores);
         void onStoreSuccess(Store store);
+        void onDownloadImageSuccess(Bitmap bitmap);
+        void onDownloadImageFailed();
         void onStoreFailed();
         void onStoresFailed();
     }
@@ -26,6 +31,7 @@ public interface StoreTasks {
     interface View{
         void getStore(String id, String city);
         void getStores(String city);
+        void getImage(String type, String city, String image);
     }
 
 }

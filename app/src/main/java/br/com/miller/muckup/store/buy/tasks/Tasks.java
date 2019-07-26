@@ -17,7 +17,7 @@ public interface Tasks {
     }
 
     interface View{
-        void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers);
+        void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers, String userName, String observation);
     }
 
     interface Presenter{
