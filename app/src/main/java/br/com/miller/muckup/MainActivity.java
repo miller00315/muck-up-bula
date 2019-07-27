@@ -15,6 +15,7 @@ import br.com.miller.muckup.helpers.Permissions;
 import br.com.miller.muckup.login.views.Login;
 import br.com.miller.muckup.menuPrincipal.views.activities.MenuPrincipal;
 import br.com.miller.muckup.domain.User;
+import br.com.miller.muckup.utils.NotificationUtils;
 
 public class MainActivity extends AppCompatActivity implements Permissions.OnPermissionChanged, AuthVerification.AuthVerificationListener {
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements Permissions.OnPer
         sharedPreferences   = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
 
        permissions.checkSelfPermission();
+
+        NotificationUtils.createNotificationChannel(getApplicationContext());
 
     }
 

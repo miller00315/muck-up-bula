@@ -25,6 +25,8 @@ public class Permissions{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.INTERNET,
+                Manifest.permission.VIBRATE,
+                Manifest.permission.WAKE_LOCK,
                 Manifest.permission.CAMERA
         };
 

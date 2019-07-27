@@ -18,6 +18,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -26,6 +32,7 @@ import java.util.Objects;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
+import br.com.miller.muckup.jobs.FirebaseJobs;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.AdvRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.adapters.DepartamentRecyclerAdapter;
@@ -45,6 +52,8 @@ public class MenuPrincipal extends AppCompatActivity implements
         StoresFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener,
         AlertContructor.OnAlertInteract {
+
+    FirebaseJobDispatcher dispatcher;
 
     private ViewPager menuPrincipal;
 
@@ -82,6 +91,8 @@ public class MenuPrincipal extends AppCompatActivity implements
 
         setSupportActionBar(toolbar);
 
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext()));
+
         Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -97,6 +108,30 @@ public class MenuPrincipal extends AppCompatActivity implements
         PagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager(), 4, this);
 
         menuPrincipal.setAdapter(pagerAdapter);
+
+        startJob();
+
+    }
+
+    public void startJob(){
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString("city", getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE).getString(Constants.USER_CITY, ""));
+        bundle.putString("userId", getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE).getString(Constants.USER_ID_FIREBASE, ""));
+
+        Job job = dispatcher.newJobBuilder()
+                .setService(FirebaseJobs.class)
+                .setTag(FirebaseJobs.ID)
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(0, 60))
+                .setReplaceCurrent(false)
+                .setExtras(bundle)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .build();
+
+        dispatcher.mustSchedule(job);
 
     }
 
@@ -121,6 +156,8 @@ public class MenuPrincipal extends AppCompatActivity implements
                 editor.apply();
 
                 FirebaseAuth.getInstance().signOut();
+
+                dispatcher.cancelAll();
 
                 finish();
 

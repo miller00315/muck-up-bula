@@ -1,6 +1,7 @@
 package br.com.miller.muckup.utils.image;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
 
 import br.com.miller.muckup.R;
 
@@ -32,6 +35,12 @@ public class ImageUtils {
 
         return bitmap;
 
+    }
+
+    public static Bitmap drawableToBitMap(int resource, Context context){
+
+        InputStream is = context.getResources().openRawResource(resource);
+        return BitmapFactory.decodeStream(is);
     }
 
     public static Bitmap convertByteArraytoBitmap(byte[] bytes){
