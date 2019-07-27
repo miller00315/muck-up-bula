@@ -71,5 +71,17 @@
     <string name="escolha_o_departamento">! Escolha o departamento abaixo:</string>
     <string name="entre_com_o_nome_do_produto">Entre com o nome do produto:</string>
     <string name="ola">Olá</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="imagem_obtida_da_memoria">Imagem obtida da memória</string>
+    <string name="comprar_agora">Compre agora - R$</string>
+    <string name="remover_do_carrinho">Remover do carrinho</string>
+    <string name="o_que_fazer_com">O que você deseja fazer com</string>
+    <string name="para_comprar_agora_defina_a_quantidade">Para comprar agora defina a quantidade</string>
+    <string name="comprar_agora_2">Comprar agora</string>
+    <string name="voltar">Voltar</string>
+    <string name="avaliar_compra">Avaliar compra</string>
+    <string name="descricao">Descrição</string>
+    <string name="indicacao">Indicação*</string>
 
 </resources>

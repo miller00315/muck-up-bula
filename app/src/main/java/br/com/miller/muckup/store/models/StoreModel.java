@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import br.com.miller.muckup.domain.Store;
 import br.com.miller.muckup.store.tasks.StoreTasks;
-import br.com.miller.muckup.utils.FirebaseImageUtils;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
 public class StoreModel implements FirebaseImageUtils.FirebaseImageTask {
 

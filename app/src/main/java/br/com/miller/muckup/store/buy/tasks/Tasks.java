@@ -1,5 +1,7 @@
 package br.com.miller.muckup.store.buy.tasks;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 
 import br.com.miller.muckup.domain.Buy;
@@ -18,6 +20,7 @@ public interface Tasks {
 
     interface View{
         void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers, String userName, String observation);
+        void getOffer(Bundle bundle);
     }
 
     interface Presenter{

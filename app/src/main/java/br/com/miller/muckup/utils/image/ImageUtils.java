@@ -1,4 +1,4 @@
-package br.com.miller.muckup.utils;
+package br.com.miller.muckup.utils.image;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -39,7 +39,7 @@ public class ImageUtils {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    public static void setImageFromMemory(Intent data, Activity act, ImageView imageView){
+    public static void setImageFromMemory(Intent data, ImageView imageView){
 
         Uri uri;
 

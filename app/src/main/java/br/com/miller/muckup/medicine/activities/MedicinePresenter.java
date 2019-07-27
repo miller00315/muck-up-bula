@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.Objects;
 
 import br.com.miller.muckup.domain.Offer;
+import br.com.miller.muckup.menuPrincipal.adapters.DepartamentRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.views.fragments.DepartamentsFragment;
 import br.com.miller.muckup.menuPrincipal.views.fragments.SearchFragment;
 import br.com.miller.muckup.store.views.fragments.DepartamentStoreFragment;
@@ -35,6 +36,12 @@ public class MedicinePresenter implements MedicineTasks.View, MedicineTasks.Mode
     public void onImageDownloadFailed() { presenter.onImageDownloadFailed(); }
 
     @Override
+    public void onAddCartSuccess(Offer offer) { presenter.onAddCartSuccess( offer );}
+
+    @Override
+    public void onAddCartFailed() { presenter.onAddCartFailed(); }
+
+    @Override
     public void downloadImage(String type, String city, String image) { medicineModel.downloaImage(type, city, image);}
 
     @Override
@@ -42,11 +49,27 @@ public class MedicinePresenter implements MedicineTasks.View, MedicineTasks.Mode
 
         Log.w("tr", bundle.getString("code"));
 
-        if(Objects.equals(bundle.getString("code"), DepartamentStoreFragment.ID))
+        if(Objects.equals(bundle.getString("code"), DepartamentStoreFragment.ID) || Objects.equals(bundle.getString("code"), DepartamentRecyclerAdapter.ID))
             medicineModel.getMedicineByStore(bundle.getString("city"), bundle.getString("storeId"), bundle.getString("departamentId"), bundle.getString("id_offer"));
         else if(Objects.equals(bundle.getString("code"), SearchFragment.ID) || Objects.equals(bundle.getString("code"), DepartamentsFragment.ID))
             medicineModel.getMedicine(bundle.getString("city"), StringUtils.normalizer(Objects.requireNonNull(bundle.getString("title"))),bundle.getString("id_offer"), bundle.getString("departamentId") );
 
 
     }
+
+    @Override
+    public void addCartOffer(Offer offer, String city, String idFirebase) {
+
+        if(idFirebase.isEmpty() && city.isEmpty()){
+
+            presenter.onAddCartFailed();
+
+        }else {
+
+            medicineModel.firebaseCartAddOffer(offer, city, idFirebase);
+        }
+
+    }
+
+
 }

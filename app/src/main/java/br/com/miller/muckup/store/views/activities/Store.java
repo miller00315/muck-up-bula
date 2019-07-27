@@ -8,6 +8,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.Objects;
@@ -17,8 +18,8 @@ import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.views.activities.DepartamentManager;
 import br.com.miller.muckup.store.adapters.TabPagerStoreAdapter;
-import br.com.miller.muckup.store.fragments.HomeStoreFragment;
 import br.com.miller.muckup.store.views.fragments.DepartamentStoreFragment;
+import br.com.miller.muckup.store.views.fragments.HomeStoreFragment;
 import br.com.miller.muckup.store.views.fragments.OpinionFragment;
 
 public class Store extends AppCompatActivity implements
@@ -87,10 +88,7 @@ public class Store extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(String storeName) {
-        Objects.requireNonNull(getSupportActionBar()).setTitle(storeName);
-    }
+
 
     @Override
     public void onFragmentInteraction(Bundle bundle) {
@@ -109,6 +107,17 @@ public class Store extends AppCompatActivity implements
             intent.putExtra("data", bundle);
             startActivity(intent);
 
+        }else if(Objects.equals(bundle.getString("code"), HomeStoreFragment.ID)){
+
+            Log.w("this", "lo");
+
+            if(bundle.containsKey("storeName")){
+
+                Objects.requireNonNull(getSupportActionBar()).setTitle(bundle.getString("storeName"));
+
+            }else{
+                storePager.setCurrentItem(2);
+            }
         }
 
     }

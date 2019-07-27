@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.views.viewHolders.SearchViewHolder;
 import br.com.miller.muckup.domain.Offer;
 

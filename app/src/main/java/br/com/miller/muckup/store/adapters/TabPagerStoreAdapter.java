@@ -9,8 +9,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import br.com.miller.muckup.store.fragments.HomeStoreFragment;
 import br.com.miller.muckup.store.views.fragments.DepartamentStoreFragment;
+import br.com.miller.muckup.store.views.fragments.HomeStoreFragment;
 import br.com.miller.muckup.store.views.fragments.OpinionFragment;
 
 public class TabPagerStoreAdapter extends FragmentPagerAdapter {

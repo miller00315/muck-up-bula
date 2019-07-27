@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.AdvRecyclerAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.DepartamentRecyclerAdapter;
+import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.adapters.SearchResultAdapter;
 import br.com.miller.muckup.menuPrincipal.adapters.StoreRecyclerAdapter;
 import br.com.miller.muckup.menuPrincipal.views.fragments.DepartamentsFragment;
@@ -43,8 +44,7 @@ public class MenuPrincipal extends AppCompatActivity implements
         DepartamentsFragment.OnFragmentInteractionListener,
         StoresFragment.OnFragmentInteractionListener,
         PerfilFragment.OnFragmentInteractionListener,
-        AlertContructor.OnAlertInteract,
-        FirebaseImage.FirebaseImageListener {
+        AlertContructor.OnAlertInteract {
 
     private ViewPager menuPrincipal;
 
@@ -174,12 +174,34 @@ public class MenuPrincipal extends AppCompatActivity implements
                intent.putExtra("data", bundle);
                startActivity(intent);
 
+
            }else if(Objects.equals(bundle.getString("code"), DepartamentsFragment.ID)){
 
-               intent = new Intent(this, DepartamentManager.class);
+               if(Objects.equals(bundle.getString("type"), OffersRecyclerAdapter.ID)){
+
+                   intent = new Intent(this, Medicine.class);
+                   intent.putExtra("data", bundle);
+                   startActivity(intent);
+
+
+               }else if(Objects.equals(bundle.getString("type"), DepartamentRecyclerAdapter.ID)){
+
+                   intent = new Intent(this, DepartamentManager.class);
+                   intent.putExtra("data", bundle);
+                   startActivity(intent);
+               }
+
+           }else if(Objects.equals(bundle.getString("code"), MyCart.ID)){
+
+               intent = new Intent(this, MyCart.class);
                intent.putExtra("data", bundle);
                startActivity(intent);
 
+           }else if(Objects.equals(bundle.getString("code"), MyBuys.ID)){
+
+               intent = new Intent(this, MyBuys.class);
+               intent.putExtra("data", bundle);
+               startActivity(intent);
            }
 
         }
@@ -230,15 +252,5 @@ public class MenuPrincipal extends AppCompatActivity implements
 
     }
 
-
-    @Override
-    public void onImageDownloadSuccess() {
-
-    }
-
-    @Override
-    public void onImageDownloadError() {
-
-    }
 
 }

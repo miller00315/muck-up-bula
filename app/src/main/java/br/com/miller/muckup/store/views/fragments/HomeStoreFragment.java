@@ -1,4 +1,4 @@
-package br.com.miller.muckup.store.fragments;
+package br.com.miller.muckup.store.views.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +22,7 @@ import br.com.miller.muckup.store.tasks.StoreTasks;
 public class HomeStoreFragment extends Fragment implements
         StoreTasks.Presenter {
 
+    public static final String ID = HomeStoreFragment.class.getName();
     private OnFragmentInteractionListener mListener;
     private StorePresenter storePresenter;
     private TextView storeCity, storeDescription,storeTime, classification;
@@ -65,12 +66,31 @@ public class HomeStoreFragment extends Fragment implements
              storeImage = view.findViewById(R.id.image_store);
              classification = view.findViewById(R.id.store_classification);
 
+             bindViews();
+
         return view;
+    }
+
+    private void bindViews(){
+
+        classification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("code", ID);
+
+                mListener.onFragmentInteraction(bundle);
+
+            }
+        });
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -93,7 +113,13 @@ public class HomeStoreFragment extends Fragment implements
 
             if(this.isVisible()) {
 
-                mListener.onFragmentInteraction(store.getName());
+                Bundle bundle = new Bundle();
+
+                bundle.putString("storeName", store.getName());
+                bundle.putString("code", ID);
+
+                mListener.onFragmentInteraction(bundle);
+
                 storeCity.setText(store.getCity());
                 storeDescription.setText(store.getDescription());
                 storeTime.setText(store.getTime());
@@ -119,5 +145,5 @@ public class HomeStoreFragment extends Fragment implements
     @Override
     public void onStoresFailed() { Toast.makeText(getContext(), "Erro ao obter dados", Toast.LENGTH_SHORT).show(); }
 
-    public interface OnFragmentInteractionListener { void onFragmentInteraction(String storeName);}
+    public interface OnFragmentInteractionListener { void onFragmentInteraction(Bundle bundle); }
 }

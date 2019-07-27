@@ -12,6 +12,8 @@ public interface MedicineTasks {
         void onMedicineDataFailed();
         void onImageDownloadSuccess(Bitmap bitmap);
         void onImageDownloadFailed();
+        void onAddCartSuccess(Offer offer);
+        void onAddCartFailed();
     }
 
     interface Model{
@@ -20,10 +22,13 @@ public interface MedicineTasks {
         void onMedicineDataFailed();
         void onImageDownloadSuccess(Bitmap bitmap);
         void onImageDownloadFailed();
+        void onAddCartSuccess(Offer offer);
+        void onAddCartFailed();
     }
 
     interface View{
         void downloadImage(String type, String city, String image);
         void getMedicine(Bundle bundle);
+        void addCartOffer(final Offer offer, String city, String idFirebase);
     }
 }

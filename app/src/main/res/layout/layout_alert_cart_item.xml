@@ -6,13 +6,17 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:text="@string/quantidade"
-        android:id="@+id/header_buy"
+        android:id="@+id/header_item_cart"
         android:gravity="center"
-        android:textColor="#ffffff"
-        android:background="@color/colorPrimaryDark"
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
+
+    <TextView
+        android:text="@string/para_comprar_agora_defina_a_quantidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -27,8 +31,8 @@
             android:layout_height="wrap_content"/>
 
         <Button
-            android:text="@string/confirmar"
-            android:id="@+id/confirm"
+            android:text="@string/comprar_agora_2"
+            android:id="@+id/buy_now_item"
             android:textColor="#ffffff"
             android:padding="10dp"
             android:background="@drawable/background_button_rounded"
@@ -37,10 +41,20 @@
             android:layout_height="wrap_content"/>
 
         <Button
-            android:text="@string/cancelar"
+            android:text="@string/remover_do_carrinho"
+            android:id="@+id/delete_item"
+            android:textColor="#ffffff"
+            android:padding="10dp"
+            android:background="@drawable/background_button_rounded"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="@string/voltar"
             android:id="@+id/cancel"
             android:textColor="#ffffff"
-
+            android:padding="10dp"
             android:background="@drawable/background_button_rounded"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"

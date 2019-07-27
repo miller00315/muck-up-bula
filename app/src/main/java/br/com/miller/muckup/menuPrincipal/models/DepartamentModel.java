@@ -40,7 +40,7 @@ public class DepartamentModel {
 
                             for(DataSnapshot child : dataSnapshot.getChildren()){
 
-                                Departament departament = child.getValue(Departament.class);
+                                Departament departament = new Departament(child.getValue());
 
                                 departaments.add(departament);
                             }
@@ -104,7 +104,7 @@ public class DepartamentModel {
 
                         if(dataSnapshot.exists()){
 
-                            Departament departament = dataSnapshot.getValue(Departament.class);
+                            Departament departament = new Departament(dataSnapshot.getValue());
 
                             getOffersDepartament(departament);
                         }
@@ -195,19 +195,4 @@ public class DepartamentModel {
                 });
     }
 
-
-    private Boolean checkDepartament(Departament departament, ArrayList<Departament> departaments){
-
-        for(Departament dp : departaments){
-
-            if(dp.getId() == departament.getId())
-                return true;
-        }
-
-        return false;
-    }
-
-    public void getDepartament(){
-
-    }
 }

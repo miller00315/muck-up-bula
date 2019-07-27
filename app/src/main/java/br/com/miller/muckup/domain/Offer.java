@@ -2,6 +2,7 @@ package br.com.miller.muckup.domain;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Objects;

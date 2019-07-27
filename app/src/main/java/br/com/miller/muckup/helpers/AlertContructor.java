@@ -110,7 +110,8 @@ public class AlertContructor {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                onAlertInteract.onAlertNegative();
+                if(onAlertInteract != null)
+                    onAlertInteract.onAlertNegative();
 
             }
         });
@@ -119,7 +120,8 @@ public class AlertContructor {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                onAlertInteract.onAlertPositive(o);
+                if(onAlertInteract != null)
+                    onAlertInteract.onAlertPositive(o);
 
             }
         });

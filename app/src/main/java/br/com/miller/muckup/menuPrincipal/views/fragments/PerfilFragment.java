@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +19,28 @@ import android.widget.Toast;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.helpers.Constants;
-import br.com.miller.muckup.helpers.ImageHelper;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.presenters.PerfilPresenter;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
 import br.com.miller.muckup.domain.User;
-import br.com.miller.muckup.utils.AlertDialogUtils;
+import br.com.miller.muckup.menuPrincipal.views.activities.MyBuys;
+import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
+import br.com.miller.muckup.utils.alerts.EditTextDialogFragment;
+import br.com.miller.muckup.utils.alerts.ImageDialogFragment;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class PerfilFragment extends Fragment implements
         PerfilTasks.Presenter,
-        AlertDialogUtils.AltertDialogUtilsTask,
-        Item.OnAdapterInteract {
+        ImageDialogFragment.ImageDialogFragmentListener,
+        Item.OnAdapterInteract,
+        EditTextDialogFragment.EditTextFragmentListener {
 
     private SharedPreferences sharedPreferences;
     private PerfilPresenter perfilPresenter;
-    private FirebaseImage firebaseImage;
     private ImageView imageUser, buttonEditImage;
-    private AlertDialogUtils alertDialogUtils;
     private TextView name, phone, address, email, countCart, countBuy;
     private User user;
 
@@ -48,17 +51,13 @@ public class PerfilFragment extends Fragment implements
 
     private OnFragmentInteractionListener mListener;
 
-    public PerfilFragment() {
-        // Required empty public constructor
-    }
+    public PerfilFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         perfilPresenter = new PerfilPresenter(this);
-        alertDialogUtils = new AlertDialogUtils(getContext(),this);
-        firebaseImage = new FirebaseImage(getContext());
         sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
     }
@@ -90,7 +89,9 @@ public class PerfilFragment extends Fragment implements
             @Override
             public void onClick(View v) {
 
+                Bundle bundle = new Bundle();
 
+                mListener.onFragmentInteraction(bundle);
             }
         });
 
@@ -99,7 +100,7 @@ public class PerfilFragment extends Fragment implements
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putInt("id", 3);
+                bundle.putString("code", MyBuys.ID);
                 mListener.onFragmentInteraction(bundle);
             }
         });
@@ -108,7 +109,7 @@ public class PerfilFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("id", 4);
+                bundle.putString("code", MyCart.ID);
                 mListener.onFragmentInteraction(bundle);
             }
         });
@@ -116,28 +117,87 @@ public class PerfilFragment extends Fragment implements
         phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onItemPressed(v, phone.getText());
+
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("view", R.layout.layout_single_edit_text_alert_fragment);
+
+                bundle.putInt("inputType", InputType.TYPE_CLASS_PHONE);
+
+                bundle.putString("type", Constants.USER_PHONE);
+
+                bundle.putString("hint", "Telefone");
+
+                bundle.putString("text", user.getPhone());
+
+                openAlert(bundle);
             }
         });
 
         address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemPressed(v, address.getText());
+
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("view", R.layout.layout_single_edit_text_alert_fragment);
+
+                bundle.putInt("inputType", InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+
+                bundle.putString("type", Constants.USER_ADDRESS);
+
+                bundle.putString("hint", "Endereço");
+
+                bundle.putString("text", user.getAddress() != null ? user.getAddress().getAddress() : "");
+
+                openAlert(bundle);
             }
         });
 
         email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemPressed(v, email.getText());
+
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("view", R.layout.layout_single_edit_text_alert_fragment);
+
+                bundle.putInt("inputType", InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+                bundle.putString("type", Constants.USER_EMAIL);
+
+                bundle.putString("hint", "Email");
+
+                bundle.putString("text", user.getEmail());
+
+                openAlert(bundle);
+
             }
         });
 
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemPressed(v, name.getText());
+
+                Bundle bundle = new Bundle();
+
+                bundle.putInt("view", R.layout.layout_double_edit_text_alert_fragment);
+
+                bundle.putString("type", Constants.USER_NAME);
+
+                bundle.putInt("firstInputType", InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                bundle.putInt("secondInputType", InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+
+                bundle.putString("firstText", user.getName());
+
+                bundle.putString("secondText", user.getSurname());
+
+                bundle.putString("firstHint", "Nome");
+
+                bundle.putString("secondHint", "Sobrenome");
+
+                openAlert(bundle);
             }
         });
 
@@ -153,13 +213,13 @@ public class PerfilFragment extends Fragment implements
 
     }
 
-    public void onItemPressed(View v, Object o) {
+    public void openAlert(Bundle bundle) {
 
-        ViewGroup viewGroup = Objects.requireNonNull(getActivity()).findViewById(android.R.id.content);
+        EditTextDialogFragment editTextDialogFragment = EditTextDialogFragment.newInstance(bundle);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_alert_edit_perfil, viewGroup, false);
+        editTextDialogFragment.setListener(this);
 
-        alertDialogUtils.createAlertEditText(view, o, v.getId());
+        editTextDialogFragment.openDialog(getFragmentManager());
     }
 
     public void setView(User user) {
@@ -170,12 +230,11 @@ public class PerfilFragment extends Fragment implements
 
             if (this.isVisible()) {
 
-                name.setText(user.getName().substring(0, 1).toUpperCase().concat(user.getName().substring(1)).concat(user.getSurname().substring(0, 1).toUpperCase().concat(user.getSurname().substring(1))));
+                name.setText(user.getName().substring(0, 1).toUpperCase().concat(user.getName().substring(1)).concat(" ").concat(user.getSurname().substring(0, 1).toUpperCase().concat(user.getSurname().substring(1))));
                 phone.setText(user.getPhone());
                 email.setText(user.getEmail());
                 address.setText(user.getAddress() != null ? user.getAddress().getAddress() : sharedPreferences.getString(Constants.USER_ADDRESS, ""));
-                firebaseImage.downloadFirebaseImage("users", user.getCity(), user.getId_firebase().concat(".jpg"), imageUser);
-
+                perfilPresenter.getUserImage(user);
             }
         }else
             Toast.makeText(getContext(), "Usuario", Toast.LENGTH_SHORT).show();
@@ -191,15 +250,13 @@ public class PerfilFragment extends Fragment implements
 
     public void setImageAlert(Intent data){
 
-        ViewGroup viewGroup = Objects.requireNonNull(getActivity()).findViewById(android.R.id.content);
+        Bundle bundle = new Bundle();
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_alert_image, viewGroup, false);
+        ImageDialogFragment imageDialogFragment = ImageDialogFragment.newInstance(bundle);
 
-        ImageView imageView = view.findViewById(R.id.image_memory);
+        imageDialogFragment.setListenerIntent(this, data);
 
-        ImageHelper.setImageFromMemory(data, getActivity(), imageView);
-
-        alertDialogUtils.creatAlertImageView(view, 10 );
+        imageDialogFragment.openDialog(getFragmentManager());
 
     }
 
@@ -221,9 +278,7 @@ public class PerfilFragment extends Fragment implements
     }
 
     @Override
-    public void getPerfilSuccess(User user) {
-        setView(user);
-    }
+    public void getPerfilSuccess(User user) { setView(user); }
 
     @Override
     public void getPerfilFaield() { Toast.makeText(getContext(), "Erro ao obter dados do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
@@ -253,33 +308,13 @@ public class PerfilFragment extends Fragment implements
     public void onCartCountSuccess(int cartCount) { countCart.setText(String.valueOf(cartCount));}
 
     @Override
+    public void onDownloadImgeSucess(Bitmap bitmap) { imageUser.setImageBitmap(bitmap);}
+
+    @Override
+    public void onDownloadImageFailed() { }
+
+    @Override
     public void onCartCountFailed() { countCart.setText("0");}
-
-    @Override
-    public void onAlertPositive(Object o, int type) {
-
-        if(o != null){
-
-            if(o instanceof String)
-                perfilPresenter.updateUser(this.user, o, type);
-            else if (o instanceof Bitmap)
-                perfilPresenter.updateImage(this.user, (Bitmap) o);
-
-        }else{
-            Toast.makeText(getContext(), "Erro ao tratar dados, tente novamente", Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    @Override
-    public void onAlertNeutral(Object o, int type) {
-
-    }
-
-    @Override
-    public void onAlertNegative() {
-
-    }
 
     @Override
     public void onAdapterInteract(Bundle bundle) {
@@ -289,6 +324,20 @@ public class PerfilFragment extends Fragment implements
         mListener.onFragmentInteraction(bundle);
 
     }
+
+    @Override
+    public void onImageDialogFragmentListener(Bitmap bitmap, int result) {
+
+        if(result == RESULT_OK){
+            perfilPresenter.updateImage(user, bitmap);
+        }else if(result == RESULT_CANCELED){
+            Toast.makeText(getContext(), "Erro ao tratar a imagem.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onEditTextDialogFragmentResult(Bundle bundle) { perfilPresenter.updateUser(user, bundle);}
+
 
     public interface OnFragmentInteractionListener { void onFragmentInteraction(Bundle bundle);}
 }

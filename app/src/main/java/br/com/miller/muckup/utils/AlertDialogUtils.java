@@ -1,7 +1,6 @@
 package br.com.miller.muckup.utils;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 
 import br.com.miller.muckup.R;
+import br.com.miller.muckup.utils.image.ImageUtils;
 
 @SuppressLint("Registered")
 public class AlertDialogUtils extends Application {

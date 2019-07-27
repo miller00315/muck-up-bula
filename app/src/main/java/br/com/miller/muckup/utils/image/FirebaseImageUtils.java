@@ -1,4 +1,4 @@
-package br.com.miller.muckup.utils;
+package br.com.miller.muckup.utils.image;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

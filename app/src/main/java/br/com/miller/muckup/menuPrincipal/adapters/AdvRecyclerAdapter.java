@@ -1,6 +1,7 @@
 package br.com.miller.muckup.menuPrincipal.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +12,11 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.views.viewHolders.ViewHolderAdv;
 import br.com.miller.muckup.domain.Adv;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
-public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseImageListener {
+public class AdvRecyclerAdapter extends Item implements FirebaseImageUtils.FirebaseImageTask {
 
     private ArrayList<Adv> advs;
 
@@ -114,15 +115,40 @@ public class AdvRecyclerAdapter extends Item implements FirebaseImage.FirebaseIm
         advs.clear();
     }
 
+
+
     @Override
-    public void onImageDownloadSuccess() {
-
-
+    public void onImageUploadSucces(Bitmap bitmap) {
 
     }
 
     @Override
-    public void onImageDownloadError() {
+    public void onImageUploadFails() {
+
+    }
+
+    @Override
+    public void onImageDeleteSuccess() {
+
+    }
+
+    @Override
+    public void onImageDeleteFailed() {
+
+    }
+
+    @Override
+    public void onDownloadImageSuccess(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void onDowloadImageFail() {
+
+    }
+
+    @Override
+    public void downloaImage(String type, String city, String image) {
 
     }
 }

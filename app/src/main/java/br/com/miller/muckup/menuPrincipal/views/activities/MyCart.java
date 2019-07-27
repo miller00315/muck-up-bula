@@ -2,10 +2,8 @@ package br.com.miller.muckup.menuPrincipal.views.activities;
 
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,23 +19,27 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseCart;
 import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.menuPrincipal.adapters.OffersRecyclerAdapter;
 import br.com.miller.muckup.domain.Offer;
+import br.com.miller.muckup.menuPrincipal.presenters.MyCartPresenter;
+import br.com.miller.muckup.menuPrincipal.tasks.MyCartTasks;
 import br.com.miller.muckup.store.buy.view.BuyActivity;
+import br.com.miller.muckup.utils.alerts.CartItemDialogFragment;
 
 public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
-        FirebaseCart.FirebaseCartListener,
+        MyCartTasks.Presenter,
+        CartItemDialogFragment.CartItemListener,
         AlertContructor.OnAlertInteract{
 
+    public static final String ID = MyCart.class.getName();
+
     private boolean isFabOpen;
-    private RecyclerView recyclerCart;
     private AlertContructor alertContructor;
     private OffersRecyclerAdapter offersRecyclerAdapter;
-    private FirebaseCart firebaseCart;
+    private MyCartPresenter presenter;
     private LinearLayout cleanCart, buyAll;
     private TextView textClean, textBuyAll;
     private SharedPreferences sharedPreferences;
@@ -48,7 +50,8 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         setContentView(R.layout.activity_my_cart);
 
         offersRecyclerAdapter = new OffersRecyclerAdapter(this, this);
-        firebaseCart = new FirebaseCart(this);
+
+        presenter = MyCartPresenter.newInstance(this);
 
         isFabOpen = false;
 
@@ -63,7 +66,7 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     private void bindViews(){
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
-        recyclerCart = findViewById(R.id.recycler_cart);
+        RecyclerView recyclerCart = findViewById(R.id.recycler_cart);
         textClean = findViewById(R.id.text_clean);
         textBuyAll = findViewById(R.id.text_buy_all);
         cleanCart = findViewById(R.id.clean_cart);
@@ -85,8 +88,9 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
         recyclerCart.setAdapter(offersRecyclerAdapter);
 
-        firebaseCart.firebaseCartgetOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
-                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+        presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
+                       sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+
     }
 
 
@@ -112,9 +116,8 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -122,49 +125,14 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     @Override
     public void onAdapterInteract(Bundle bundle) {
 
-        switch (bundle.getInt("type")){
+        bundle.putParcelable("offer", offersRecyclerAdapter.getOffer(bundle.getInt("adapter_position")));
 
-            case 1:
-                specialAlert(bundle);
-                break;
+        CartItemDialogFragment cartItemDialogFragment = CartItemDialogFragment.newInstance(bundle);
 
-                default:
-                    break;
+        cartItemDialogFragment.setCartItemListener(this);
 
-        }
+        cartItemDialogFragment.openDialog(getSupportFragmentManager());
 
-    }
-
-    private void specialAlert(Bundle bundle){
-
-        AlertDialog alertDialog;
-
-        final Offer offer = offersRecyclerAdapter.getOffer(bundle.getInt("adapter_position"));
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Deseja excluir do seu carrinho:");
-
-        builder.setMessage(offer.getTitle());
-
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                firebaseCart.firebaseCartDeleteItem(sharedPreferences.getString(Constants.USER_CITY, ""),
-                        sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""), offer.getCartId());
-            }
-        });
-
-        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        alertDialog = builder.create();
-
-        alertDialog.show();
     }
 
     @Override
@@ -172,56 +140,17 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
         if(object instanceof ArrayList){
 
-            firebaseCart.firebaseCartDeleteAll(sharedPreferences.getString(Constants.USER_CITY, ""),
-                    sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
-
+            presenter.deleteAllItems(sharedPreferences.getString(Constants.USER_CITY, ""),
+                          sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
         }
 
     }
 
     @Override
-    public void onAlertNegative() {
-
-    }
+    public void onAlertNegative() { }
 
     @Override
-    public void onAlertError() {
-
-    }
-
-    @Override
-    public void firebaseCartListnerReceiver(Offer offer) {
-
-    }
-
-    @Override
-    public void firebaseCartListenerReceiverOffers(ArrayList<Offer> offers) {
-
-        if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED))
-        if(offers != null)
-            if(offers.size() > 0)
-                offersRecyclerAdapter.setArray(offers);
-            else
-                Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "Erro ao obter seus produto, tente novamente", Toast.LENGTH_LONG).show();
-
-    }
-
-    @Override
-    public void firebaseCartOnItemDeleted(boolean status) {
-
-        if(status) {
-            Toast.makeText(this, "Item(ns) exluido(s)", Toast.LENGTH_LONG).show();
-            offersRecyclerAdapter.clear();
-            firebaseCart.firebaseCartgetOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
-                    sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
-        }
-
-        else
-            Toast.makeText(this, "Erro na exclusão, tente novamente.", Toast.LENGTH_LONG).show();
-
-    }
+    public void onAlertError() { }
 
     public void buyAll(View view) {
 
@@ -230,7 +159,8 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
             Bundle bundle = new Bundle();
             Intent intent = new Intent(this, BuyActivity.class);
 
-            bundle.putString("actvity", MyCart.class.getName());
+            bundle.putString("actvity", ID);
+            bundle.putInt("order", 1);
 
             intent.putExtra("data", bundle);
             startActivityForResult(intent, 11);
@@ -255,5 +185,74 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
             closeFab();
         else
             openFab();
+    }
+
+    @Override
+    public void onGetOffersSuccess(ArrayList<Offer> offers) {
+
+        if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED))
+            if(offers != null)
+                if(offers.size() > 0)
+                    offersRecyclerAdapter.setArray(offers);
+                else
+                    Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(this, "Erro ao obter seus produto, tente novamente", Toast.LENGTH_LONG).show();
+
+
+    }
+
+    @Override
+    public void onGetOffersFailed() {  Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();}
+
+    @Override
+    public void onDeleteAllSuccess() {
+
+        presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
+                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+
+    }
+
+    @Override
+    public void onDeleteAllFailed() { }
+
+    @Override
+    public void onDeleteItemSuccess() {
+
+        Toast.makeText(this, "Item(ns) exluido(s)", Toast.LENGTH_LONG).show();
+        offersRecyclerAdapter.clear();
+
+        presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
+                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+
+    }
+
+    @Override
+    public void onDeleteItemFailed() { }
+
+    @Override
+    public void deleteItem(Offer offer) {
+
+        presenter.deleteItem(sharedPreferences.getString(Constants.USER_CITY, ""),
+                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""), offer.getCartId());
+    }
+
+    @Override
+    public void buyItem(Offer offer) {
+
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(this, BuyActivity.class);
+
+        bundle.putString("offerId",offer.getId());
+        bundle.putString("city",offer.getCity());
+        bundle.putString("departamentId",offer.getDepartamentId());
+        bundle.putString("storeId", offer.getStoreId());
+        bundle.putInt("quantity", offer.getQuantity());
+        bundle.putInt("order", 2);
+        bundle.putString("actvity", ID);
+
+        intent.putExtra("data", bundle);
+        startActivity(intent);
+
     }
 }

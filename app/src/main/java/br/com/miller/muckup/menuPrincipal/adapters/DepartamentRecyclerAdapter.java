@@ -17,8 +17,8 @@ import br.com.miller.muckup.store.views.viewHolders.StoreViewHolder;
 
 public class DepartamentRecyclerAdapter extends Item  {
 
+    public static final String ID = DepartamentRecyclerAdapter.class.getName();
     private ArrayList<Departament> departments;
-
     private Context context;
 
     public DepartamentRecyclerAdapter(Item.OnAdapterInteract onAdapterInteract, Context context) {
@@ -83,7 +83,7 @@ public class DepartamentRecyclerAdapter extends Item  {
     public void showItem(int i) {
 
         Bundle bundle = new Bundle();
-        bundle.putString("type", this.getClass().getName());
+        bundle.putString("type", ID);
         bundle.putString("name_departament", departments.get(i).getTitle());
         bundle.putString("city", departments.get(i).getCity());
         bundle.putString("id_departament", departments.get(i).getId());

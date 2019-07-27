@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
-        android:text="@string/a_imagem_abaixo_est_boa"
-        android:gravity="center"
-        android:padding="20dp"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:background="@color/design_default_color_primary_dark"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/ic_launcher_foreground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/image_memory"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/image_memory"
+            android:src="@drawable/ic_launcher_foreground"
+            android:layout_width="match_parent"
+            android:contentDescription="@string/imagem_obtida_da_memoria"
+            android:layout_height="400dp">
 
-</LinearLayout>
+        </ImageView>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_below="@id/image_memory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="@string/confirmar"
+                android:id="@+id/confirm"
+                android:textColor="#ffffff"
+                android:background="@drawable/background_button_rounded"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:text="@string/cancelar"
+                android:id="@+id/cancel"
+                android:textColor="#ffffff"
+                android:background="@drawable/background_button_rounded"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+</ScrollView>

@@ -4,13 +4,19 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import br.com.miller.muckup.domain.Offer;
-import br.com.miller.muckup.utils.FirebaseImageUtils;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
 public class MedicineModel implements FirebaseImageUtils.FirebaseImageTask {
 
@@ -52,9 +58,35 @@ public class MedicineModel implements FirebaseImageUtils.FirebaseImageTask {
 
     }
 
-    public void getMedicine(String city, String type, String id, String departamentId){
+    public void firebaseCartAddOffer(final Offer offer, String city, String idFirebase) {
 
-        Log.w("this", departamentId);
+        Map<String, Object> map = new HashMap<>();
+
+        offer.setCartId(new Date().toString());
+
+        map.put(offer.getCartId(), offer);
+
+        firebaseDatabase.getReference().child("carts")
+                .child(city)
+                .child(idFirebase)
+                .updateChildren(map)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        model.onAddCartFailed();
+
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        model.onAddCartSuccess(offer);
+                    }
+                });
+
+    }
+
+    public void getMedicine(String city, String type, String id, String departamentId){
 
         firebaseDatabase.getReference()
                 .child("offersDepartaments")
@@ -68,7 +100,7 @@ public class MedicineModel implements FirebaseImageUtils.FirebaseImageTask {
 
                         if(dataSnapshot.exists()){
 
-                            model.onMedicineDataSuccess(dataSnapshot.getValue(Offer.class));
+                            model.onMedicineDataSuccess(new Offer(dataSnapshot.getValue()));
 
                         }else{
 

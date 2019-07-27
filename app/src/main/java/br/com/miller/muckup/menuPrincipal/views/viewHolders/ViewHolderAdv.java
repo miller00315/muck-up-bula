@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.utils.FirebaseImageUtils;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
-public class ViewHolderAdv extends RecyclerView.ViewHolder implements FirebaseImageUtils.FirebaseImageTask {
+import static br.com.miller.muckup.utils.image.FirebaseImageUtils.*;
+
+public class ViewHolderAdv extends RecyclerView.ViewHolder implements FirebaseImageTask {
 
     private ImageView imageAdv;
     private FirebaseImageUtils firebaseImageUtils;

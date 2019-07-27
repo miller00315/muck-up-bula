@@ -202,13 +202,16 @@ public class BuyModel {
 
     }
 
-    public void getOffer(String city, String type, String offerId, final int quantity){
+    public void getOffer(String city, String storeId, String departamentId, String offerId, final int quantity){
 
         firebaseDatabase.getReference()
-                .child("offers")
+                .child("storeDepartaments")
                 .child(city)
-                .child(type)
-                .child(offerId).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(storeId)
+                .child(departamentId)
+                .child("offers")
+                .child(offerId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 

@@ -1,5 +1,7 @@
 package br.com.miller.muckup.store.buy.presenter;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -19,8 +21,6 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
         this.presenter = presenter;
         buyModel = new BuyModel(this);
     }
-
-    public void getOffer(String city, String type, String offerId, int quantity){ buyModel.getOffer(city, type, offerId, quantity); }
 
     public void getOffers(String city, String idFirebase){ buyModel.getOffers(city, idFirebase); }
 
@@ -112,13 +112,13 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
         }
 
-        if (payMode == -1) {
+        if (payMode <= 0) {
             presenter.failedBuy(1);
             ok = false;
 
         }
 
-        if(payMode == R.id.card && cardFlag == -1){
+        if(payMode == R.id.card && cardFlag <= 0){
 
             presenter.failedBuy(2);
             ok = false;
@@ -130,5 +130,24 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
         buyModel.generateBuys(offers, city, idFirebase, address, payMode,
                 Double.valueOf(StringUtils.cleanMoneyString(troco, Locale.getDefault())),
                 cardFlag, userName, observation);
+    }
+
+    @Override
+    public void getOffer(Bundle bundle) {
+        if(bundle!= null)
+            if(bundle.containsKey("city") &&
+                    bundle.containsKey("storeId") &&
+                    bundle.containsKey("departamentId") &&
+                    bundle.containsKey("offerId") &&
+                    bundle.containsKey("quantity")) {
+
+                buyModel.getOffer(bundle.getString("city"),
+                        bundle.getString("storeId"),
+                        bundle.getString("departamentId"),
+                        bundle.getString("offerId"),
+                        bundle.getInt("quantity"));
+            }else{
+                onOffersFailed();
+            }
     }
 }

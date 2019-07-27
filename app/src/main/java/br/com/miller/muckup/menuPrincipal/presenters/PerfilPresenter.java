@@ -2,8 +2,10 @@ package br.com.miller.muckup.menuPrincipal.presenters;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 
-import br.com.miller.muckup.R;
+import java.util.Objects;
+
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.menuPrincipal.models.PerfilModel;
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
@@ -17,7 +19,6 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     public PerfilPresenter(PerfilTasks.Presenter presenter) {
         this.presenter = presenter;
         model = new PerfilModel(this);
-
     }
 
     @Override
@@ -65,7 +66,10 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     public void onCartCountFailed() { presenter.onCartCountFailed();}
 
     @Override
-    public void getImageFromMemory() { }
+    public void onDownloadImgeSucess(Bitmap bitmap) { presenter.onDownloadImgeSucess(bitmap);}
+
+    @Override
+    public void onDownloadImageFailed() { presenter.onDownloadImageFailed();}
 
     @Override
     public void getCartCount(String userCity, String userId) { model.getCartCount(userCity, userId);}
@@ -79,66 +83,44 @@ public class PerfilPresenter implements PerfilTasks.Model, PerfilTasks.View{
     }
 
     @Override
-    public void updateUser(User user, Object o, int type) {
+    public void updateUser(User user, Bundle bundle) {
 
-        switch (type){
+        switch (Objects.requireNonNull(bundle.getString("type"))) {
 
-            case R.id.phone_perfil:{
+            case Constants.USER_NAME: {
 
-                if(o instanceof String){
+                user.setName(bundle.getString("firstResult"));
+                user.setSurname(bundle.getString("secondResult"));
 
-                    user.setPhone((String) o);
-                }
-
-            }
-            break;
-
-            case R.id.email_perfil:{
-                if(o instanceof String){
-
-                    user.setEmail((String) o);
-                }
-            }
-            break;
-
-            case R.id.name_perfil:{
-
-                if(o instanceof String){
-
-                    String[] name = ((String) o).split(" ");
-
-                    user.setName(name[0]);
-
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (int i = 1; i < name.length; i++) {
-                        stringBuilder.append(" ".concat(name[i]));
-                    }
-
-                    user.setSurname(stringBuilder.toString());
-
-                }
-            }
-
-            break;
-
-            case R.id.address_perfil:{
-
-                Address address = new Address();
-
-                address.setAddress((String) o );
-                address.setCity(user.getCity());
-
-                user.setAddress(address);
-
-            }
-            break;
-
-            default:
                 break;
+            }
+
+            case Constants.USER_PHONE: {
+                user.setPhone(bundle.getString("result"));
+                break;
+            }
+
+            case Constants.USER_ADDRESS: {
+
+                if (user.getAddress() != null)
+                    user.getAddress().setAddress(bundle.getString("result"));
+                else {
+
+                    user.setAddress(new Address());
+
+                    user.getAddress().setAddress(bundle.getString("result"));
+                }
+
+                break;
+            }
         }
 
         model.updateUser(user);
+    }
 
+    @Override
+    public void getUserImage(User user) {
+        model.downloaImage("users", user.getCity(), user.getId_firebase());
     }
 
 }

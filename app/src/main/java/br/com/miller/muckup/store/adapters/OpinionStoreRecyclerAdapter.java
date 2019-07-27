@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.api.FirebaseImage;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Evaluate;
 import br.com.miller.muckup.store.views.viewHolders.OpinionUserViewHolder;
@@ -19,13 +18,11 @@ public class OpinionStoreRecyclerAdapter extends Item {
 
     private Context context;
     private ArrayList<Evaluate> evaluates;
-    private FirebaseImage firebaseImage;
 
     public OpinionStoreRecyclerAdapter(Context context) {
 
         this.context = context;
         evaluates = new ArrayList<>();
-        firebaseImage = new FirebaseImage(context);
 
     }
 
@@ -51,15 +48,8 @@ public class OpinionStoreRecyclerAdapter extends Item {
             opinionUserViewHolder.setClassificatioStore(evaluates.get(i).getValue());
             opinionUserViewHolder.setMessageUser(evaluates.get(i).getMessage());
             opinionUserViewHolder.setNameUser(evaluates.get(i).getUserName().concat(", ").concat(StringUtils.formatDate(evaluates.get(i).getDate())));
-
-            firebaseImage.downloadFirebaseImage("users",
-                    evaluates.get(i).getCity(),
-                    evaluates.get(i).getIdUser().concat(".jpg"),
-                    opinionUserViewHolder.getImageUser()
-                    );
-
+            opinionUserViewHolder.downloaImage("users", evaluates.get(i).getCity(), evaluates.get(i).getIdUser());
         }
-
     }
 
     @Override

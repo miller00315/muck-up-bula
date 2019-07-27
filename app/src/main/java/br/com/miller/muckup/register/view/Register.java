@@ -19,7 +19,7 @@ import br.com.miller.muckup.helpers.ImageHelper;
 import br.com.miller.muckup.domain.User;
 import br.com.miller.muckup.register.presenters.RegisterPresenter;
 import br.com.miller.muckup.register.tasks.Task;
-import br.com.miller.muckup.utils.ImageUtils;
+import br.com.miller.muckup.utils.image.ImageUtils;
 import br.com.miller.muckup.utils.Mask;
 
 public class Register extends AppCompatActivity implements Task.Presenter {

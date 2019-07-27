@@ -8,11 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -29,7 +28,6 @@ import java.util.Objects;
 
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.domain.Offer;
-import br.com.miller.muckup.helpers.AlertContructor;
 import br.com.miller.muckup.helpers.Constants;
 import br.com.miller.muckup.medicine.activities.Medicine;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
@@ -40,8 +38,11 @@ import br.com.miller.muckup.store.buy.presenter.BuyPresenter;
 import br.com.miller.muckup.store.buy.tasks.Tasks;
 import br.com.miller.muckup.utils.MoneyTextWatcher;
 import br.com.miller.muckup.utils.StringUtils;
+import br.com.miller.muckup.utils.alerts.EditTextDialogFragment;
 
-public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInteract, AlertContructor.OnAlertInteract,
+public class BuyActivity extends AppCompatActivity implements
+        Item.OnAdapterInteract,
+        EditTextDialogFragment.EditTextFragmentListener,
         Tasks.Presenter{
 
     private BuyRecyclerAdapter buyRecyclerAdapter;
@@ -49,7 +50,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     private RadioButton card;
     private CardView cardTroco;
     private CardView cardFlag;
-    private AlertContructor alertContructor;
     private TextView valueSend, textDeliverAddress, textPayMode, textCardFlag;
     private TextView totalValue;
     private TextView addressBuy;
@@ -67,9 +67,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         setContentView(R.layout.activity_buy);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        if(alertContructor == null)
-            alertContructor = new AlertContructor(this);
 
         if(sharedPreferences == null)
             sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
@@ -170,22 +167,26 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
         if(!bundle.isEmpty()){
 
-            if(Objects.equals(bundle.getString("actvity"), Medicine.class.getName())){
-
-                buyPresenter.getOffer(Objects.requireNonNull(bundle.getString("city")),
-                        Objects.requireNonNull(bundle.getString("type")),
-                        String.valueOf(Objects.requireNonNull(bundle.getInt("id"))),
-                                bundle.getInt("quantity", 1));
+            if(Objects.equals(bundle.getString("actvity"), Medicine.ID)){
 
                 showLoading();
 
-            }else if(Objects.requireNonNull(bundle.getString("actvity")).equals(MyCart.class.getName())){
+                buyPresenter.getOffer(bundle);
 
+            }else if(Objects.requireNonNull(bundle.getString("actvity")).equals(MyCart.ID)){
 
                 showLoading();
 
-                buyPresenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
-                        sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+                if(bundle.getInt("order") == 1) {
+
+                    buyPresenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
+                            sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+
+                }else if(bundle.getInt("order") == 2){
+
+                    buyPresenter.getOffer(bundle);
+
+                }
 
             }
 
@@ -199,15 +200,24 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
 
     public void showAlertAddress(){
 
-        ViewGroup viewGroup = findViewById(android.R.id.content);
+        Bundle bundle = new Bundle();
 
-        View view1 = LayoutInflater.from(this).inflate(R.layout.layout_alert_address, viewGroup, false);
+        bundle.putInt("view", R.layout.layout_single_edit_text_alert_fragment);
 
-        EditText address = view1.findViewById(R.id.edit_text_address);
+        bundle.putInt("inputType", InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
 
-        address.setText(sharedPreferences.getString(Constants.USER_ADDRESS, ""));
+        bundle.putString("type", Constants.USER_ADDRESS);
 
-        alertContructor.personalizedAlert(view1, address);
+        bundle.putString("hint", "Endereço");
+
+        bundle.putString("text", sharedPreferences.getString(Constants.USER_ADDRESS, ""));
+
+        EditTextDialogFragment editTextDialogFragment = EditTextDialogFragment.newInstance(bundle);
+
+        editTextDialogFragment.setListener(this);
+
+        editTextDialogFragment.openDialog(getSupportFragmentManager());
+
     }
 
     @Override
@@ -223,18 +233,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
     @Override
     public void onAdapterInteract(Bundle bundle) { }
 
-    @Override
-    public void onAlertPositive(Object object) {
-
-        if(object instanceof  EditText){
-
-            EditText editText = (EditText) object;
-
-            addressBuy.setText(editText.getText().toString());
-        }
-
-    }
-
     public void showLoading(){
         layoutLoading.setVisibility(View.VISIBLE);
         main_layout.setVisibility(View.INVISIBLE);
@@ -244,12 +242,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         layoutLoading.setVisibility(View.INVISIBLE);
         main_layout.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void onAlertNegative() { }
-
-    @Override
-    public void onAlertError() { }
 
     public void endBuy(View view) {
 
@@ -349,4 +341,6 @@ public class BuyActivity extends AppCompatActivity implements Item.OnAdapterInte
         finish();
     }
 
+    @Override
+    public void onEditTextDialogFragmentResult(Bundle bundle) { addressBuy.setText(bundle.getString("result")); }
 }

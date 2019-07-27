@@ -1,6 +1,5 @@
 package br.com.miller.muckup.menuPrincipal.models;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
@@ -16,7 +15,7 @@ import java.util.Map;
 
 import br.com.miller.muckup.menuPrincipal.tasks.PerfilTasks;
 import br.com.miller.muckup.domain.User;
-import br.com.miller.muckup.utils.FirebaseImageUtils;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
 public class PerfilModel implements FirebaseImageUtils.FirebaseImageTask {
 
@@ -156,27 +155,17 @@ public class PerfilModel implements FirebaseImageUtils.FirebaseImageTask {
     }
 
     @Override
-    public void onImageDeleteSuccess() {
-
-    }
+    public void onImageDeleteSuccess() { }
 
     @Override
-    public void onImageDeleteFailed() {
-
-    }
+    public void onImageDeleteFailed() { }
 
     @Override
-    public void onDownloadImageSuccess(Bitmap bitmap) {
-
-    }
+    public void onDownloadImageSuccess(Bitmap bitmap) { model.onDownloadImgeSucess(bitmap);}
 
     @Override
-    public void onDowloadImageFail() {
-
-    }
+    public void onDowloadImageFail() { model.onDownloadImageFailed(); }
 
     @Override
-    public void downloaImage(String type, String city, String image) {
-
-    }
+    public void downloaImage(String type, String city, String image) { firebaseImageUtils.downloadImage(type, city, image); }
 }

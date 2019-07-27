@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import br.com.miller.muckup.R;
-import br.com.miller.muckup.utils.FirebaseImageUtils;
+import br.com.miller.muckup.utils.image.FirebaseImageUtils;
 
 public class StoreViewHolder extends RecyclerView.ViewHolder implements FirebaseImageUtils.FirebaseImageTask {
 

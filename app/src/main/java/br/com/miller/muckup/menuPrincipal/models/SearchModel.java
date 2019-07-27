@@ -112,7 +112,7 @@ public class SearchModel {
 
                             for(DataSnapshot child : dataSnapshot.getChildren()){
 
-                                Departament departament = child.getValue(Departament.class);
+                                Departament departament = new Departament(child.getValue());
 
                                 departaments.add(departament);
                             }
