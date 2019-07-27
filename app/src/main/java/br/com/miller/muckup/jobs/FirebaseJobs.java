@@ -116,9 +116,7 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            Log.wtf("test", String.valueOf(isAppOnForeground(getApplicationContext())));
-
+            
             if(!isAppOnForeground(getApplicationContext())){
                 try {
                     sendNotification(Objects.requireNonNull(dataSnapshot.getValue(Buy.class)));
@@ -157,10 +155,11 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
                     notificationCompat = new NotificationCompat.Builder(getApplicationContext(),
                             getString(R.string.default_notification_channel_id))
                             .setTicker("Compra enviada")
+                            .setContentText("Compra enviada")
                             .setContentTitle("De :".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setSmallIcon(R.drawable.ic_icon_bula_small)
                             .setSound(defaultSoundUri)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setVibrate(new long[]{1000, 1000, 1000, 1000});
@@ -172,11 +171,12 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
 
                     notificationCompat = new NotificationCompat.Builder(getApplicationContext(),
                             getString(R.string.default_notification_channel_id))
+                            .setContentText("Compra recebida")
                             .setTicker("Compra recebida")
                             .setContentTitle("De :".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setSmallIcon(R.drawable.ic_icon_bula_small)
                             .setSound(defaultSoundUri)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setVibrate(new long[]{1000, 1000, 1000, 1000});
@@ -188,11 +188,12 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
 
                     notificationCompat = new NotificationCompat.Builder(getApplicationContext(),
                             getString(R.string.default_notification_channel_id))
-                            .setTicker("Compra cancelada")
+                            .setContentText("Compra cancelada")
+                            .setTicker("Compra recebida")
                             .setContentTitle("De :".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setSmallIcon(R.drawable.ic_icon_bula_small)
                             .setLargeIcon(ImageUtils.drawableToBitMap(R.drawable.ic_launcher_foreground, getApplicationContext()))
                             .setSound(defaultSoundUri)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
