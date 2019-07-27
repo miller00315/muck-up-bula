@@ -116,7 +116,7 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            
+
             if(!isAppOnForeground(getApplicationContext())){
                 try {
                     sendNotification(Objects.requireNonNull(dataSnapshot.getValue(Buy.class)));
@@ -156,7 +156,7 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
                             getString(R.string.default_notification_channel_id))
                             .setTicker("Compra enviada")
                             .setContentText("Compra enviada")
-                            .setContentTitle("De :".concat(buy.getStoreName()))
+                            .setContentTitle("De: ".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
                             .setSmallIcon(R.drawable.ic_icon_bula_small)
@@ -173,7 +173,7 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
                             getString(R.string.default_notification_channel_id))
                             .setContentText("Compra recebida")
                             .setTicker("Compra recebida")
-                            .setContentTitle("De :".concat(buy.getStoreName()))
+                            .setContentTitle("De: ".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
                             .setSmallIcon(R.drawable.ic_icon_bula_small)
@@ -190,7 +190,7 @@ public class FirebaseJobs extends JobService{//} implements Application.Activity
                             getString(R.string.default_notification_channel_id))
                             .setContentText("Compra cancelada")
                             .setTicker("Compra recebida")
-                            .setContentTitle("De :".concat(buy.getStoreName()))
+                            .setContentTitle("De: ".concat(buy.getStoreName()))
                             .setSubText("Às: ".concat(StringUtils.formatDate(buy.getDeliverDate())))
                             .setAutoCancel(true)
                             .setSmallIcon(R.drawable.ic_icon_bula_small)
