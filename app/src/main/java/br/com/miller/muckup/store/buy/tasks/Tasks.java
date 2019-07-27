@@ -19,7 +19,7 @@ public interface Tasks {
     }
 
     interface View{
-        void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers, String userName, String observation);
+        void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers, String userName, String observation, String userPhone);
         void getOffer(Bundle bundle);
     }
 

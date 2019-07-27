@@ -101,7 +101,9 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
     public void onOffersFailed() { presenter.onOffersFail(); }
 
     @Override
-    public void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardFlag, ArrayList<Offer> offers, String userName, String observation) {
+    public void makeBuy(String idFirebase, String city, String address, int payMode,
+                        String troco, int cardFlag, ArrayList<Offer> offers, String userName,
+                        String observation, String userPhone) {
 
         boolean ok = true;
 
@@ -129,7 +131,7 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
         buyModel.generateBuys(offers, city, idFirebase, address, payMode,
                 Double.valueOf(StringUtils.cleanMoneyString(troco, Locale.getDefault())),
-                cardFlag, userName, observation);
+                cardFlag, userName, observation, userPhone);
     }
 
     @Override

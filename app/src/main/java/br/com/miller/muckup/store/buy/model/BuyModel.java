@@ -30,7 +30,9 @@ public class BuyModel {
 
     }
 
-    public void generateBuys(ArrayList<Offer> offers, String userCity, String userId, String address, int payMode, Double troco, int cardFlag, String userName, String observation){
+    public void generateBuys(ArrayList<Offer> offers, String userCity,
+                             String userId, String address, int payMode, Double troco,
+                             int cardFlag, String userName, String observation, String userPhone){
 
         ArrayList<Buy> buys = new ArrayList<>();
 
@@ -38,7 +40,7 @@ public class BuyModel {
 
            if(buys.size() == 0) {
 
-               buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation));
+               buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation, userPhone));
 
            }else{
 
@@ -59,7 +61,7 @@ public class BuyModel {
 
                if(!ok)
                {
-                   buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation));
+                   buys.add(createBuy(offer, userCity, userId, address, payMode, troco, cardFlag, userName, observation, userPhone));
                }
 
            }
@@ -69,7 +71,9 @@ public class BuyModel {
             model.onBuysGenerated(buys);
     }
 
-    private Buy createBuy(Offer offer, String userCity, String userId, String address, int payMode, Double troco, int cardFlag, String userName, String observation){
+    private Buy createBuy(Offer offer, String userCity, String userId, String address,
+                          int payMode, Double troco, int cardFlag, String userName,
+                          String observation, String userPhone){
 
         Buy buy = new Buy();
 
@@ -87,6 +91,7 @@ public class BuyModel {
         buy.getOffers().add(offer);
         buy.setAddress(address);
         buy.setStatus("news");
+        buy.setUserPhone(userPhone);
 
         switch (payMode){
 

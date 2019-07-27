@@ -51,7 +51,7 @@ public class BuyActivity extends AppCompatActivity implements
     private CardView cardTroco;
     private CardView cardFlag;
     private TextView valueSend, textDeliverAddress, textPayMode, textCardFlag;
-    private TextView totalValue;
+    private TextView totalValue, textPhone;
     private TextView addressBuy;
     private SharedPreferences sharedPreferences;
     private Bundle bundle;
@@ -93,7 +93,6 @@ public class BuyActivity extends AppCompatActivity implements
     private void bindView(){
 
         RecyclerView buyRecycler = findViewById(R.id.buy_recycler);
-        CardView cardAddress = findViewById(R.id.card_address);
 
         money = findViewById(R.id.money);
         cardFlag = findViewById(R.id.card_flag);
@@ -106,6 +105,7 @@ public class BuyActivity extends AppCompatActivity implements
         editTextTroco = findViewById(R.id.edit_text_troco);
         card_flag = findViewById(R.id.card_flag_);
         textCardFlag = findViewById(R.id.text_card_flag);
+        textPhone = findViewById(R.id.phone_buy);
         textDeliverAddress = findViewById(R.id.text_delivery_address);
         textPayMode = findViewById(R.id.text_pay_mode);
         layoutLoading = findViewById(R.id.loading_layout);
@@ -148,13 +148,6 @@ public class BuyActivity extends AppCompatActivity implements
             }
         });
 
-        cardAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAlertAddress();
-            }
-        });
-
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
 
         buyRecycler.setLayoutManager(linearLayout);
@@ -164,6 +157,8 @@ public class BuyActivity extends AppCompatActivity implements
         buyRecycler.setAdapter(buyRecyclerAdapter);
 
         addressBuy.setText(sharedPreferences.getString(Constants.USER_ADDRESS, ""));
+
+        textPhone.setText(sharedPreferences.getString(Constants.USER_PHONE, ""));
 
         if(!bundle.isEmpty()){
 
@@ -198,7 +193,7 @@ public class BuyActivity extends AppCompatActivity implements
 
     }
 
-    public void showAlertAddress(){
+    public void showAlertAddress(View view){
 
         Bundle bundle = new Bundle();
 
@@ -210,13 +205,36 @@ public class BuyActivity extends AppCompatActivity implements
 
         bundle.putString("hint", "Endereço");
 
-        bundle.putString("text", sharedPreferences.getString(Constants.USER_ADDRESS, ""));
+        bundle.putString("text", addressBuy.getText().toString());
 
         EditTextDialogFragment editTextDialogFragment = EditTextDialogFragment.newInstance(bundle);
 
         editTextDialogFragment.setListener(this);
 
         editTextDialogFragment.openDialog(getSupportFragmentManager());
+
+    }
+
+    public void showAlertPhone(View view){
+
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("view", R.layout.layout_single_edit_text_alert_fragment);
+
+        bundle.putInt("inputType", InputType.TYPE_CLASS_PHONE);
+
+        bundle.putString("type", Constants.USER_PHONE);
+
+        bundle.putString("hint", "Telefone");
+
+        bundle.putString("text", textPhone.getText().toString());
+
+        EditTextDialogFragment editTextDialogFragment = EditTextDialogFragment.newInstance(bundle);
+
+        editTextDialogFragment.setListener(this);
+
+        editTextDialogFragment.openDialog(getSupportFragmentManager());
+
 
     }
 
@@ -257,7 +275,8 @@ public class BuyActivity extends AppCompatActivity implements
                 card_flag.getCheckedRadioButtonId(),
                 buyRecyclerAdapter.getOffers(),
                 sharedPreferences.getString(Constants.USER_NAME, ""),
-                observacao.getText().toString());
+                observacao.getText().toString(),
+                textPhone.getText().toString());
     }
 
     @Override
@@ -342,5 +361,13 @@ public class BuyActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onEditTextDialogFragmentResult(Bundle bundle) { addressBuy.setText(bundle.getString("result")); }
+    public void onEditTextDialogFragmentResult(Bundle bundle) {
+
+        if(!Objects.requireNonNull(bundle.getString("result")).isEmpty()) {
+            if (Objects.equals(bundle.getString("type"), Constants.USER_ADDRESS))
+                addressBuy.setText(bundle.getString("result"));
+            else if (Objects.equals(bundle.getString("type"), Constants.USER_PHONE))
+                textPhone.setText(bundle.getString("result"));
+        }
+    }
 }
