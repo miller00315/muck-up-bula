@@ -214,6 +214,7 @@
 
                         <RadioGroup
                             android:id="@+id/card_flag_"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -273,13 +274,9 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:text="@string/clique_aqui_para_alterar"
-                        android:textSize="12sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
                         android:id="@+id/address_buy"
+                        android:layout_marginTop="10dp"
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:onClick="showAlertAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -309,14 +306,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <TextView
-                        android:text="@string/clique_aqui_para_alterar"
-                        android:textSize="12sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/phone_buy"
+                        android:layout_marginTop="10dp"
+                        android:drawableEnd="@drawable/ic_edit_gray_24dp"
                         android:onClick="showAlertPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -379,6 +373,7 @@
 
                     <TextView
                         android:id="@+id/solicitation_time"
+                        android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
