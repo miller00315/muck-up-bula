@@ -66,6 +66,13 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.removeListener(sharedPreferences.getString(Constants.USER_CITY, ""),
+                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+    }
+
     public void showLoading(){
 
         recyclerBuys.setVisibility(View.INVISIBLE);
@@ -79,6 +86,10 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     }
 
     private void bindViews(){
+
+        if(loadingLayout.getVisibility() ==View.VISIBLE)
+            presenter.temporaryVerify(sharedPreferences.getString(Constants.USER_CITY, ""),
+                    sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
 
         Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -128,6 +139,7 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     @Override
     public void onBuySuccess(ArrayList<Buy> buys) {
         hideLoading();
+        if(buyRecyclerAdapter.getItemCount() > 0) buyRecyclerAdapter.getBuys().clear();
         buyRecyclerAdapter.setArray(buys);
     }
 

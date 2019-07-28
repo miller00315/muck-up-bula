@@ -28,4 +28,8 @@ public class MyBuysPresenter implements MyBuysTasks.View, MyBuysTasks.Model {
 
     @Override
     public void getBuys(String userCity, String userId) { myBuysModel.getBuys(userCity, userId);}
+
+    public void temporaryVerify(String userCity, String userId){myBuysModel.temporaryVerify(userCity, userId);}
+
+    public void removeListener(String userCity, String userId){ myBuysModel.removeListener(userCity, userId); }
 }
