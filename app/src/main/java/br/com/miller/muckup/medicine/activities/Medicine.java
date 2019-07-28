@@ -7,11 +7,12 @@ import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class Medicine extends AppCompatActivity implements
     private TextView medicineStore, medicineDescription, medicineIndication,
             medicineNoIndication, medicineActive,
             valueSendMedicine;
+    private ScrollView mainLayout;
+    private RelativeLayout loadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,16 @@ public class Medicine extends AppCompatActivity implements
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        buyNow = findViewById(R.id.buy_now);
+        medicineDescription = findViewById(R.id.medicine_description);
+        medicineStore = findViewById(R.id.medicine_store);
+        medicineIndication = findViewById(R.id.medicine_utilization);
+        medicineNoIndication = findViewById(R.id.medicine_indication);
+        medicineActive = findViewById(R.id.medicine_active);
+        valueSendMedicine = findViewById(R.id.value_send_medicine);
+        imageMedicine = findViewById(R.id.image_medicine);
+        mainLayout = findViewById(R.id.main_layout);
+        loadingLayout = findViewById(R.id.loading_layout);
 
         sharedPreferences = getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
@@ -65,8 +78,22 @@ public class Medicine extends AppCompatActivity implements
 
         bundle = getIntent().getBundleExtra("data");
 
+        showLoading();
+
         bindViews();
 
+     }
+
+     private void showLoading(){
+
+        loadingLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
+     }
+
+
+     private void hideLoading(){
+         loadingLayout.setVisibility(View.INVISIBLE);
+         mainLayout.setVisibility(View.VISIBLE);
      }
 
     @Override
@@ -77,15 +104,6 @@ public class Medicine extends AppCompatActivity implements
     }
 
      private void bindViews(){
-
-         buyNow = findViewById(R.id.buy_now);
-         medicineDescription = findViewById(R.id.medicine_description);
-         medicineStore = findViewById(R.id.medicine_store);
-         medicineIndication = findViewById(R.id.medicine_utilization);
-         medicineNoIndication = findViewById(R.id.medicine_indication);
-         medicineActive = findViewById(R.id.medicine_active);
-         valueSendMedicine = findViewById(R.id.value_send_medicine);
-         imageMedicine = findViewById(R.id.image_medicine);
 
          medicinePresenter.getMedicine(bundle);
 
@@ -135,6 +153,8 @@ public class Medicine extends AppCompatActivity implements
 
     public void goToBuy(){
 
+        hideLoading();
+
         Bundle bundle = new Bundle();
         Intent intent = new Intent(Medicine.this, BuyActivity.class);
 
@@ -174,6 +194,8 @@ public class Medicine extends AppCompatActivity implements
     @Override
     public void onMedicineDataSuccess(Offer offer) {
 
+        hideLoading();
+
         this.offer = offer;
 
         buyNow.setText(getResources().getString(R.string.comprar_agora).concat(String.format(Locale.getDefault(),"%.2f",offer.getValue())));
@@ -190,7 +212,11 @@ public class Medicine extends AppCompatActivity implements
     }
 
     @Override
-    public void onMedicineDataFailed() { }
+    public void onMedicineDataFailed() {
+
+        Toast.makeText(this, "Erro ao obeter os dados do medicamento", Toast.LENGTH_SHORT).show();
+        finish();
+    }
 
     @Override
     public void onImageDownloadSuccess(Bitmap bitmap) { imageMedicine.setImageBitmap(bitmap);}
@@ -199,13 +225,19 @@ public class Medicine extends AppCompatActivity implements
     public void onImageDownloadFailed() { Toast.makeText(this, "Erro ao realizar download da image", Toast.LENGTH_SHORT).show(); }
 
     @Override
-    public void onAddCartSuccess(Offer offer) { Toast.makeText(this, " Você adicionou ".concat(offer.getTitle()).concat(" ao seu carrinho"), Toast.LENGTH_LONG).show(); }
+    public void onAddCartSuccess(Offer offer) {
+        hideLoading();
+        Toast.makeText(this, " Você adicionou ".concat(offer.getTitle()).concat(" ao seu carrinho"), Toast.LENGTH_LONG).show(); }
 
     @Override
-    public void onAddCartFailed() { Toast.makeText(this, "Erro ao adicionar produto, tente novamente.", Toast.LENGTH_LONG).show(); }
+    public void onAddCartFailed() {
+        hideLoading();
+        Toast.makeText(this, "Erro ao adicionar produto, tente novamente.", Toast.LENGTH_LONG).show(); }
 
     @Override
     public void onDialogFragmentListener(Bundle bundle) {
+
+        showLoading();
 
         if (bundle.containsKey("quantity")) {
             offer.setQuantity(bundle.getInt("quantity"));

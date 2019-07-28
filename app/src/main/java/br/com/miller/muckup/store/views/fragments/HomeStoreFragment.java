@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ public class HomeStoreFragment extends Fragment implements
     private StorePresenter storePresenter;
     private TextView storeCity, storeDescription,storeTime, classification;
     private ImageView storeImage;
+    private ScrollView mainLayout;
+    private RelativeLayout layoutLoading;
 
     public HomeStoreFragment() {
     }
@@ -37,20 +41,6 @@ public class HomeStoreFragment extends Fragment implements
 
         storePresenter = new StorePresenter(this);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (getArguments() != null) {
-
-            if(! getArguments().isEmpty()){
-
-                storePresenter.getStore(getArguments().getString("id_store"), getArguments().getString("city"));
-            }
-
-        }
     }
 
     @Override
@@ -65,13 +55,35 @@ public class HomeStoreFragment extends Fragment implements
              storeTime = view.findViewById(R.id.store_time);
              storeImage = view.findViewById(R.id.image_store);
              classification = view.findViewById(R.id.store_classification);
+             mainLayout = view.findViewById(R.id.main_layout);
+             layoutLoading = view.findViewById(R.id.loading_layout);
+
+             showLoading();
+
+             if(getArguments() != null)
+                storePresenter.getStore(getArguments().getString("id_store"), getArguments().getString("city"));
+             else{
+                 Toast.makeText(getContext(), "Erro ao receber dados", Toast.LENGTH_SHORT).show();
+             }
 
              bindViews();
 
         return view;
     }
 
+    private void showLoading(){
+        layoutLoading.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private  void hideLoading(){
+        layoutLoading.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+    }
+
     private void bindViews(){
+
+
 
         classification.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +123,8 @@ public class HomeStoreFragment extends Fragment implements
     @Override
     public void onStoreSuccess(Store store) {
 
+        hideLoading();
+
             if(this.isVisible()) {
 
                 Bundle bundle = new Bundle();
@@ -140,10 +154,16 @@ public class HomeStoreFragment extends Fragment implements
     public void onDownloadImageFailed() { Toast.makeText(getContext(), "Erro ao baixar imagem.", Toast.LENGTH_SHORT).show();}
 
     @Override
-    public void onStoreFailed() { Toast.makeText(getContext(), "Problemas ao encontrar a loja", Toast.LENGTH_LONG).show(); }
+    public void onStoreFailed() {
+        hideLoading();
+        Toast.makeText(getContext(), "Problemas ao encontrar a loja", Toast.LENGTH_LONG).show();
+    }
 
     @Override
-    public void onStoresFailed() { Toast.makeText(getContext(), "Erro ao obter dados", Toast.LENGTH_SHORT).show(); }
+    public void onStoresFailed() {
+        hideLoading();
+        Toast.makeText(getContext(), "Erro ao obter dados", Toast.LENGTH_SHORT).show();
+    }
 
     public interface OnFragmentInteractionListener { void onFragmentInteraction(Bundle bundle); }
 }

@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -28,6 +31,7 @@ public class DepartamentManager extends AppCompatActivity implements
     private OffersRecyclerAdapter offersRecyclerAdapter;
     private Bundle bundle;
     private DepartamentManagerPresenter departamentManagerPresenter;
+    private RelativeLayout loadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class DepartamentManager extends AppCompatActivity implements
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recycler_cart_manager);
+        loadingLayout = findViewById(R.id.loading_layout);
 
         departamentManagerPresenter = new DepartamentManagerPresenter(this);
 
@@ -53,11 +58,23 @@ public class DepartamentManager extends AppCompatActivity implements
         bindViews();
     }
 
+    private void showLoading(){
+        loadingLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideLoading(){
+        loadingLayout.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
     private void bindViews(){
 
         if(!bundle.isEmpty()){
 
             Objects.requireNonNull(getSupportActionBar()).setTitle(bundle.getString("name_departament", ""));
+
+            showLoading();
 
             departamentManagerPresenter.getDepartamentCheck(bundle);
 
@@ -76,9 +93,8 @@ public class DepartamentManager extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -106,10 +122,15 @@ public class DepartamentManager extends AppCompatActivity implements
     public void onDepartamentsStoreFailed() { }
 
     @Override
-    public void onSingleDepartamenteFailed() { }
+    public void onSingleDepartamenteFailed() {
+        Toast.makeText(this, "Erro ao obter departamento, tente novamente",Toast.LENGTH_SHORT).show();
+        hideLoading();
+    }
 
     @Override
-    public void onSingleDepartmentSuccess(Departament departament) { offersRecyclerAdapter.setArray(departament.getOffers()); }
+    public void onSingleDepartmentSuccess(Departament departament) {
+        hideLoading();
+        offersRecyclerAdapter.setArray(departament.getOffers()); }
 
     @Override
     public void onDepartmentsFailed() { }

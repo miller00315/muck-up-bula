@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
 import java.util.ArrayList;
 
 import br.com.miller.muckup.R;
@@ -27,6 +29,8 @@ public class OpinionFragment extends Fragment implements OpinionTasks.Presenter 
 
     private OnFragmentInteractionListener mListener;
     private OpinionStoreRecyclerAdapter opinionStoreRecyclerAdapter;
+    private RelativeLayout loadingLayout;
+    RecyclerView recyclerViewOpinion;
 
     public OpinionFragment() {
         // Required empty public constructor
@@ -41,7 +45,8 @@ public class OpinionFragment extends Fragment implements OpinionTasks.Presenter 
         OpinionPresenter opinionPresenter = new OpinionPresenter(this);
 
         if(getArguments() != null)
-            opinionPresenter.getOpinions(getArguments().getString("id_store"), getArguments().getString("city"));
+            opinionPresenter.getOpinions(getArguments().getString("id_store"),
+                    getArguments().getString("city"));
 
     }
 
@@ -51,7 +56,9 @@ public class OpinionFragment extends Fragment implements OpinionTasks.Presenter 
 
         View view = inflater.inflate(R.layout.fragment_opinion, container, false);
 
-        RecyclerView recyclerViewOpinion = view.findViewById(R.id.recycler_view_opinion);
+        recyclerViewOpinion = view.findViewById(R.id.recycler_view_opinion);
+
+        loadingLayout = view.findViewById(R.id.loading_layout);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -61,7 +68,21 @@ public class OpinionFragment extends Fragment implements OpinionTasks.Presenter 
 
         recyclerViewOpinion.setAdapter(opinionStoreRecyclerAdapter);
 
+        showLoading();
+
+        if(opinionStoreRecyclerAdapter.getItemCount() > 0) hideLoading();
+
         return view;
+    }
+
+    private void showLoading(){
+        loadingLayout.setVisibility(View.VISIBLE);
+        recyclerViewOpinion.setVisibility(View.INVISIBLE);
+    }
+
+    private  void hideLoading(){
+        loadingLayout.setVisibility(View.INVISIBLE);
+        recyclerViewOpinion.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -82,23 +103,14 @@ public class OpinionFragment extends Fragment implements OpinionTasks.Presenter 
     }
 
     @Override
-    public void onOpinionsSuccess(ArrayList<Evaluate> evaluates) { if(evaluates != null && this.isVisible()) opinionStoreRecyclerAdapter.setArray(evaluates); }
+    public void onOpinionsSuccess(ArrayList<Evaluate> evaluates) {
+        hideLoading();
+        if(evaluates != null && this.isVisible()) opinionStoreRecyclerAdapter.setArray(evaluates); }
 
     @Override
-    public void onOpinionsFiled() { }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Bundle bundle);
+    public void onOpinionsFiled() {
+        hideLoading();
     }
+
+    public interface OnFragmentInteractionListener { void onFragmentInteraction(Bundle bundle);}
 }

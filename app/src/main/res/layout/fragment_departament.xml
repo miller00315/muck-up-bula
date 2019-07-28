@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".store.fragments.DepartamentStoreFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/departamento"
-            tools:listitem="@layout/view_holder_list_offer"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/departamento"
+                tools:listitem="@layout/view_holder_list_offer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include layout="@layout/loading_layout"/>
+
+</RelativeLayout>

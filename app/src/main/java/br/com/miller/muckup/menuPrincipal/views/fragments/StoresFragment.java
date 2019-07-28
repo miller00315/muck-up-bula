@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -35,6 +36,8 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
 
     private SharedPreferences sharedPreferences;
 
+    private RelativeLayout mainLayout, loadingLayout;
+
     public StoresFragment() {}
 
     @Override
@@ -52,9 +55,14 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_stores_, container, false);
 
         RecyclerView storesRecyclerView = view.findViewById(R.id.recyclerStore);
+
+        mainLayout = view.findViewById(R.id.main_layout);
+
+        loadingLayout = view.findViewById(R.id.loading_layout);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
@@ -63,6 +71,10 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
         storesRecyclerView.setHasFixedSize(true);
 
         storesRecyclerView.setAdapter(storeRecyclerAdapter);
+
+        if(storesRecyclerView.getAdapter() != null)
+            if (storeRecyclerAdapter.getItemCount() > 0) hideLoading();
+            else showLoading();
 
         storePresenter.getStores(sharedPreferences.getString(Constants.USER_CITY, ""));
 
@@ -89,6 +101,8 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
     @Override
     public void onStoresSuccess(ArrayList<Store> stores) {
 
+        hideLoading();
+
         if (storeRecyclerAdapter.getItemCount() > 0) storeRecyclerAdapter.clear();
 
         if (this.isVisible()) storeRecyclerAdapter.setArray(stores);
@@ -96,6 +110,18 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
 
     @Override
     public void onStoreSuccess(Store store) { }
+
+    private void showLoading(){
+
+        mainLayout.setVisibility(View.INVISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+
+        mainLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     public void onDownloadImageSuccess(Bitmap bitmap) {
@@ -108,10 +134,10 @@ public class StoresFragment extends Fragment implements StoreTasks.Presenter,
     }
 
     @Override
-    public void onStoreFailed() { }
+    public void onStoreFailed() { hideLoading(); }
 
     @Override
-    public void onStoresFailed() { }
+    public void onStoresFailed() { hideLoading(); }
 
     @Override
     public void onAdapterInteract(Bundle bundle) {

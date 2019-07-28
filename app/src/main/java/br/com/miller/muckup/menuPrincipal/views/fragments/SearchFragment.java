@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,10 @@ public class SearchFragment extends Fragment implements
 
     public static final String ID = SearchFragment.class.getName();
 
+    private ScrollView mainLayout;
+
+    private RelativeLayout loadingLayout;
+
     public SearchFragment() {}
 
     @Override
@@ -89,13 +94,17 @@ public class SearchFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         recyclerResult = view.findViewById(R.id.recyclerResult);
         recyclerAdv = view.findViewById(R.id.recycler_adv);
         header = view.findViewById(R.id.header);
         loading = view.findViewById(R.id.loading_layout);
         spinner = view.findViewById(R.id.spinner_departament);
+        mainLayout = view.findViewById(R.id.main_layout);
+        loadingLayout = view.findViewById(R.id.search_loading);
+
+        showLoading();
 
         bindViews(view);
 
@@ -116,6 +125,9 @@ public class SearchFragment extends Fragment implements
     }
 
     public void bindViews(View view){
+
+        if(spinner.getAdapter() != null)
+            if(!spinner.getAdapter().isEmpty()) hideLoading();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext());
@@ -207,6 +219,18 @@ public class SearchFragment extends Fragment implements
 
     }
 
+    private void showLoading(){
+
+        mainLayout.setVisibility(View.INVISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+
+        mainLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -230,6 +254,7 @@ public class SearchFragment extends Fragment implements
         if(offers != null) {
 
             if(searchResultAdapter.getItemCount() > 0) searchResultAdapter.clear();
+
 
             if(offers.isEmpty()) {
                 Toast.makeText(getContext(), "Nada encontramos ofertas neste departamento", Toast.LENGTH_LONG).show();
@@ -264,6 +289,8 @@ public class SearchFragment extends Fragment implements
     @Override
     public void onSuggetionsSuccess(String[] suggestions) {
 
+        hideLoading();
+
         searchView.setSuggestionsAdapter(SearchHelper.setSuggestionCursor(getContext(), suggestions));
 
         searchAutoComplete = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
@@ -279,7 +306,7 @@ public class SearchFragment extends Fragment implements
     }
 
     @Override
-    public void onSuggestionFailed() { }
+    public void onSuggestionFailed() { hideLoading(); }
 
     @Override
     public void emptySearch() { Toast.makeText(getContext(), "O campo de busca está vazio, insira algo.", Toast.LENGTH_SHORT).show(); }

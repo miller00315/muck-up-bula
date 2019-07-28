@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".store.views.fragments.OpinionFragment">
-
 
     <TextView
         android:text="@string/o_que_dizem_sobre_n_s"
@@ -20,4 +19,6 @@
         android:layout_height="wrap_content"
         tools:listitem = "@layout/view_holder_user_opinion"/>
 
-</FrameLayout>
+    <include layout="@layout/loading_layout"/>
+
+</RelativeLayout>

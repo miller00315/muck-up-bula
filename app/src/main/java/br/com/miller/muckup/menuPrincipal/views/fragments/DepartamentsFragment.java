@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,6 +39,10 @@ public class DepartamentsFragment extends Fragment implements
 
     private SharedPreferences sharedPreferences;
 
+    private ScrollView mainLayout;
+
+    private RelativeLayout loadingLayout;
+
     public static final String ID = DepartamentsFragment.class.getName();
 
     public DepartamentsFragment() { }
@@ -51,6 +57,7 @@ public class DepartamentsFragment extends Fragment implements
 
         sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
 
+        departamentPresenter.getDepartaments(sharedPreferences.getString(Constants.USER_CITY, ""));
     }
 
     @Override
@@ -61,9 +68,27 @@ public class DepartamentsFragment extends Fragment implements
 
         departamentsRecyclerView = view.findViewById(R.id.offerRecyclerView);
 
+        mainLayout = view.findViewById(R.id.main_layout);
+
+        loadingLayout = view.findViewById(R.id.loading_layout);
+
+        showLoading();
+
         bindViews();
 
         return view;
+    }
+
+    private void showLoading(){
+
+        mainLayout.setVisibility(View.INVISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+
+        mainLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
     }
 
     private void bindViews(){
@@ -76,8 +101,7 @@ public class DepartamentsFragment extends Fragment implements
 
         departamentsRecyclerView.setAdapter(departamentRecyclerAdapter);
 
-        departamentPresenter.getDepartaments(sharedPreferences.getString(Constants.USER_CITY, ""));
-
+        if(departamentRecyclerAdapter.getItemCount() > 0) hideLoading();
     }
 
     @Override
@@ -101,6 +125,8 @@ public class DepartamentsFragment extends Fragment implements
     @Override
     public void onDepartamentsSuccess(ArrayList<Departament> departaments) {
 
+        hideLoading();
+
         if(this.isVisible()) {
 
             if(departamentRecyclerAdapter.getItemCount() > 0)
@@ -116,7 +142,7 @@ public class DepartamentsFragment extends Fragment implements
 
     @Override
     public void onDepartamentsStoreFailed() {
-
+            hideLoading();
     }
 
     @Override

@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,9 @@ public class DepartamentStoreFragment extends Fragment implements
     private DepartamentRecyclerAdapter departamentRecyclerAdapter;
 
     private DepartamentManagerPresenter departamentManagerPresenter;
+
+    private ScrollView mainLayout;
+    private RelativeLayout layoutLoading;
 
     public static final String ID = DepartamentStoreFragment.class.getName();
 
@@ -49,6 +55,9 @@ public class DepartamentStoreFragment extends Fragment implements
 
         View view = inflater.inflate(R.layout.fragment_departament, container, false);
 
+        mainLayout = view.findViewById(R.id.main_layout);
+        layoutLoading = view.findViewById(R.id.loading_layout);
+
         RecyclerView departamentRecycler = view.findViewById(R.id.departamento);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -61,9 +70,21 @@ public class DepartamentStoreFragment extends Fragment implements
 
         assert getArguments() != null;
 
+        showLoading();
+
         departamentManagerPresenter.getDepartamentsStore(getArguments().getString("city"), getArguments().getString("id_store"));
 
         return view;
+    }
+
+    private void showLoading(){
+        layoutLoading.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private  void hideLoading(){
+        layoutLoading.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -90,6 +111,8 @@ public class DepartamentStoreFragment extends Fragment implements
     @Override
     public void onDepartamentsStoreSuccess(ArrayList<Departament> departaments) {
 
+        hideLoading();
+
         if (departamentRecyclerAdapter.getItemCount() > 0) departamentRecyclerAdapter.clear();
 
         if (this.isVisible()) departamentRecyclerAdapter.setArray(departaments);
@@ -97,7 +120,10 @@ public class DepartamentStoreFragment extends Fragment implements
     }
 
     @Override
-    public void onDepartamentsStoreFailed() { }
+    public void onDepartamentsStoreFailed() {
+        Toast.makeText(getContext(), "Não obtemos departamentos", Toast.LENGTH_SHORT).show();
+        hideLoading();
+    }
 
     @Override
     public void onSingleDepartamenteFailed() { }

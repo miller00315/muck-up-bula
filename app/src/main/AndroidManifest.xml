@@ -35,7 +35,6 @@
         </service>
         <activity android:name=".evaluate.view.EvaluateAct" />
         <activity android:name=".passwordRecovery.view.PasswordRecovery" />
-        <activity android:name=".store.views.activities.ManagerBuy" />
         <activity android:name=".menuPrincipal.views.activities.DepartamentManager" />
         <activity android:name=".menuPrincipal.views.activities.MyBuys" />
         <activity android:name=".menuPrincipal.views.activities.MyCart" />

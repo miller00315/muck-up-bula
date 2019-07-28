@@ -88,8 +88,6 @@ public class Store extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
     public void onFragmentInteraction(Bundle bundle) {
 

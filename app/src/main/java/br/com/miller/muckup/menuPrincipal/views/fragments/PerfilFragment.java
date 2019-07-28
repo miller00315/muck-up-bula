@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,10 @@ public class PerfilFragment extends Fragment implements
     private CardView buys;
     private CardView cart;
 
+    private ScrollView mainLayout;
+
+    private RelativeLayout loadingLayout;
+
     private OnFragmentInteractionListener mListener;
 
     public PerfilFragment() {}
@@ -78,12 +84,20 @@ public class PerfilFragment extends Fragment implements
         countCart = view.findViewById(R.id.perfil_cart);
         buttonEditImage = view.findViewById(R.id.edit_image_perfil);
 
+        mainLayout = view.findViewById(R.id.main_layout);
+
+        loadingLayout = view.findViewById(R.id.loading_layout);
+
+        showLoading();
+
         bindViews();
 
         return view;
     }
 
     private void bindViews(){
+
+        if(user != null) hideLoading();
 
         imageUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,6 +238,8 @@ public class PerfilFragment extends Fragment implements
 
     public void setView(User user) {
 
+        hideLoading();
+
         if(user != null) {
 
             this.user = user;
@@ -238,6 +254,18 @@ public class PerfilFragment extends Fragment implements
             }
         }else
             Toast.makeText(getContext(), "Usuario", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showLoading(){
+
+        mainLayout.setVisibility(View.INVISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading(){
+
+        mainLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -278,25 +306,37 @@ public class PerfilFragment extends Fragment implements
     }
 
     @Override
-    public void getPerfilSuccess(User user) { setView(user); }
+    public void getPerfilSuccess(User user) {
+        showLoading();
+        setView(user);
+    }
 
     @Override
-    public void getPerfilFaield() { Toast.makeText(getContext(), "Erro ao obter dados do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
+    public void getPerfilFaield() {
+        hideLoading();
+        Toast.makeText(getContext(), "Erro ao obter dados do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
 
     @Override
-    public void onPerfilUpdatedFail() { Toast.makeText(getContext(), "Erro ao atualizar o perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
+    public void onPerfilUpdatedFail() {
+        hideLoading();
+        Toast.makeText(getContext(), "Erro ao atualizar o perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
 
     @Override
     public void onPerfilUpdatedSuccess(User user) {
         setView(user);
+        hideLoading();
         perfilPresenter.editSharedPreferences(user, sharedPreferences);
     }
 
     @Override
-    public void onImageUpdateSuccess(Bitmap bitmap) { this.imageUser.setImageBitmap(bitmap); }
+    public void onImageUpdateSuccess(Bitmap bitmap) {
+        hideLoading();
+        this.imageUser.setImageBitmap(bitmap); }
 
     @Override
-    public void onImageUpdateFailed() { Toast.makeText(getContext(), "Erro ao atualizar a imagem do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
+    public void onImageUpdateFailed() {
+        hideLoading();
+        Toast.makeText(getContext(), "Erro ao atualizar a imagem do perfil, tente novamente.", Toast.LENGTH_LONG).show(); }
 
     @Override
     public void onBuyCountSuccess(int buyCount) { countBuy.setText(String.valueOf(buyCount));}
@@ -308,10 +348,12 @@ public class PerfilFragment extends Fragment implements
     public void onCartCountSuccess(int cartCount) { countCart.setText(String.valueOf(cartCount));}
 
     @Override
-    public void onDownloadImgeSucess(Bitmap bitmap) { imageUser.setImageBitmap(bitmap);}
+    public void onDownloadImgeSucess(Bitmap bitmap) {
+        hideLoading();
+        imageUser.setImageBitmap(bitmap);}
 
     @Override
-    public void onDownloadImageFailed() { }
+    public void onDownloadImageFailed() {  }
 
     @Override
     public void onCartCountFailed() { countCart.setText("0");}
@@ -328,6 +370,8 @@ public class PerfilFragment extends Fragment implements
     @Override
     public void onImageDialogFragmentListener(Bitmap bitmap, int result) {
 
+        showLoading();
+
         if(result == RESULT_OK){
             perfilPresenter.updateImage(user, bitmap);
         }else if(result == RESULT_CANCELED){
@@ -336,7 +380,10 @@ public class PerfilFragment extends Fragment implements
     }
 
     @Override
-    public void onEditTextDialogFragmentResult(Bundle bundle) { perfilPresenter.updateUser(user, bundle);}
+    public void onEditTextDialogFragmentResult(Bundle bundle) {
+        showLoading();
+        perfilPresenter.updateUser(user, bundle);
+    }
 
 
     public interface OnFragmentInteractionListener { void onFragmentInteraction(Bundle bundle);}

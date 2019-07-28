@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,15 +44,35 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     private LinearLayout cleanCart, buyAll;
     private TextView textClean, textBuyAll;
     private SharedPreferences sharedPreferences;
+    private RelativeLayout mainLayout, loadingLayout;
+    private RecyclerView recyclerCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_cart);
 
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("Meu carrinho");
+
         offersRecyclerAdapter = new OffersRecyclerAdapter(this, this);
 
         presenter = MyCartPresenter.newInstance(this);
+
+        recyclerCart = findViewById(R.id.recycler_cart);
+        textClean = findViewById(R.id.text_clean);
+        textBuyAll = findViewById(R.id.text_buy_all);
+        cleanCart = findViewById(R.id.clean_cart);
+        buyAll = findViewById(R.id.buy_all);
+        mainLayout = findViewById(R.id.main_layout);
+        loadingLayout = findViewById(R.id.loading_layout);
 
         isFabOpen = false;
 
@@ -62,23 +83,9 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
         bindViews();
     }
 
-
     private void bindViews(){
 
-        Toolbar toolbar =  findViewById(R.id.toolbar);
-        RecyclerView recyclerCart = findViewById(R.id.recycler_cart);
-        textClean = findViewById(R.id.text_clean);
-        textBuyAll = findViewById(R.id.text_buy_all);
-        cleanCart = findViewById(R.id.clean_cart);
-        buyAll = findViewById(R.id.buy_all);
-
-        setSupportActionBar(toolbar);
-
-        Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("Meu carrinho");
+        if(offersRecyclerAdapter.getItemCount() > 0) hideLoading();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
 
@@ -88,11 +95,27 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
         recyclerCart.setAdapter(offersRecyclerAdapter);
 
+        showLoading();
+
+        if(offersRecyclerAdapter.getItemCount() > 0) hideLoading();
+
         presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
                        sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
 
     }
 
+    private void showLoading(){
+
+        loadingLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideLoading(){
+
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+
+    }
 
     private void openFab(){
 
@@ -138,6 +161,8 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     @Override
     public void onAlertPositive(Object object) {
 
+        showLoading();
+
         if(object instanceof ArrayList){
 
             presenter.deleteAllItems(sharedPreferences.getString(Constants.USER_CITY, ""),
@@ -174,7 +199,7 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
 
         if(offersRecyclerAdapter.getOffers().size() > 0)
             alertContructor.simpleAlert("Limpar carrinho", "você tem certeza que deseja excluir todos os itens?",
-                offersRecyclerAdapter.getOffers());
+                    offersRecyclerAdapter.getOffers());
         else
             Toast.makeText(this, "Seu carrinho já está vazio", Toast.LENGTH_LONG).show();
     }
@@ -190,23 +215,30 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     @Override
     public void onGetOffersSuccess(ArrayList<Offer> offers) {
 
-        if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED))
-            if(offers != null)
-                if(offers.size() > 0)
-                    offersRecyclerAdapter.setArray(offers);
-                else
-                    Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "Erro ao obter seus produto, tente novamente", Toast.LENGTH_LONG).show();
+        hideLoading();
 
+        if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+
+            offersRecyclerAdapter.setArray(offers);
+
+        }
 
     }
 
     @Override
-    public void onGetOffersFailed() {  Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();}
+    public void onGetOffersFailed() {
+        hideLoading();
+        if(offersRecyclerAdapter.getItemCount() > 0) offersRecyclerAdapter.clear();
+        Toast.makeText(this, "Você não possui produtos no carrinho, tente novamente", Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public void onDeleteAllSuccess() {
+
+        Toast.makeText(this, "Comprar excluidas com sucesso", Toast.LENGTH_SHORT).show();
+
+        hideLoading();
+        if(offersRecyclerAdapter.getItemCount() > 0) offersRecyclerAdapter.clear();
 
         presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
                 sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
@@ -214,12 +246,16 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     }
 
     @Override
-    public void onDeleteAllFailed() { }
+    public void onDeleteAllFailed() {
+        Toast.makeText(this, "Erro ao excluir compras, tente novamente", Toast.LENGTH_SHORT).show();
+        hideLoading();
+    }
 
     @Override
     public void onDeleteItemSuccess() {
 
         Toast.makeText(this, "Item(ns) exluido(s)", Toast.LENGTH_LONG).show();
+        hideLoading();
         offersRecyclerAdapter.clear();
 
         presenter.getOffers(sharedPreferences.getString(Constants.USER_CITY, ""),
@@ -228,11 +264,15 @@ public class MyCart extends AppCompatActivity implements Item.OnAdapterInteract,
     }
 
     @Override
-    public void onDeleteItemFailed() { }
+    public void onDeleteItemFailed() {
+        Toast.makeText(this, "Erro ao exluir item", Toast.LENGTH_SHORT).show();
+        hideLoading();
+    }
 
     @Override
     public void deleteItem(Offer offer) {
 
+        showLoading();
         presenter.deleteItem(sharedPreferences.getString(Constants.USER_CITY, ""),
                 sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""), offer.getCartId());
     }

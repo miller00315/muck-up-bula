@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class PasswordRecovery extends AppCompatActivity implements PasswordRecov
     private EditText email;
     private PasswordRecoveryPresenter passwordRecoveryPresenter;
     private AlertContructor alertContructor;
+    private RelativeLayout mainLayout, loadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,17 @@ public class PasswordRecovery extends AppCompatActivity implements PasswordRecov
         alertContructor = new AlertContructor(this);
 
         email = findViewById(R.id.email);
+        mainLayout = findViewById(R.id.main_layout);
+        loadingLayout = findViewById(R.id.loading_layout);
+
         passwordRecoveryPresenter = new PasswordRecoveryPresenter(this);
     }
 
     public void reset(View view) {
 
         passwordRecoveryPresenter.checkString(email.getText().toString());
+        loadingLayout.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.INVISIBLE);
 
     }
 
@@ -100,6 +107,8 @@ public class PasswordRecovery extends AppCompatActivity implements PasswordRecov
                 "Recuperação de acesso iniciada. Email enviado.",
                 Toast.LENGTH_LONG
         ).show();
+
+        finish();
     }
 
     @Override
@@ -111,6 +120,9 @@ public class PasswordRecovery extends AppCompatActivity implements PasswordRecov
                 Toast.LENGTH_LONG
         ).show();
 
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -120,15 +132,13 @@ public class PasswordRecovery extends AppCompatActivity implements PasswordRecov
                 "Precisamos de um email para recuperar a senha",
                 Toast.LENGTH_LONG
         ).show();
+
+        loadingLayout.setVisibility(View.INVISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onAlertPositive(Object object) {
-
-        if(object instanceof String){
-
-
-        }
 
     }
 

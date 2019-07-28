@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
     private MyBuysPresenter presenter;
 
+    private RelativeLayout loadingLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +50,8 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
         buyRecyclerAdapter = new MyBuyRecyclerAdapter(this);
 
+        loadingLayout = findViewById(R.id.loading_layout);
+
         presenter = new MyBuysPresenter(this);
 
         Toolbar toolbar =  findViewById(R.id.toolbar);
@@ -54,8 +60,22 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
 
         recyclerBuys = findViewById(R.id.recycler_my_buys);
 
+        showLoading();
+
         bindViews();
 
+    }
+
+    public void showLoading(){
+
+        recyclerBuys.setVisibility(View.INVISIBLE);
+        loadingLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    public void hideLoading(){
+        recyclerBuys.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
     }
 
     private void bindViews(){
@@ -100,13 +120,22 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     }
 
     @Override
-    public void onBuyEmpty() { Toast.makeText(this, "Compras vazias", Toast.LENGTH_SHORT).show();}
+    public void onBuyEmpty() {
+        hideLoading();
+        Toast.makeText(this, "Compras vazias", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
-    public void onBuySuccess(ArrayList<Buy> buys) {  buyRecyclerAdapter.setArray(buys);}
+    public void onBuySuccess(ArrayList<Buy> buys) {
+        hideLoading();
+        buyRecyclerAdapter.setArray(buys);
+    }
 
     @Override
-    public void onBuyFailed() { Toast.makeText(this, "Você não possui compras, tente novamente", Toast.LENGTH_LONG).show();}
+    public void onBuyFailed() {
+        hideLoading();
+        Toast.makeText(this, "Você não possui compras, tente novamente", Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public void onEvaluetedItem(Buy buy) {
