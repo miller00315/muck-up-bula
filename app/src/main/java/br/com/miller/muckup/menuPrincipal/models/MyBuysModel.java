@@ -19,13 +19,9 @@ public class MyBuysModel {
 
     private FirebaseDatabase firebaseDatabase;
     private MyBuysTasks.Model model;
-    private ArrayList<Buy> buys;
-
     public MyBuysModel(MyBuysTasks.Model model) {
 
         this.model = model;
-
-        buys = new ArrayList<>();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
     }
@@ -42,12 +38,22 @@ public class MyBuysModel {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(!dataSnapshot.exists()){
                             model.onBuyEmpty();
+                        }else{
+
+                            ArrayList<Buy> buys = new ArrayList<>();
+
+                            for(DataSnapshot child: dataSnapshot.getChildren()){
+
+                                buys.add(child.getValue(Buy.class));
+                            }
+
+                            model.onBuySuccess(buys);
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        model.onBuyFailed();
                     }
                 });
 
@@ -80,36 +86,24 @@ public class MyBuysModel {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            buys.add(dataSnapshot.getValue(Buy.class));
-
-            model.onBuySuccess(buys);
+            if(dataSnapshot.exists())
+                model.onBuyAdded(dataSnapshot.getValue(Buy.class));
 
         }
 
-        //TODO: Otimizar este array
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            if(dataSnapshot.exists()) {
+            if(dataSnapshot.exists())
+                model.onBuyUpdated(dataSnapshot.getValue(Buy.class));
 
-                Buy buy = dataSnapshot.getValue(Buy.class);
-
-                if(buy != null)
-                for (int i = 0; i < buys.size(); i++) {
-
-                    if (buy.getId().equals(buys.get(i).getId())) {
-
-                        buys.set(i, buy);
-                        model.onBuySuccess(buys);
-                        break;
-                    }
-                }
-            }
         }
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+            if(dataSnapshot.exists())
+                model.onBuyRemoved(dataSnapshot.getValue(Buy.class));
         }
 
         @Override

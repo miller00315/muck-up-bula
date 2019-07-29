@@ -67,6 +67,15 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if(loadingLayout.getVisibility() == View.VISIBLE)
+            presenter.temporaryVerify(sharedPreferences.getString(Constants.USER_CITY, ""),
+                sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.removeListener(sharedPreferences.getString(Constants.USER_CITY, ""),
@@ -85,11 +94,12 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
         loadingLayout.setVisibility(View.INVISIBLE);
     }
 
+
+
     private void bindViews(){
 
-        if(loadingLayout.getVisibility() ==View.VISIBLE)
-            presenter.temporaryVerify(sharedPreferences.getString(Constants.USER_CITY, ""),
-                    sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""));
+        if(loadingLayout.getVisibility() == View.VISIBLE)
+            if(buyRecyclerAdapter.getItemCount() > 0) hideLoading();
 
         Objects.requireNonNull(getSupportActionBar()).setLogo(R.drawable.ic_icon_bula_small);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -141,6 +151,25 @@ public class MyBuys extends AppCompatActivity implements Item.OnAdapterInteract,
         hideLoading();
         if(buyRecyclerAdapter.getItemCount() > 0) buyRecyclerAdapter.getBuys().clear();
         buyRecyclerAdapter.setArray(buys);
+    }
+
+    @Override
+    public void onBuyAdded(Buy buy) {
+
+        hideLoading();
+        buyRecyclerAdapter.addBuy(buy);
+    }
+
+    @Override
+    public void onBuyUpdated(Buy buy) {
+        hideLoading();
+        buyRecyclerAdapter.updateBuy(buy);
+    }
+
+    @Override
+    public void onBuyRemoved(Buy buy) {
+        hideLoading();
+        buyRecyclerAdapter.removeBuy(buy);
     }
 
     @Override

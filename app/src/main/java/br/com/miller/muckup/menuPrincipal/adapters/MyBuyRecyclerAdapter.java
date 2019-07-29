@@ -76,7 +76,7 @@ public class MyBuyRecyclerAdapter extends Item {
         listener.onAdapterInteract(bundle);
     }
 
-    public boolean addProduct(Buy buy){
+    public boolean addBuy(Buy buy){
 
         boolean add = buys.add(buy);
 
@@ -86,23 +86,41 @@ public class MyBuyRecyclerAdapter extends Item {
         return add;
     }
 
-    public boolean removeProduct(Buy buy){
+    public Buy removeBuy(Buy buy){
 
-        boolean remove = buys.remove(buy);
+        for(int i = 0; i< buys.size(); i++){
 
-        if(remove)
-            notifyDataSetChanged();
+            if(buys.get(i).getId().equals(buy.getId())){
 
-        return remove;
+                Buy temp = buys.remove(i);
+
+                notifyItemRemoved(i);
+
+                return temp;
+
+            }
+        }
+
+
+        return null;
     }
 
-    public void removeProdcut(int position){
+    public void updateBuy(Buy buy){
 
-        buys.remove(position);
+        for(int i = 0; i< buys.size(); i++){
 
-        notifyDataSetChanged();
-        notifyItemRangeChanged(position, buys.size());
+            if(buys.get(i).getId().equals(buy.getId())){
+
+                buys.add(i, buy);
+
+                notifyItemRemoved(i);
+
+                return;
+
+            }
+        }
     }
+
 
     public boolean setArray (ArrayList<Buy> buys){
 

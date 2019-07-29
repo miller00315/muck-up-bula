@@ -11,12 +11,18 @@ public interface MyBuysTasks {
         void onBuySuccess(ArrayList<Buy> buys);
         void onBuyEmpty();
         void onBuyFailed();
+        void onBuyAdded(Buy buy);
+        void onBuyUpdated(Buy buy);
+        void onBuyRemoved(Buy buy);
     }
 
     interface Presenter{
         void onBuyEmpty();
-        void onBuySuccess(ArrayList<Buy> buys);
         void onBuyFailed();
+        void onBuySuccess(ArrayList<Buy> buys);
+        void onBuyAdded(Buy buy);
+        void onBuyUpdated(Buy buy);
+        void onBuyRemoved(Buy buy);
     }
 
     interface View {

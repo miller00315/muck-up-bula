@@ -1,17 +1,11 @@
 package br.com.miller.muckup.jobs;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -33,28 +27,22 @@ import java.util.Objects;
 import br.com.miller.muckup.MainActivity;
 import br.com.miller.muckup.R;
 import br.com.miller.muckup.domain.Buy;
-import br.com.miller.muckup.utils.Foreground;
 import br.com.miller.muckup.utils.StringUtils;
 import br.com.miller.muckup.utils.image.ImageUtils;
 
-public class FirebaseJobs extends JobService{//} implements Application.ActivityLifecycleCallbacks {
+public class FirebaseJobs extends JobService{
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    public static final String ID = FirebaseJobs.class.getSimpleName();
+    public static final String ID = FirebaseJobs.class.getName();
     private boolean foreground = true;
     private boolean isWorking = false;
     private boolean jobCancelled = false;
-  //  private Foreground foregroundListener;
 
     @Override
     public boolean onStartJob(@NotNull JobParameters params) {
 
         Log.w(ID, "start");
 
-       // foregroundListener = Foreground.init(getApplication());
-      //  foregroundListener.addListener(this);
-
-      //  getApplicationContext().register
 
         isWorking = true;
 
