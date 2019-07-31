@@ -40,7 +40,6 @@
             android:text="@string/cancelar"
             android:id="@+id/cancel"
             android:textColor="#ffffff"
-
             android:background="@drawable/background_button_rounded"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"

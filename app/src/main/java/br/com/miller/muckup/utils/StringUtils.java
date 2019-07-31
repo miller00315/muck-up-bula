@@ -36,6 +36,11 @@ public class StringUtils {
 
     }
 
+    public static String doubleToMonetaryString(double value){
+
+        return String.format(Locale.getDefault(), "R$ %.2f", value);
+    }
+
     public static String cleanMoneyString(String value, Locale locale){
 
         String replaceable = String.format("[%s,.\\s]", NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol());

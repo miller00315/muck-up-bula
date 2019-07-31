@@ -21,6 +21,7 @@ public interface Tasks {
     interface View{
         void makeBuy(String idFirebase, String city, String address, int payMode, String troco, int cardType, ArrayList<Offer> offers, String userName, String observation, String userPhone);
         void getOffer(Bundle bundle);
+        void updateValues(ArrayList<Offer> offers);
     }
 
     interface Presenter{
@@ -28,7 +29,7 @@ public interface Tasks {
         void onSuccessBuys(ArrayList<Buy> buys);
         void failedBuy(int type);
         void onOffersSuccess(ArrayList<Offer> offers);
-        void onSendValueCalculated(Double sendValue, ArrayList<Offer> values);
+        void onSendValueCalculated(String sendValue);
         void onTotalValueCalculated(Double totalValue);
         void onOffersFail();
 

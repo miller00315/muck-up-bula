@@ -146,7 +146,6 @@ public class BuyModel {
 
     public void registerBuy(final ArrayList<Buy> buys){
 
-
         for(final Buy buy: buys){
 
             Map<String, Object> map = new HashMap<>();

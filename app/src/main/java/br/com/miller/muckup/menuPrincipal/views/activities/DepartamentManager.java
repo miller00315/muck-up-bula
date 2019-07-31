@@ -123,7 +123,7 @@ public class DepartamentManager extends AppCompatActivity implements
 
     @Override
     public void onSingleDepartamenteFailed() {
-        Toast.makeText(this, "Erro ao obter departamento, tente novamente",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Nada a ser exibido neste departamento",Toast.LENGTH_SHORT).show();
         hideLoading();
     }
 

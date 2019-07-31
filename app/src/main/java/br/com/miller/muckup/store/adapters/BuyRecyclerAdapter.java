@@ -1,9 +1,10 @@
-package br.com.miller.muckup.store.buy.view;
+package br.com.miller.muckup.store.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,8 @@ public class BuyRecyclerAdapter extends Item {
 
         Bundle bundle = new Bundle();
 
+        bundle.putParcelable("offer", products.get(i));
+
         listener.onAdapterInteract(bundle);
     }
 
@@ -96,12 +99,40 @@ public class BuyRecyclerAdapter extends Item {
 
     public boolean removeProduct(Offer offer){
 
-        boolean remove = products.remove(offer);
+        for(int i = 0; i< products.size(); i++){
 
-        if(remove)
-            notifyDataSetChanged();
+            if(products.get(i).getId().equals(offer.getId())){
 
-        return remove;
+               if(products.remove(i) != null){
+                   notifyDataSetChanged();
+
+                   return true;
+               }else
+                   return false;
+
+            }
+        }
+
+        return false;
+
+    }
+
+    public boolean updateProduct(Offer offer){
+
+        for(int i = 0; i< products.size(); i++){
+
+            if(products.get(i).getId().equals(offer.getId())){
+
+                products.get(i).setQuantity(offer.getQuantity());
+
+                notifyItemChanged(i);
+
+                return true;
+
+            }
+        }
+
+        return false;
     }
 
     public void removeProdcut(int position){
@@ -113,10 +144,7 @@ public class BuyRecyclerAdapter extends Item {
     }
 
 
-    public ArrayList<Offer> getOffers(){
-
-        return this.products;
-    }
+    public ArrayList<Offer> getOffers(){ return this.products; }
 
     public boolean setArray (ArrayList<Offer> products){
 
@@ -126,6 +154,5 @@ public class BuyRecyclerAdapter extends Item {
 
         return addAll;
     }
-
 
 }

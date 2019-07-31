@@ -34,7 +34,8 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
 
         double sendValue = 0.0;
 
-        for(Offer offer : offers){
+        if(offers.size() > 0)
+            for(Offer offer : offers){
 
             if(storesIds.size() == 0){
 
@@ -65,21 +66,43 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
             }
         }
 
-        presenter.onSendValueCalculated(sendValue, sendValues);
+        setStringValueSend(sendValue, sendValues);
+
     }
 
-    private void calculateTotalValue(ArrayList<Offer> offers){
+
+    private void setStringValueSend(Double sendValue,  ArrayList<Offer> sendValues){
+
+        String valuesSend = "Por estabelecimento: \n\n";
+
+        for(int i = 0; i< sendValues.size(); i++){
+
+            valuesSend = valuesSend
+                    .concat(String.valueOf(i + 1).concat(" - "))
+                    .concat(sendValues.get(i).getStore())
+                    .concat(": ")
+                    .concat(String.format(Locale.getDefault(), "R$ %.2f", sendValues.get(i).getSendValue()))
+                    .concat("\n");
+        }
+
+        valuesSend = valuesSend.concat("\nTotal: ".concat(StringUtils.doubleToMonetaryString(sendValue)));
+
+        presenter.onSendValueCalculated(valuesSend);
+    }
+
+    public void calculateTotalValue(ArrayList<Offer> offers){
 
         double totalValue = 0.0;
 
-        for(Offer offer : offers){ totalValue += (offer.getValue() * offer.getQuantity()); }
+        if(offers.size() > 0)
+            for(Offer offer : offers){ totalValue += (offer.getValue() * offer.getQuantity()); }
 
         presenter.onTotalValueCalculated(totalValue);
     }
 
-
     @Override
     public void onFailedBuy() { presenter.failedBuy(3); }
+
     @Override
     public void onBuysGenerated(ArrayList<Buy> buys) {
 
@@ -151,5 +174,13 @@ public class BuyPresenter implements Tasks.Model, Tasks.View {
             }else{
                 onOffersFailed();
             }
+    }
+
+    @Override
+    public void updateValues(ArrayList<Offer> offers) {
+
+        calculateTotalValue(offers);
+        generateSendValue(offers);
+
     }
 }

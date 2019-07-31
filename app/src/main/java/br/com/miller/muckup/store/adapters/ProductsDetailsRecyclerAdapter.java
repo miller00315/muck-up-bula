@@ -13,6 +13,7 @@ import br.com.miller.muckup.R;
 import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Offer;
 import br.com.miller.muckup.store.views.viewHolders.ProductsViewHolder;
+import br.com.miller.muckup.utils.StringUtils;
 
 public class ProductsDetailsRecyclerAdapter extends Item {
 
@@ -45,9 +46,13 @@ public class ProductsDetailsRecyclerAdapter extends Item {
 
             ProductsViewHolder productsViewHolder = (ProductsViewHolder) viewHolder;
 
-            productsViewHolder.setNameProduct(products.get(i).getTitle());
+            productsViewHolder.setNameProduct(products.get(i).getTitle()
+                    .concat(", ")
+                    .concat(StringUtils.doubleToMonetaryString(products.get(i).getValue()))
+                    .concat("\nQtd: ")
+                    .concat(String.valueOf(products.get(i).getQuantity())));
             productsViewHolder.setNameStore(products.get(i).getDescription());
-            productsViewHolder.setPriceProduct("R$ " .concat(String.format(Locale.getDefault(),"%.2f",products.get(i).getValue())));
+            productsViewHolder.setPriceProduct("R$ " .concat(String.format(Locale.getDefault(),"%.2f",products.get(i).getValue() * products.get(i).getQuantity())));
 
             if(i % 2 == 0){
                 productsViewHolder.getMainLayout().setBackgroundColor(context.getResources().getColor(R.color.gray));

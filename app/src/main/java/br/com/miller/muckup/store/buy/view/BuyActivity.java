@@ -9,6 +9,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,15 +35,18 @@ import br.com.miller.muckup.menuPrincipal.adapters.Item;
 import br.com.miller.muckup.domain.Buy;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyBuys;
 import br.com.miller.muckup.menuPrincipal.views.activities.MyCart;
+import br.com.miller.muckup.store.adapters.BuyRecyclerAdapter;
 import br.com.miller.muckup.store.buy.presenter.BuyPresenter;
 import br.com.miller.muckup.store.buy.tasks.Tasks;
 import br.com.miller.muckup.utils.MoneyTextWatcher;
 import br.com.miller.muckup.utils.StringUtils;
 import br.com.miller.muckup.utils.alerts.EditTextDialogFragment;
+import br.com.miller.muckup.utils.alerts.OfferBuyDialogFragment;
 
 public class BuyActivity extends AppCompatActivity implements
         Item.OnAdapterInteract,
         EditTextDialogFragment.EditTextFragmentListener,
+        OfferBuyDialogFragment.OfferBuyDialogListener,
         Tasks.Presenter{
 
     private BuyRecyclerAdapter buyRecyclerAdapter;
@@ -249,7 +253,15 @@ public class BuyActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onAdapterInteract(Bundle bundle) { }
+    public void onAdapterInteract(Bundle bundle) {
+
+        OfferBuyDialogFragment offerBuyDialogFragment = OfferBuyDialogFragment.newInstance(bundle);
+
+        offerBuyDialogFragment.setOfferBuyDialogListener(this);
+
+        offerBuyDialogFragment.openDialog(getSupportFragmentManager());
+
+    }
 
     public void showLoading(){
         layoutLoading.setVisibility(View.VISIBLE);
@@ -267,16 +279,21 @@ public class BuyActivity extends AppCompatActivity implements
 
         setTextColor();
 
-        buyPresenter.makeBuy(sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""),
-                sharedPreferences.getString(Constants.USER_CITY, ""),
-                addressBuy.getText().toString(),
-                payMethod.getCheckedRadioButtonId(),
-                editTextTroco.getText().toString(),
-                card_flag.getCheckedRadioButtonId(),
-                buyRecyclerAdapter.getOffers(),
-                sharedPreferences.getString(Constants.USER_NAME, ""),
-                observacao.getText().toString(),
-                textPhone.getText().toString());
+        if(buyRecyclerAdapter.getItemCount() > 0) {
+            buyPresenter.makeBuy(sharedPreferences.getString(Constants.USER_ID_FIREBASE, ""),
+                    sharedPreferences.getString(Constants.USER_CITY, ""),
+                    addressBuy.getText().toString(),
+                    payMethod.getCheckedRadioButtonId(),
+                    editTextTroco.getText().toString(),
+                    card_flag.getCheckedRadioButtonId(),
+                    buyRecyclerAdapter.getOffers(),
+                    sharedPreferences.getString(Constants.USER_NAME, ""),
+                    observacao.getText().toString(),
+                    textPhone.getText().toString());
+        }else{
+            Toast.makeText(this, "Não existem produtos a serem adquiridos!", Toast.LENGTH_SHORT).show();
+            hideLoading();
+        }
     }
 
     @Override
@@ -334,22 +351,7 @@ public class BuyActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSendValueCalculated(Double sendValue, ArrayList<Offer> sendValues) {
-
-        String valuesSend = "\nTotal: ".concat(String.format(Locale.getDefault(), "R$ %.2f",sendValue))
-                .concat("\n\nPor entrega: \n\n");
-
-        for(Offer offer : sendValues){
-
-            valuesSend = valuesSend
-                    .concat(offer.getStore())
-                    .concat(": ")
-                    .concat(String.format(Locale.getDefault(), "R$ %.2f", offer.getSendValue()))
-                    .concat("\n");
-        }
-
-        this.valueSend.setText(valuesSend);
-    }
+    public void onSendValueCalculated(String sendValue) { this.valueSend.setText(sendValue); }
 
     @Override
     public void onTotalValueCalculated(Double totalValue) { this.totalValue.setText(String.format(Locale.getDefault(), "R$ %.2f", totalValue ));}
@@ -369,5 +371,26 @@ public class BuyActivity extends AppCompatActivity implements
             else if (Objects.equals(bundle.getString("type"), Constants.USER_PHONE))
                 textPhone.setText(bundle.getString("result"));
         }
+    }
+
+    @Override
+    public void onOfferBuyEdited(Offer offer) {
+
+        if(buyRecyclerAdapter.updateProduct(offer)){
+
+            buyPresenter.updateValues(buyRecyclerAdapter.getOffers());
+
+        }
+
+    }
+
+    @Override
+    public void onOfferBuyDeleted(Offer offer) {
+
+        if( buyRecyclerAdapter.removeProduct(offer) ){
+
+            buyPresenter.updateValues(buyRecyclerAdapter.getOffers());
+       }
+
     }
 }
