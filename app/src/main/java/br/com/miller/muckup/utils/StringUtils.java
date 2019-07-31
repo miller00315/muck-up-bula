@@ -68,8 +68,10 @@ public class StringUtils {
 
     public static String normalizer(String title){
 
+        title = title.toLowerCase();
+
         if(title.contains(" "))
-            title = title.toLowerCase().replaceAll(" ", "_");
+            title = title.replaceAll(" ", "_");
 
         String nfdNormalizedString = Normalizer.normalize(title, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
